@@ -1,11 +1,12 @@
 import { FlatList, Pressable, View } from 'react-native';
 import { Text } from '~/components/nativewindui/Text';
 import { useState } from 'react';
+import { Badge } from 'react-native-paper';
 
 const dummyHistory = [
   { id: '1', title: '1000 Views Package', date: '2025-07-31', status: 'Completed' },
   { id: '2', title: '500 Views Package', date: '2025-07-29', status: 'Pending' },
-  { id: '3', title: '2000 Views Package', date: '2025-07-25', status: 'Completed' },
+  { id: '3', title: '2000 Views Package', date: '2025-07-25', status: 'Failed' },
 ];
 
 export default function History() {
@@ -20,16 +21,40 @@ export default function History() {
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
           <Pressable
-            onPress={() => {
-              // Placeholder: Replace with navigation or modal
-              console.log(`Pressed ${item.title}`);
-            }}
+            onPress={() => console.log(`Pressed ${item.title}`)}
             className="p-4 bg-background rounded-xl mb-2 border border-border shadow-md"
           >
-            <Text variant="title3" className="mb-1">{item.title}</Text>
+            <View className="flex-row justify-between items-center mb-1">
+              <Text variant="title3">{item.title}</Text>
+              <Badge
+                style={{
+                  backgroundColor: 'transparent',
+                  borderWidth: 1,
+                  borderColor:
+                    item.status === 'Pending'
+                      ? '#fbbf24'
+                      : item.status === 'Completed'
+                        ? '#10b981'
+                        : '#ef4444',
+                  color:
+                    item.status === 'Pending'
+                      ? '#fbbf24'
+                      : item.status === 'Completed'
+                        ? '#10b981'
+                        : '#ef4444',
+                  fontSize: 12,
+                  fontWeight: '600',
+                  paddingHorizontal: 6,
+                  borderRadius: 8,
+                }}
+              >
+                {item.status}
+              </Badge>
+            </View>
+
             <Text className="text-sm text-muted-foreground">Date: {item.date}</Text>
-            <Text className="text-sm text-muted-foreground">Status: {item.status}</Text>
           </Pressable>
+
         )}
       />
     </View>

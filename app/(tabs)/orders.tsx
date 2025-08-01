@@ -7,6 +7,7 @@ const dummyOrders = [
   { id: '3', title: 'Channel Promo C', amount: '₹199', date: '2025-07-25' },
 ];
 
+
 export default function Orders() {
   return (
     <View className="flex-1 p-4">
@@ -18,12 +19,15 @@ export default function Orders() {
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
           <Pressable className="p-4 bg-white mb-3 rounded-xl shadow-md active:opacity-70">
-            <Text className="font-semibold text-base">{item.title}</Text>
+            <View className="flex-row justify-between items-center mb-1">
+              <Text className="font-semibold text-base">{item.title}</Text>
+            </View>
             <Text className="text-sm text-gray-600">Amount: {item.amount}</Text>
             <Text className="text-xs text-gray-500">Date: {item.date}</Text>
           </Pressable>
         )}
       />
+
     </View>
   );
 }
