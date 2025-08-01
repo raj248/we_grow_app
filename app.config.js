@@ -1,3 +1,5 @@
+import { use } from "react";
+
 const IS_DEV = process.env.APP_VARIANT === 'development';
 
 export default {
@@ -38,14 +40,16 @@ export default {
     ],
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.shashankraj007281.we-grow"
+      "bundleIdentifier": "com.we-grow"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": IS_DEV ? "com.shashankraj007281.we_grow.dev" : "com.shashankraj007281.we_grow"
+      "package": "com.we_grow",
+      "googleServicesFile": process.env.GOOGLE_SERVICES_FILE,
+      "useNextNotificationsApi": true
     },
     "extra": {
       "router": {},

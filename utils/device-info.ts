@@ -40,6 +40,14 @@ export const getOrCreateGuestId = async (): Promise<string> => {
   if (cached) return cached;
 
   const id = await generate8CharGuestId();
-  await AsyncStorage.setItem(GUEST_ID_KEY, id);
+  setStoredGuestUserId(id);
   return id;
 };
+
+export async function getStoredGuestUserId(): Promise<string | null> {
+  return await AsyncStorage.getItem(GUEST_ID_KEY);
+}
+
+export async function setStoredGuestUserId(id: string): Promise<void> {
+  await AsyncStorage.setItem(GUEST_ID_KEY, id);
+}

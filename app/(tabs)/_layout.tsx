@@ -1,8 +1,15 @@
 import { Link, Tabs } from 'expo-router';
 import { HeaderButton } from '../../components/HeaderButton';
 import { TabBarIcon } from '../../components/TabBarIcon';
+import { useEffect } from 'react';
+import { requestUserPermission, notificationListener } from '~/firebase/notificationService';
 
 export default function TabLayout() {
+  useEffect(() => {
+    requestUserPermission();
+    notificationListener();
+  }, []);
+
   return (
     <Tabs
       screenOptions={{
