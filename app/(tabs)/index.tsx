@@ -4,7 +4,7 @@ import React, { useState } from 'react'
 import { getOrCreateGuestId } from '~/utils/device-info'
 import { notificationListener } from '~/firebase/notificationService'
 
-const Home = () => {
+export default function Home() {
   const [id, setId] = useState("Loading...");
   getOrCreateGuestId()
     .then(id => setId(id))
@@ -17,5 +17,3 @@ const Home = () => {
     </View>
   )
 }
-
-export default Home
