@@ -43,6 +43,7 @@ export default function RootLayout() {
               <Stack screenOptions={SCREEN_OPTIONS}>
                 <Stack.Screen name="(tabs)" options={TABS_OPTIONS} />
                 <Stack.Screen name="modal" options={MODAL_OPTIONS} />
+                <Stack.Screen name="debug" options={DEBUG_PANEL_OPTIONS} />
               </Stack>
             </NavThemeProvider>
           </ActionSheetProvider>
@@ -66,5 +67,12 @@ const MODAL_OPTIONS = {
   presentation: 'modal',
   animation: 'fade_from_bottom', // for android
   title: 'Settings',
+  headerRight: () => <ThemeToggle />,
+} as const;
+
+const DEBUG_PANEL_OPTIONS = {
+  presentation: 'modal',
+  animation: 'fade_from_bottom', // for android
+  title: 'Debug',
   headerRight: () => <ThemeToggle />,
 } as const;

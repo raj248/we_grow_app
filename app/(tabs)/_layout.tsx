@@ -1,5 +1,6 @@
 import { Link, Tabs } from 'expo-router';
 import { HeaderButton } from '../../components/HeaderButton';
+import { DebugHeaderButton } from '../../components/DebugHeaderButton';
 import { TabBarIcon } from '../../components/TabBarIcon';
 import { useEffect } from 'react';
 import { requestUserPermission, notificationListener } from '~/firebase/notificationService';
@@ -24,6 +25,11 @@ export default function TabLayout() {
           headerRight: () => (
             <Link href="/modal" asChild>
               <HeaderButton />
+            </Link>
+          ),
+          headerLeft: () => (
+            <Link href="/debug" asChild>
+              <DebugHeaderButton />
             </Link>
           ),
         }}
