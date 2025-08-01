@@ -5,7 +5,10 @@ import * as Application from 'expo-application';
 import { getStoredGuestUserId } from '~/utils/device-info'; // your AsyncStorage util
 
 const items = [
-  { label: "Current Subscription", url: "https://example.com/subscription" },
+  {
+    label: "Current Subscription",
+    url: "https://play.google.com/store/account/subscriptions?sku=premium_monthly&package=com.yourcompany.yourapp"
+  },
   { label: "Contact Us", url: "mailto:support@example.com" },
   { label: "Rate Us", url: "https://play.google.com/store/apps/details?id=com.example.app" },
   { label: "FAQ", url: "https://example.com/faq" },
@@ -25,7 +28,7 @@ export default function Settings() {
 
   return (
     <View className="flex-1 p-6">
-      {/* <Text variant="title1" className="mb-4 text-center">Settings</Text> */}
+      <Text variant="title1" className="mb-4 text-center">Settings</Text>
 
       <FlatList
         data={items}

@@ -14,6 +14,7 @@ export default function TabLayout() {
     <Tabs
       screenOptions={{
         tabBarActiveTintColor: 'black',
+        headerTitleAlign: 'center',
       }}>
       <Tabs.Screen
         name="index"
@@ -37,7 +38,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="history"
         options={{
-          title: 'History',
+          title: 'Order History',
           tabBarIcon: ({ color }) => <TabBarIcon name="history" color={color} />,
         }}
       />
