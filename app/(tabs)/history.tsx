@@ -24,7 +24,7 @@ export default function History() {
               // Placeholder: Replace with navigation or modal
               console.log(`Pressed ${item.title}`);
             }}
-            className="p-4 bg-background rounded-xl mb-2 border border-border shadow-sm"
+            className="p-4 bg-background rounded-xl mb-2 border border-border shadow-md"
           >
             <Text variant="title3" className="mb-1">{item.title}</Text>
             <Text className="text-sm text-muted-foreground">Date: {item.date}</Text>

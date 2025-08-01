@@ -17,7 +17,7 @@ export default function Orders() {
         data={dummyOrders}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
-          <Pressable className="p-4 bg-white mb-3 rounded-xl shadow-sm active:opacity-70">
+          <Pressable className="p-4 bg-white mb-3 rounded-xl shadow-md active:opacity-70">
             <Text className="font-semibold text-base">{item.title}</Text>
             <Text className="text-sm text-gray-600">Amount: {item.amount}</Text>
             <Text className="text-xs text-gray-500">Date: {item.date}</Text>
