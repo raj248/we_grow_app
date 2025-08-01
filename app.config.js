@@ -1,6 +1,8 @@
-{
+const IS_DEV = process.env.APP_VARIANT === 'development';
+
+export default {
   "expo": {
-    "name": "we_grow",
+    "name": IS_DEV ? "we_grow(dev)" : "we_grow",
     "slug": "we_grow",
     "version": "1.0.0",
     "scheme": "we_grow",
@@ -31,14 +33,24 @@
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
-    "assetBundlePatterns": ["**/*"],
+    "assetBundlePatterns": [
+      "**/*"
+    ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.shashankraj007281.we-grow"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
+      },
+      "package": IS_DEV ? "com.shashankraj007281.we_grow.dev" : "com.shashankraj007281.we_grow"
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "97094e96-e31a-470d-8551-9d84e89da4ec"
       }
     }
   }
