@@ -43,6 +43,7 @@ export default {
       "bundleIdentifier": "com.we-grow"
     },
     "android": {
+      "permissions": ['INTERNET'],
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
