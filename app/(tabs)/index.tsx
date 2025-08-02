@@ -1,7 +1,7 @@
 import { View, FlatList } from 'react-native';
 import { Text } from '~/components/nativewindui/Text';
 import React, { useEffect, useState } from 'react';
-import { getOrCreateGuestId } from '~/utils/device-info';
+import { getOrCreateUserId } from '~/utils/device-info';
 import { ProgressBar } from 'react-native-paper'; // or use any progress bar lib you have
 
 const features = [
@@ -15,7 +15,7 @@ export default function Home() {
   const [progress, setProgress] = useState(0.4); // Dummy pending progress: 40%
 
   useEffect(() => {
-    getOrCreateGuestId()
+    getOrCreateUserId()
       .then(setId)
       .catch((err) => setId(String(err)));
   }, []);

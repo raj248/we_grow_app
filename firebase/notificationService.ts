@@ -13,8 +13,8 @@ import {
 } from '@react-native-firebase/messaging';
 import Toast from 'react-native-toast-message';
 import { useNotificationStore } from '~/store/notification.store';
-import { getOrCreateGuestId, getStoredGuestUserId, setStoredGuestUserId } from '~/utils/device-info';
-import { registerGuestUser, updateFcmToken } from '~/lib/api';
+import { getOrCreateUserId, getStoredUserId, setStoredUserId } from '~/utils/device-info';
+import { registerUser, updateFcmToken } from '~/lib/api';
 
 const app = getApp();
 const messaging = getMessaging(app);
@@ -48,17 +48,17 @@ export async function requestUserPermission() {
  * Handle FCM token logic + sync to backend
  */
 async function handleFcmRegistration() {
-  const guestId = await getOrCreateGuestId();
+  const guestId = await getOrCreateUserId();
   const fcmToken = await getFcmToken();
 
   if (!fcmToken) return;
 
-  const existingUserId = await getStoredGuestUserId();
+  const existingUserId = await getStoredUserId();
 
   if (!existingUserId) {
-    const { success, data } = await registerGuestUser(guestId, fcmToken);
+    const { success, data } = await registerUser(guestId, fcmToken);
     if (success && data?.data?.id) {
-      await setStoredGuestUserId(data.data.id);
+      await setStoredUserId(data.data.id);
       console.log("👤 Guest registered and user ID saved:", data.data.id);
     } else {
       console.warn("❌ Failed to register guest user");

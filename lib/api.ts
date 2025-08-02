@@ -25,23 +25,38 @@ async function safeFetch<T>(
 
 // ------------------- User --------------------
 
-export async function registerGuestUser(guestId: string, fcmToken?: string) {
-  return safeFetch<APIResponse<{ id: string; guestId: string; fcmToken?: string }>>(
-    `${BASE_URL}/api/user/guest`,
+export async function registerUser(userId: string, fcmToken?: string) {
+  return safeFetch<APIResponse<{ id: string; userId: string; fcmToken?: string }>>(
+    `${BASE_URL}/api/user`,
     {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ guestId, fcmToken }),
+      body: JSON.stringify({ userId, fcmToken }),
     }
   );
 }
 export async function updateFcmToken(userId: string, fcmToken: string) {
   return safeFetch<APIResponse<{ id: string; fcmToken: string }>>(
-    `${BASE_URL}/api/user/${userId}/fcm-token`,
+    `${BASE_URL}/api/user/${userId}/fcm`,
     {
-      method: "PUT",
+      method: "PATCH", // ✅ Changed from PUT to PATCH
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ fcmToken }),
     }
   );
 }
+export async function updateLastActive(userId: string) {
+  return safeFetch<APIResponse<{ id: string; lastActiveAt: string }>>(
+    `${BASE_URL}/api/user/${userId}/last-active`,
+    {
+      method: "PATCH",
+    }
+  );
+}
+
+export async function fetchActiveUserCount() {
+  return safeFetch<number>(`${BASE_URL}/api/user/active`);
+}
+
+// ------------------- Order --------------------
+

@@ -2,7 +2,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import DeviceInfo from 'react-native-device-info';
 import CryptoJS from 'crypto-js';
 
-const GUEST_ID_KEY = 'GUEST_ID';
+const USER_ID_KEY = 'USER_ID';
 const BASE62 = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
 
 // Base62 encode BigInt
@@ -35,19 +35,19 @@ const generate8CharGuestId = async (salt = 'superSecretSalt'): Promise<string> =
 };
 
 // Main getter with AsyncStorage cache
-export const getOrCreateGuestId = async (): Promise<string> => {
-  const cached = await AsyncStorage.getItem(GUEST_ID_KEY);
+export const getOrCreateUserId = async (): Promise<string> => {
+  const cached = await AsyncStorage.getItem(USER_ID_KEY);
   if (cached) return cached;
 
   const id = await generate8CharGuestId();
-  setStoredGuestUserId(id);
+  setStoredUserId(id);
   return id;
 };
 
-export async function getStoredGuestUserId(): Promise<string | null> {
-  return await AsyncStorage.getItem(GUEST_ID_KEY);
+export async function getStoredUserId(): Promise<string | null> {
+  return await AsyncStorage.getItem(USER_ID_KEY);
 }
 
-export async function setStoredGuestUserId(id: string): Promise<void> {
-  await AsyncStorage.setItem(GUEST_ID_KEY, id);
+export async function setStoredUserId(id: string): Promise<void> {
+  await AsyncStorage.setItem(USER_ID_KEY, id);
 }

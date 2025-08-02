@@ -2,7 +2,7 @@ import { FlatList, Linking, Pressable, View } from 'react-native';
 import { Text } from '~/components/nativewindui/Text';
 import { useEffect, useState } from 'react';
 import * as Application from 'expo-application';
-import { getStoredGuestUserId } from '~/utils/device-info'; // your AsyncStorage util
+import { getStoredUserId } from '~/utils/device-info'; // your AsyncStorage util
 
 const items = [
   {
@@ -22,7 +22,7 @@ export default function Settings() {
   const [appVersion, setAppVersion] = useState<string>('');
 
   useEffect(() => {
-    getStoredGuestUserId().then((id) => setGuestId(id ?? 'Loading...'));
+    getStoredUserId().then((id) => setGuestId(id ?? 'Loading...'));
     setAppVersion(Application.nativeApplicationVersion ?? "1.0.0");
   }, []);
 
