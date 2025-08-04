@@ -44,6 +44,7 @@ export default {
     },
     "android": {
       "permissions": ['INTERNET'],
+      "usesCleartextTraffic": true,
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"

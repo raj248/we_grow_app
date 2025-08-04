@@ -113,6 +113,7 @@ async function handleFcmRegistration() {
   const existingUserId = await getStoredUserId();
 
   if (!existingUserId) {
+    console.log("👤 Registering new user...")
     const { success, data } = await registerUser(guestId, token);
     if (success && data?.data?.id) {
       await setStoredUserId(data.data.id);
