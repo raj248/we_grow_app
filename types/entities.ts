@@ -6,3 +6,11 @@ export type PurchaseOption = {
   createdAt: string;
   updatedAt: string;
 };
+
+export type Wallet = {
+  id: string;
+  userId: string;
+  balance: number;
+  updatedAt: string;
+  createdAt: string;
+};

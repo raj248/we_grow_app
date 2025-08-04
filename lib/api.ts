@@ -1,5 +1,5 @@
 import type { APIResponse } from "~/types/api"
-import { PurchaseOption } from "~/types/entities";
+import { PurchaseOption, Wallet } from "~/types/entities";
 
 const BASE_URL = process.env.EXPO_PUBLIC_API_SERVER_URL;
 
@@ -105,5 +105,12 @@ export async function deletePurchaseOption(id: string): Promise<APIResponse<Purc
     {
       method: "DELETE",
     }
+  );
+}
+
+
+export async function fetchWalletBalance(userId: string): Promise<APIResponse<Wallet>> {
+  return safeFetch(
+    `${BASE_URL}/api/wallet/${userId}`
   );
 }
