@@ -4,9 +4,11 @@ import { DebugHeaderButton } from '../../components/DebugHeaderButton';
 import { TabBarIcon } from '../../components/TabBarIcon';
 import { useEffect } from 'react';
 import { requestUserPermission, notificationListener } from '~/firebase/notificationService';
+import { useTrackActiveUser } from '~/lib/useTrackActiveUser';
 
 export default function TabLayout() {
   useEffect(() => {
+    // useTrackActiveUser()
     requestUserPermission();
     notificationListener();
   }, []);

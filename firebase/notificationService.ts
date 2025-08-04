@@ -15,6 +15,7 @@ import Toast from 'react-native-toast-message';
 import { useNotificationStore } from '~/store/notification.store';
 import { getOrCreateUserId, getStoredUserId, setStoredUserId } from '~/utils/device-info';
 import { registerUser, updateFcmToken } from '~/lib/api';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const app = getApp();
 const messaging = getMessaging(app);
@@ -45,18 +46,74 @@ export async function requestUserPermission() {
 }
 
 /**
+ * Get FCM token from localStorage or generate a new one
+ */
+const FCM_TOKEN_KEY = 'FCM_TOKEN';
+const FCM_TOKEN_TIME_KEY = 'FCM_TOKEN_TIME';
+const TOKEN_EXPIRY_DAYS = 250;
+
+export async function getFcmToken(): Promise<string | null> {
+  try {
+    const storedToken = await AsyncStorage.getItem(FCM_TOKEN_KEY);
+    const storedTimeStr = await AsyncStorage.getItem(FCM_TOKEN_TIME_KEY);
+    const storedTime = storedTimeStr ? parseInt(storedTimeStr) : 0;
+    const now = Date.now();
+
+    const isExpired = now - storedTime > TOKEN_EXPIRY_DAYS * 24 * 60 * 60 * 1000;
+
+    if (storedToken && !isExpired) {
+      console.log('🗃️ Using cached FCM Token:', storedToken);
+      return storedToken;
+    }
+
+    const newToken = await getToken(messaging);
+    if (newToken) {
+      console.log('✅ New FCM Token:', newToken);
+      await AsyncStorage.setItem(FCM_TOKEN_KEY, newToken);
+      await AsyncStorage.setItem(FCM_TOKEN_TIME_KEY, now.toString());
+    }
+
+    return newToken;
+  } catch (error) {
+    console.error('❌ Error getting/saving FCM token:', error);
+    return null;
+  }
+}
+
+
+/**
+ * Force-refresh the FCM token (e.g., on user logout or token error)
+ */
+export async function refreshFcmToken(): Promise<string | null> {
+  try {
+    await messaging.deleteToken();
+    await AsyncStorage.removeItem(FCM_TOKEN_KEY);
+
+    const newToken = await getToken(messaging);
+    if (newToken) {
+      await AsyncStorage.setItem(FCM_TOKEN_KEY, newToken);
+      console.log('🔄 Refreshed FCM Token:', newToken);
+    }
+    return newToken;
+  } catch (error) {
+    console.error('❌ Error refreshing FCM token:', error);
+    return null;
+  }
+}
+
+/**
  * Handle FCM token logic + sync to backend
  */
 async function handleFcmRegistration() {
   const guestId = await getOrCreateUserId();
-  const fcmToken = await getFcmToken();
+  let token = await getFcmToken();
 
-  if (!fcmToken) return;
+  if (!token) return;
 
   const existingUserId = await getStoredUserId();
 
   if (!existingUserId) {
-    const { success, data } = await registerUser(guestId, fcmToken);
+    const { success, data } = await registerUser(guestId, token);
     if (success && data?.data?.id) {
       await setStoredUserId(data.data.id);
       console.log("👤 Guest registered and user ID saved:", data.data.id);
@@ -64,20 +121,16 @@ async function handleFcmRegistration() {
       console.warn("❌ Failed to register guest user");
     }
   } else {
-    const res = await updateFcmToken(existingUserId, fcmToken);
-    if (!res.success) console.warn("❌ Failed to update FCM token");
+    const res = await updateFcmToken(existingUserId, token);
+    if (!res.success) {
+      console.warn("❌ Failed to update FCM token, retrying token refresh");
+      token = await refreshFcmToken();
+      if (token) await updateFcmToken(existingUserId, token);
+    }
   }
 }
 
-export async function getFcmToken() {
-  try {
-    const token = await getToken(messaging);
-    console.log('✅ FCM Token:', token);
-    return token;
-  } catch (error) {
-    console.error('❌ Error getting FCM token:', error);
-  }
-}
+
 
 // Background
 setBackgroundMessageHandler(messaging, async (remoteMessage: FirebaseMessagingTypes.RemoteMessage) => {

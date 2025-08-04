@@ -3,6 +3,7 @@ import { Text } from '~/components/nativewindui/Text';
 import React, { useEffect, useState } from 'react';
 import { getOrCreateUserId } from '~/utils/device-info';
 import { ProgressBar } from 'react-native-paper'; // or use any progress bar lib you have
+import { useTrackActiveUser } from '~/lib/useTrackActiveUser';
 
 const features = [
   { id: '1', title: 'Boost Views', description: 'Increase views on your videos using coins.' },
@@ -11,6 +12,7 @@ const features = [
 ];
 
 export default function Home() {
+  useTrackActiveUser();
   const [id, setId] = useState('Loading...');
   const [progress, setProgress] = useState(0.4); // Dummy pending progress: 40%
 
