@@ -14,3 +14,18 @@ export type Wallet = {
   updatedAt: string;
   createdAt: string;
 };
+
+export type Transaction = {
+  id: string;
+  userId: string;
+  type: TransactionType;
+  amount: number;
+  source: string;
+  transactionId: string | null;
+  status: TransactionStatus;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export type TransactionType = 'CREDIT' | 'DEBIT';
+export type TransactionStatus = 'SUCCESS' | 'PENDING' | 'FAILED';
