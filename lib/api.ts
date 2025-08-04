@@ -1,4 +1,5 @@
 import type { APIResponse } from "~/types/api"
+import { PurchaseOption } from "~/types/entities";
 
 const BASE_URL = process.env.EXPO_PUBLIC_API_SERVER_URL;
 
@@ -58,5 +59,51 @@ export async function fetchActiveUserCount() {
   return safeFetch<number>(`${BASE_URL}/api/user/active`);
 }
 
-// ------------------- Order --------------------
+// ------------------- Order / Purchase Options --------------------
 
+export async function createPurchaseOption(payload: {
+  coins: number;
+  googleProductId: string;
+}) {
+  return safeFetch<APIResponse<{
+    id: string;
+    coins: number;
+    googleProductId: string;
+    isActive: boolean;
+    createdAt: string;
+    updatedAt: string;
+  }>>(`${BASE_URL}/api/purchase-options`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload),
+  });
+}
+
+export async function getAllPurchaseOptions(): Promise<APIResponse<PurchaseOption[]>> {
+  return safeFetch(`${BASE_URL}/api/purchase-options`);
+}
+
+export async function getPurchaseOptionById(id: string): Promise<APIResponse<PurchaseOption>> {
+  return safeFetch(`${BASE_URL}/api/purchase-options/${id}`);
+}
+
+export async function updatePurchaseOption(id: string, payload: {
+  coins?: number;
+  googleProductId?: string;
+  isActive?: boolean;
+}): Promise<APIResponse<PurchaseOption>> {
+  return safeFetch(`${BASE_URL}/api/purchase-options/${id}`, {
+    method: "PATCH",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload),
+  });
+}
+
+export async function deletePurchaseOption(id: string): Promise<APIResponse<PurchaseOption>> {
+  return safeFetch(
+    `${BASE_URL}/api/purchase-options/${id}`,
+    {
+      method: "DELETE",
+    }
+  );
+}
