@@ -110,9 +110,3 @@ export async function fetchWalletBalance(userId: string): Promise<APIResponse<Wa
     `${BASE_URL}/api/wallet/${userId}`
   );
 }
-
-export async function fetchTransactionHistory(userId: string): Promise<APIResponse<Transaction[]>> {
-  return safeFetch(
-    `${BASE_URL}/api/transactions/user/${userId}`
-  );
-}

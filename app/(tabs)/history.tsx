@@ -1,28 +1,36 @@
-import { FlatList, Pressable, View } from 'react-native';
+import { FlatList, Pressable, RefreshControl, View } from 'react-native';
 import { Text } from '~/components/nativewindui/Text';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { Badge } from 'react-native-paper';
-import { fetchTransactionHistory } from '~/lib/api';
 import { getStoredUserId } from '~/utils/device-info';
 import { Transaction } from '~/types/entities';
+import { useFocusEffect } from '@react-navigation/native';
+import { fetchTransactionHistory } from '~/api/transactions';
+import { useTransactionStore } from '~/stores/useTransactionStore';
 
 export default function History() {
-  const [history, setHistory] = useState<Transaction[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
+  const { error, loading, transactions, loadTransactions } = useTransactionStore();
 
-  useEffect(() => {
-    (async () => {
-      const userId = await getStoredUserId();
-      if (!userId) return;
-
-      const res = await fetchTransactionHistory(userId);
-      if (res.success && res.data) {
-        setHistory(res.data);
-      }
-
-      setLoading(false);
-    })();
+  const loadHistory = useCallback(async () => {
+    const userId = await getStoredUserId();
+    if (!userId) return;
+    loadTransactions(userId);
   }, []);
+
+  const onRefresh = useCallback(async () => {
+    setRefreshing(true);
+    await loadHistory();
+    setRefreshing(false);
+  }, [loadHistory]);
+
+  useFocusEffect(
+    useCallback(() => {
+      (async () => {
+        await loadHistory();
+      })();
+    }, [loadHistory])
+  );
 
   return (
     <View className="flex-1 p-4">
@@ -34,8 +42,11 @@ export default function History() {
         <Text className="text-center mt-4">Loading...</Text>
       ) : (
         <FlatList
-          data={history}
+          data={transactions}
           keyExtractor={(item) => item.id}
+          refreshControl={
+            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+          }
           renderItem={({ item }) => {
             const statusLabel =
               item.status === 'PENDING'
