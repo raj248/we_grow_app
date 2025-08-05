@@ -15,13 +15,13 @@ export default function History() {
   const loadHistory = useCallback(async () => {
     const userId = await getStoredUserId();
     if (!userId) return;
+    setRefreshing(true);
     loadTransactions(userId);
+    setRefreshing(false);
   }, []);
 
   const onRefresh = useCallback(async () => {
-    setRefreshing(true);
     await loadHistory();
-    setRefreshing(false);
   }, [loadHistory]);
 
   useFocusEffect(

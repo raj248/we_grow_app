@@ -26,7 +26,6 @@ export const usePurchaseStore = create<State & Actions>((set, get) => ({
     const res = await getAllPurchaseOptions(get().lastFetched);
 
     // Exit early if response indicates data is unchanged
-    console.log(res)
     if (res.code === 304) {
       console.log("Data is unchanged, skipping fetch")
       set({ loading: false });
