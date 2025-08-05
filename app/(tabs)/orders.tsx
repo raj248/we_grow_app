@@ -1,19 +1,34 @@
-import { useEffect } from 'react';
-import { FlatList, Pressable, View, ActivityIndicator } from 'react-native';
+import { useCallback, useEffect, useState } from 'react';
+import { FlatList, Pressable, View, ActivityIndicator, RefreshControl } from 'react-native';
 import { Text } from '~/components/nativewindui/Text';
 import { PurchaseOption } from '~/types/entities';
 import Toast from 'react-native-toast-message';
 import { usePurchaseStore } from '~/stores/usePurchaseStore';
 import { useUserStore } from '~/stores/useUserStore';
 import { getStoredUserId } from '~/utils/device-info';
+import { useFocusEffect } from '@react-navigation/native';
 
 export default function Orders() {
   const { error, loading, purchaseOptions, purchase, fetchPurchaseOptions } = usePurchaseStore();
+  const [refreshing, setRefreshing] = useState(false);
 
-  useEffect(() => {
-    fetchPurchaseOptions();
+  const loadPurchaseOptions = useCallback(async () => {
+    await fetchPurchaseOptions();
   }, []);
 
+  const onRefresh = useCallback(async () => {
+    setRefreshing(true);
+    await fetchPurchaseOptions();
+    setRefreshing(false);
+  }, [loadPurchaseOptions])
+
+  useFocusEffect(
+    useCallback(() => {
+      (async () => {
+        await loadPurchaseOptions();
+      })();
+    }, [loadPurchaseOptions])
+  );
 
   useEffect(() => {
     if (error) {
@@ -27,10 +42,10 @@ export default function Orders() {
 
   const handleDummyPurchase = async (item: PurchaseOption) => {
     const id = useUserStore.getState().userId || await getStoredUserId();
-    const fakeTransactionId = Math.random().toString(36).substring(2, 10); // 8-char ID
+    const fakeTransactionId = Math.random().toString(36).substring(2, 10);
 
     if (!id) return;
-    const result = await purchase(id, item.googleProductId, fakeTransactionId); // item.id should be replaced with the razorpay id
+    const result = await purchase(id, item.googleProductId, fakeTransactionId);
     if (!result.success) {
       Toast.show({
         type: 'error',
@@ -45,17 +60,19 @@ export default function Orders() {
       text2: `You have successfully purchased ${item.coins} coins!`,
     });
   };
-
   return (
     <View className="flex-1 flex-grow px-4 bg-gray-50">
       <Text variant="title1" className="mb-4 text-center">Orders</Text>
 
-      {loading ? (
+      {loading && !refreshing ? (
         <ActivityIndicator size="large" color="#000" className="mt-10" />
       ) : (
         <FlatList
           data={purchaseOptions}
           keyExtractor={(item) => item.id}
+          refreshControl={
+            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+          }
           renderItem={({ item }) => (
             <Pressable
               onPress={() => handleDummyPurchase(item)}
