@@ -5,6 +5,8 @@ import { getOrCreateUserId } from '~/utils/device-info';
 import { ProgressBar } from 'react-native-paper';
 import { useTrackActiveUser } from '~/lib/useTrackActiveUser';
 import { fetchWalletBalance } from '~/lib/api';
+import { useFocusEffect } from '@react-navigation/native';
+import { useUserStore } from '~/stores/useUserStore';
 
 const features = [
   { id: '1', title: 'Boost Views', description: 'Increase views on your videos using coins.' },
@@ -21,7 +23,7 @@ export default function Home() {
 
   const loadData = useCallback(async () => {
     try {
-      const userId = await getOrCreateUserId();
+      const userId = useUserStore.getState().userId || await getOrCreateUserId();
       setId(userId);
       const res = await fetchWalletBalance(userId);
       if (res.success && res.data) {
@@ -32,9 +34,11 @@ export default function Home() {
     }
   }, []);
 
-  useEffect(() => {
-    loadData();
-  }, [loadData]);
+  useFocusEffect(
+    useCallback(() => {
+      loadData();
+    }, [loadData])
+  );
 
   const onRefresh = useCallback(async () => {
     setRefreshing(true);

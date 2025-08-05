@@ -1,15 +1,13 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { FlatList, Pressable, View, ActivityIndicator } from 'react-native';
 import { Text } from '~/components/nativewindui/Text';
 import { PurchaseOption } from '~/types/entities';
-import { Snackbar } from 'react-native-paper';
 import Toast from 'react-native-toast-message';
-import { getAllPurchaseOptions } from '~/api/purchase';
 import { usePurchaseStore } from '~/stores/usePurchaseStore';
 import { useUserStore } from '~/stores/useUserStore';
+import { getStoredUserId } from '~/utils/device-info';
 
 export default function Orders() {
-  const [snackbarVisible, setSnackbarVisible] = useState(false);
   const { error, loading, purchaseOptions, purchase, fetchPurchaseOptions } = usePurchaseStore();
 
   useEffect(() => {
@@ -28,9 +26,11 @@ export default function Orders() {
   }, [error]);
 
   const handleDummyPurchase = async (item: PurchaseOption) => {
-    const id = useUserStore.getState().userId;
+    const id = useUserStore.getState().userId || await getStoredUserId();
+    const fakeTransactionId = Math.random().toString(36).substring(2, 10); // 8-char ID
+
     if (!id) return;
-    const result = await purchase(id, item.googleProductId, item.id); // item.id should be replaced with the razorpay id
+    const result = await purchase(id, item.googleProductId, fakeTransactionId); // item.id should be replaced with the razorpay id
     if (!result.success) {
       Toast.show({
         type: 'error',
