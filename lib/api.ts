@@ -1,9 +1,9 @@
 import type { APIResponse } from "~/types/api"
 import { PurchaseOption, Transaction, Wallet } from "~/types/entities";
 
-const BASE_URL = process.env.EXPO_PUBLIC_API_SERVER_URL;
+export const BASE_URL = process.env.EXPO_PUBLIC_API_SERVER_URL;
 
-async function safeFetch<T>(
+export async function safeFetch<T>(
   url: string,
   options?: RequestInit
 ): Promise<{ success: boolean; error?: string; data?: T }> {
@@ -77,10 +77,6 @@ export async function createPurchaseOption(payload: {
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(payload),
   });
-}
-
-export async function getAllPurchaseOptions(): Promise<APIResponse<PurchaseOption[]>> {
-  return safeFetch(`${BASE_URL}/api/purchase-options`);
 }
 
 export async function getPurchaseOptionById(id: string): Promise<APIResponse<PurchaseOption>> {

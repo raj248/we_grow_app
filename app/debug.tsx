@@ -1,3 +1,4 @@
+import { router } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { useEffect, useState } from 'react';
 import { Platform, View } from 'react-native';
@@ -25,6 +26,8 @@ export default function Modal() {
         <Text>Debug Panel</Text>
         <Text>Last Active Users: {lastActiveCount}</Text>
         <Button title='Fetch Active User' onPress={trigger} />
+        <Button title='Router.push(Template)' onPress={() => router.push('/template_index')} />
+
       </View>
     </>
   );

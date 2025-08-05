@@ -1,23 +1,23 @@
 import '../global.css';
 import 'expo-dev-client';
 import { ThemeProvider as NavThemeProvider } from '@react-navigation/native';
-import { Icon } from '@roninoss/icons';
 
 import { ActionSheetProvider } from '@expo/react-native-action-sheet';
 
 import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
 
-import { Link, Stack } from 'expo-router';
+import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
-import { Pressable, View } from 'react-native';
 
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 import { ThemeToggle } from '~/components/ThemeToggle';
-import { cn } from '~/lib/cn';
 import { useColorScheme, useInitialAndroidBarSync } from '~/lib/useColorScheme';
 import { NAV_THEME } from '~/theme';
 
+import { Provider as PaperProvider } from 'react-native-paper';
+import { SnackbarProvider } from '~/components/global/SnackbarProvider';
+import Toast from 'react-native-toast-message';
 export {
   // Catch any errors thrown by the Layout component.
   ErrorBoundary,
@@ -37,17 +37,30 @@ export default function RootLayout() {
       {/* <ExampleProvider> */}
 
       <GestureHandlerRootView style={{ flex: 1 }}>
-        <BottomSheetModalProvider>
-          <ActionSheetProvider>
-            <NavThemeProvider value={NAV_THEME[colorScheme]}>
-              <Stack screenOptions={SCREEN_OPTIONS}>
-                <Stack.Screen name="(tabs)" options={TABS_OPTIONS} />
-                <Stack.Screen name="modal" options={MODAL_OPTIONS} />
-                <Stack.Screen name="debug" options={DEBUG_PANEL_OPTIONS} />
-              </Stack>
-            </NavThemeProvider>
-          </ActionSheetProvider>
-        </BottomSheetModalProvider>
+        <PaperProvider>
+          <SnackbarProvider />
+          <BottomSheetModalProvider>
+            <ActionSheetProvider>
+              <NavThemeProvider value={NAV_THEME[colorScheme]}>
+                <Stack screenOptions={SCREEN_OPTIONS}>
+                  <Stack.Screen name="(tabs)" options={TABS_OPTIONS} />
+                  <Stack.Screen name="modal" options={MODAL_OPTIONS} />
+                  <Stack.Screen name="debug" options={DEBUG_PANEL_OPTIONS} />
+                </Stack>
+                <Toast
+                  avoidKeyboard
+                  autoHide
+                  position='top'
+                  swipeable
+                  visibilityTime={3000}
+                  bottomOffset={80}
+                  topOffset={80}
+                // config={{}}
+                />
+              </NavThemeProvider>
+            </ActionSheetProvider>
+          </BottomSheetModalProvider>
+        </PaperProvider>
       </GestureHandlerRootView>
 
       {/* </ExampleProvider> */}
