@@ -8,8 +8,14 @@ interface PurchasePayload {
   purchaseToken: string;
 }
 
-export async function getAllPurchaseOptions(): Promise<APIResponse<PurchaseOption[]>> {
-  return safeFetch(`${BASE_URL}/api/purchase-options`);
+export async function getAllPurchaseOptions(timestamp?: number): Promise<APIResponse<PurchaseOption[]>> {
+  const url = new URL(`${BASE_URL}/api/purchase-options`);
+
+  if (timestamp) {
+    url.searchParams.set("timestamp", timestamp.toString());
+  }
+
+  return safeFetch(url.toString());
 }
 
 export async function makePurchase(

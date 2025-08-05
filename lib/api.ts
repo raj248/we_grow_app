@@ -6,10 +6,18 @@ export const BASE_URL = process.env.EXPO_PUBLIC_API_SERVER_URL;
 export async function safeFetch<T>(
   url: string,
   options?: RequestInit
-): Promise<{ success: boolean; error?: string; data?: T }> {
+): Promise<{ success: boolean; error?: string; data?: T; code?: number }> {
   console.log(`Fetching ${url}`);
   try {
     const res = await fetch(url, options);
+
+    if (res.status === 304) {
+      return {
+        success: true,
+        error: "Unchanged",
+        code: 304,
+      };
+    }
     const result = await res.json();
 
     if (!res.ok || !result.success) {

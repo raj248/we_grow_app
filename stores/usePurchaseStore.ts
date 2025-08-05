@@ -7,6 +7,7 @@ type State = {
   purchaseOptions: PurchaseOption[];
   loading: boolean;
   error: string | null;
+  lastFetched?: number;
 };
 
 type Actions = {
@@ -14,18 +15,31 @@ type Actions = {
   purchase: (userId: string, productId: string, purchaseToken: string) => Promise<APIResponse<{ wallet: any; transaction: any }>>;
 };
 
-export const usePurchaseStore = create<State & Actions>((set) => ({
+export const usePurchaseStore = create<State & Actions>((set, get) => ({
   purchaseOptions: [],
   loading: false,
   error: null,
+  lastFetched: undefined,
 
   fetchPurchaseOptions: async () => {
     set({ loading: true, error: null });
-    const res = await getAllPurchaseOptions();
+    const res = await getAllPurchaseOptions(get().lastFetched);
+
+    // Exit early if response indicates data is unchanged
+    console.log(res)
+    if (res.code === 304) {
+      console.log("Data is unchanged, skipping fetch")
+      set({ loading: false });
+      return;
+    }
+
     if (res.success && res.data) {
-      set({ purchaseOptions: res.data, loading: false });
+      set({ purchaseOptions: res.data, loading: false, lastFetched: res.lastUpdated });
     } else {
-      set({ error: res.error ?? "Failed to load purchase options", loading: false });
+      set({
+        error: res.error ?? "Failed to load purchase options",
+        loading: false,
+      });
     }
   },
 
