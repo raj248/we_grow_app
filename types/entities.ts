@@ -29,3 +29,16 @@ export type Transaction = {
 
 export type TransactionType = 'CREDIT' | 'DEBIT';
 export type TransactionStatus = 'SUCCESS' | 'PENDING' | 'FAILED';
+
+export interface BoostPlan {
+  id: string;
+  type: "VIEW" | "LIKE";
+  title: string;
+  description?: string;
+  price: number;
+  views: number;
+  likes: number;
+  isActive: boolean;
+  createdAt: string;
+  updatedAt: string;
+}

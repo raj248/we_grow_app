@@ -9,7 +9,7 @@ interface PurchasePayload {
 }
 
 export async function getAllPurchaseOptions(timestamp?: number): Promise<APIResponse<PurchaseOption[]>> {
-  const url = new URL(`${BASE_URL}/api/purchase-options`);
+  const url = new URL(`${BASE_URL}/api/topup-options`);
 
   if (timestamp) {
     url.searchParams.set("timestamp", timestamp.toString());
@@ -29,3 +29,4 @@ export async function makeTopup(
     body: JSON.stringify(payload),
   });
 }
+
