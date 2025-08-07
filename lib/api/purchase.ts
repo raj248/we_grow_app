@@ -82,19 +82,17 @@ export async function makeOrder(input: MakeOrderInput): Promise<MakeOrderRespons
   return res.json();
 }
 
-export const createOrder = async (userId: string, planId: string) => {
-  const response = await fetch(`${BASE_URL}/api/wallet/order`, {
+export const createOrder = async (
+  userId: string,
+  planId: string
+): Promise<APIResponse<MakeOrderResponse>> => {
+  const url = `${BASE_URL}/api/wallet/order`;
+
+  return safeFetch(url, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
     body: JSON.stringify({ userId, planId }),
   });
-
-  if (!response.ok) {
-    const errorData = await response.json();
-    throw new Error(errorData.message || "Failed to create order");
-  }
-
-  return response.json();
 };

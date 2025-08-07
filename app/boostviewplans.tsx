@@ -15,6 +15,7 @@ import { BoostPlan } from '~/types/entities';
 import { createOrder } from '~/lib/api/purchase';
 import { useUserStore } from '~/stores/useUserStore';
 import { getStoredUserId } from '~/utils/device-info';
+import Toast from 'react-native-toast-message';
 
 export default function BoostViewPlanModal() {
   const [tab, setTab] = useState<'VIEW' | 'LIKE'>('VIEW');
@@ -101,7 +102,13 @@ export default function BoostViewPlanModal() {
                   if (!selectedPlan) return;
                   const userId = await getStoredUserId();
                   if (!userId) return;
-                  createOrder(useUserStore.getState().userId || userId, selectedPlan)
+                  createOrder(useUserStore.getState().userId || userId, selectedPlan).then((res) => {
+                    if (res.success) {
+                      Toast.show({ text1: 'Order Created', text2: res.data?.message, type: 'success' });
+                    } else {
+                      Toast.show({ text1: 'Failed to create order', text2: res.error, type: 'error' });
+                    }
+                  });
                   router.back()
                 }}
               >
