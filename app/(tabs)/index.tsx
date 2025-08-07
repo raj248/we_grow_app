@@ -1,4 +1,4 @@
-import { View, FlatList, ActivityIndicator, RefreshControl } from 'react-native';
+import { View, FlatList, ActivityIndicator, RefreshControl, Pressable } from 'react-native';
 import { Text } from '~/components/nativewindui/Text';
 import React, { useEffect, useState, useCallback } from 'react';
 import { getOrCreateUserId } from '~/utils/device-info';
@@ -7,11 +7,14 @@ import { useTrackActiveUser } from '~/lib/useTrackActiveUser';
 import { fetchWalletBalance } from '~/lib/api';
 import { useFocusEffect } from '@react-navigation/native';
 import { useUserStore } from '~/stores/useUserStore';
+import BoostViewBottomSheet from '~/components/BottomSheets/BoostViewBottomSheet';
+import PromoteShortsBottomSheet from '~/components/BottomSheets/PromoteShortsBottomSheet';
+import GetSubscribersBottomSheet from '~/components/BottomSheets/GetSubscribersBottomSheet';
 
 const features = [
-  { id: '1', title: 'Boost Views', description: 'Increase views on your videos using coins.' },
-  { id: '2', title: 'Get Subscribers', description: 'Gain real engagement via smart distribution.' },
-  { id: '3', title: 'Promote Shorts', description: 'Targeted exposure for YouTube Shorts.' },
+  { id: '1', title: 'Boost Views', description: 'Increase views on your videos using coins.', time: 150, count: 300 },
+  { id: '2', title: 'Get Subscribers', description: 'Gain real engagement via smart distribution.', time: 150, count: 300 },
+  { id: '3', title: 'Promote Shorts', description: 'Targeted exposure for YouTube Shorts.', time: 150, count: 300 },
 ];
 
 export default function Home() {
@@ -20,6 +23,10 @@ export default function Home() {
   const [progress, setProgress] = useState(0.4);
   const [coins, setCoins] = useState<number | null>(null);
   const [refreshing, setRefreshing] = useState(false);
+  const [openBoostViewSheet, setOpenBoostViewSheet] = useState(() => () => { });
+  const [openGetSubscribersSheet, setOpenGetSubscribersSheet] = useState(() => () => { });
+  const [openPromotShortsSheet, setOpenPromotShortsSheet] = useState(() => () => { });
+
 
   const loadData = useCallback(async () => {
     try {
@@ -86,13 +93,31 @@ export default function Home() {
         refreshControl={
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
         }
-        renderItem={({ item }) => (
-          <View className="shadow-md bg-white rounded-xl p-4 mb-3">
-            <Text className="font-bold text-base">{item.title}</Text>
-            <Text className="text-sm text-gray-600">{item.description}</Text>
-          </View>
-        )}
+        renderItem={({ item }) => {
+          const openSheetMap: Record<string, () => void> = {
+            '1': openBoostViewSheet,
+            '2': openGetSubscribersSheet,
+            '3': openPromotShortsSheet,
+          };
+
+          return (
+            <Pressable
+              className="shadow-md bg-white rounded-xl p-4 mb-3"
+              onPress={() => {
+                const openSheet = openSheetMap[item.id];
+                console.log('Opening sheet:', openSheet)
+                if (openSheet) openSheet();
+              }}
+            >
+              <Text className="font-bold text-base">{item.title}</Text>
+              <Text className="text-sm text-gray-600">{item.description}</Text>
+            </Pressable>
+          );
+        }}
       />
+      <BoostViewBottomSheet setOpenSheet={setOpenBoostViewSheet} />
+      <GetSubscribersBottomSheet setOpenSheet={setOpenGetSubscribersSheet} />
+      <PromoteShortsBottomSheet setOpenSheet={setOpenPromotShortsSheet} />
     </View>
   );
 }
