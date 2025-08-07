@@ -1,4 +1,4 @@
-import { Stack } from 'expo-router';
+import { router, Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import {
   FlatList,
@@ -9,9 +9,12 @@ import {
   ActivityIndicator,
 } from 'react-native';
 import { SegmentedButtons, Button } from 'react-native-paper';
-import { useEffect, useState } from 'react';
+import { use, useEffect, useState } from 'react';
 import { getAllBoostPlans } from '~/lib/api/boost-plan';
 import { BoostPlan } from '~/types/entities';
+import { createOrder } from '~/lib/api/purchase';
+import { useUserStore } from '~/stores/useUserStore';
+import { getStoredUserId } from '~/utils/device-info';
 
 export default function BoostViewPlanModal() {
   const [tab, setTab] = useState<'VIEW' | 'LIKE'>('VIEW');
@@ -93,8 +96,13 @@ export default function BoostViewPlanModal() {
               <Button
                 mode="contained"
                 disabled={!selectedPlan}
-                onPress={() => {
+                onPress={async () => {
                   console.log('Selected:', selectedPlan);
+                  if (!selectedPlan) return;
+                  const userId = await getStoredUserId();
+                  if (!userId) return;
+                  createOrder(useUserStore.getState().userId || userId, selectedPlan)
+                  router.back()
                 }}
               >
                 Next
