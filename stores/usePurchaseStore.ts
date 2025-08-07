@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import { getAllPurchaseOptions, makePurchase } from "~/api/purchase";
+import { getAllPurchaseOptions, makeTopup } from "~/api/purchase";
 import type { PurchaseOption } from "~/types/entities";
 import type { APIResponse } from "~/types/api";
 
@@ -44,7 +44,7 @@ export const usePurchaseStore = create<State & Actions>((set, get) => ({
 
   purchase: async (userId, productId, purchaseToken) => {
     set({ loading: true, error: null });
-    const res = await makePurchase({ userId, productId, purchaseToken });
+    const res = await makeTopup({ userId, productId, purchaseToken });
     if (res.success && res.data) {
       // optional: update wallet or state if needed
       return res;

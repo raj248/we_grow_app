@@ -8,7 +8,7 @@ import { useUserStore } from '~/stores/useUserStore';
 import { getStoredUserId } from '~/utils/device-info';
 import { useFocusEffect } from '@react-navigation/native';
 
-export default function Orders() {
+export default function Topup() {
   const { error, loading, purchaseOptions, purchase, fetchPurchaseOptions } = usePurchaseStore();
   const [refreshing, setRefreshing] = useState(false);
 

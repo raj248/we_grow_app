@@ -37,17 +37,17 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="orders"
+        name="top-up"
         options={{
-          title: 'Orders',
-          tabBarIcon: ({ color }) => <TabBarIcon name="cart-plus" color={color} />,
+          title: 'Top-up',
+          tabBarIcon: ({ color }) => <TabBarIcon name="ticket" color={color} />,
         }}
       />
       <Tabs.Screen
         name="history"
         options={{
           title: 'Order History',
-          tabBarIcon: ({ color }) => <TabBarIcon name="history" color={color} />,
+          tabBarIcon: ({ color }) => <TabBarIcon name="archive" color={color} />,
         }}
       />
       <Tabs.Screen

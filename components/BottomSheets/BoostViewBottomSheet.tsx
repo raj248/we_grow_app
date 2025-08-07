@@ -20,7 +20,7 @@ export default function BoostViewBottomSheet({ setOpenSheet }: { setOpenSheet: (
       hideSubscription.remove();
     };
   }, []);
-  const snapPoints = useMemo(() => [isKeyboardVisible ? '90%' : '60%'], [isKeyboardVisible]);
+  const snapPoints = useMemo(() => [isKeyboardVisible ? '70%' : '45%'], [isKeyboardVisible]);
 
   useEffect(() => {
     if (setOpenSheet) setOpenSheet(() => () => bottomSheetModalRef.current?.present());
@@ -38,7 +38,6 @@ export default function BoostViewBottomSheet({ setOpenSheet }: { setOpenSheet: (
     console.log('Boosting video:', videoUrl);
     bottomSheetModalRef.current?.close();
   };
-
 
   return (
     <Sheet ref={bottomSheetModalRef} snapPoints={snapPoints}>

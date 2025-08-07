@@ -18,10 +18,10 @@ export async function getAllPurchaseOptions(timestamp?: number): Promise<APIResp
   return safeFetch(url.toString());
 }
 
-export async function makePurchase(
+export async function makeTopup(
   payload: PurchasePayload
 ): Promise<APIResponse<{ wallet: Wallet; transaction: Transaction }>> {
-  return safeFetch(`${BASE_URL}/api/wallet/purchase`, {
+  return safeFetch(`${BASE_URL}/api/wallet/topup`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
