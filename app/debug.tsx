@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { Platform, View } from 'react-native';
 import { Button } from '~/components/Button';
 import { Text } from '~/components/nativewindui/Text';
-import { fetchActiveUserCount } from '~/lib/api';
+import { fetchActiveUserCount } from '~/lib/api/api';
 
 
 export default function Modal() {

@@ -4,7 +4,7 @@ import React, { useEffect, useState, useCallback } from 'react';
 import { getOrCreateUserId } from '~/utils/device-info';
 import { ProgressBar } from 'react-native-paper';
 import { useTrackActiveUser } from '~/lib/useTrackActiveUser';
-import { fetchWalletBalance } from '~/lib/api';
+import { fetchWalletBalance } from '~/lib/api/api';
 import { useFocusEffect } from '@react-navigation/native';
 import { useUserStore } from '~/stores/useUserStore';
 import BoostViewBottomSheet from '~/components/BottomSheets/BoostViewBottomSheet';

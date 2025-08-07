@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import { getAllPurchaseOptions, makeTopup } from "~/api/purchase";
+import { getAllPurchaseOptions, makeTopup } from "~/lib/api/purchase";
 import type { PurchaseOption } from "~/types/entities";
 import type { APIResponse } from "~/types/api";
 

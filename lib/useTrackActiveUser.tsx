@@ -1,7 +1,7 @@
 import { AppState } from 'react-native';
 import { useEffect, useRef } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { updateLastActive } from './api';
+import { updateLastActive } from './api/api';
 import { getStoredUserId } from '~/utils/device-info';
 
 const LAST_SYNC_KEY = 'LAST_ACTIVE_SYNC';

@@ -5,7 +5,7 @@ import { Badge } from 'react-native-paper';
 import { getStoredUserId } from '~/utils/device-info';
 import { Transaction } from '~/types/entities';
 import { useFocusEffect } from '@react-navigation/native';
-import { fetchTransactionHistory } from '~/api/transactions';
+import { fetchTransactionHistory } from '~/lib/api/transactions';
 import { useTransactionStore } from '~/stores/useTransactionStore';
 
 export default function History() {

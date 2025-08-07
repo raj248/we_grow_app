@@ -14,7 +14,7 @@ import {
 import Toast from 'react-native-toast-message';
 import { useNotificationStore } from '~/stores/notification.store';
 import { getOrCreateUserId, getStoredUserId, setStoredUserId } from '~/utils/device-info';
-import { registerUser, updateFcmToken } from '~/lib/api';
+import { registerUser, updateFcmToken } from '~/lib/api/api';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useUserStore } from '~/stores/useUserStore';
 

@@ -1,4 +1,4 @@
-import { safeFetch, BASE_URL } from "~/lib/api";
+import { safeFetch, BASE_URL } from "~/lib/api/api";
 import { APIResponse } from "~/types/api";
 import { PurchaseOption, Transaction, Wallet } from "~/types/entities";
 

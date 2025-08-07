@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import { Transaction } from '~/types/entities';
-import { fetchTransactionHistory } from '~/api/transactions';
+import { fetchTransactionHistory } from '~/lib/api/transactions';
 
 type State = {
   transactions: Transaction[];
