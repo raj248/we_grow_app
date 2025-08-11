@@ -102,11 +102,13 @@ class DisplayOverAppModule : Module() {
 
                 wm?.addView(blocker, params)
                 overlayView = blocker
+                isOverlayVisible = true
                 // sendEvent("onYoutubeWatch", mapOf("duration" to duration))
 
                 blocker.postDelayed({ removeOverlay() }, duration * 1000L)
                 true
             } catch (e: Exception) {
+                isOverlayVisible = false
                 Log.e(TAG, "Error showing overlay: ${e.message}", e)
                 false
             }
@@ -137,10 +139,14 @@ class DisplayOverAppModule : Module() {
                 Log.e(TAG, "Error removing overlay: ${e.message}", e)
             }
             overlayView = null
+            isOverlayVisible = false
         }
     }
 
-    companion object { private const val TAG = "DisplayOverApp" }
+    companion object { 
+        private const val TAG = "DisplayOverApp"
+        var isOverlayVisible: Boolean = false
+     }
 }
 
 class YoutubeWatchService : AccessibilityService() {
@@ -161,6 +167,11 @@ class YoutubeWatchService : AccessibilityService() {
 
         when (pkg) {
             YOUTUBE_PACKAGE -> {
+                if (!DisplayOverAppModule.isOverlayVisible) {
+                    Log.d(TAG, "Overlay not visible — ignoring YouTube open event")
+                    return
+                }
+
                 DisplayOverAppEventBus.emitEvent?.invoke(
                     "onYoutubeOpen",
                     mapOf("timestamp" to System.currentTimeMillis())
@@ -168,7 +179,7 @@ class YoutubeWatchService : AccessibilityService() {
 
                 if (youtubeStartTime == null) {
                     youtubeStartTime = System.currentTimeMillis()
-                    Log.d(TAG, "YouTube started at $youtubeStartTime")
+                    Log.d(TAG, "YouTube started at $youtubeStartTime (overlay visible)")
                 }
             }
 

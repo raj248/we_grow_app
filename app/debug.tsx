@@ -67,7 +67,7 @@ export default function Modal() {
 
   const openYouTubeVideo = async () => {
     try {
-      const overlayGranted = await displayOverApp.showOverlay(60);
+      const overlayGranted = await displayOverApp.showOverlay(80);
       if (overlayGranted) Linking.openURL('vnd.youtube://watch?v=dQw4w9WgXcQ');
       await displayOverApp.startYoutubeWatch();
     } catch (err) {
