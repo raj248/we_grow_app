@@ -1,3 +1,4 @@
+import { AppState } from 'react-native';
 import { router } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { useEffect, useState } from 'react';
@@ -12,14 +13,34 @@ export default function Modal() {
   const [lastWatchDuration, setLastWatchDuration] = useState<number | null>(null);
 
   useEffect(() => {
-    // Listen for YouTube watch event from native module
+    let youtubeOpenFired = false;
+
     const sub = displayOverApp.addListener('onYoutubeWatch', (payload) => {
       console.log('YouTube watch duration:', payload.duration);
       setLastWatchDuration(payload.duration);
+      youtubeOpenFired = false;
+    });
+
+    const sub2 = displayOverApp.addListener('onYoutubeOpen', (payload) => {
+      if (youtubeOpenFired) return;
+      youtubeOpenFired = true;
+
+      console.log('YouTube opened at:', payload.timestamp);
+      setLastWatchDuration(null);
+    });
+
+    const appStateSub = AppState.addEventListener('change', (nextState) => {
+      if (nextState === 'active') {
+        console.log('App came to foreground → removing overlay');
+        displayOverApp.removeOverlay()
+          .then(() => console.log('Overlay removed due to app foreground'));
+      }
     });
 
     return () => {
       sub.remove();
+      sub2.remove();
+      appStateSub.remove();
     };
   }, []);
 
@@ -36,27 +57,19 @@ export default function Modal() {
 
   const triggerOverlay = async () => {
     const overlayGranted = await displayOverApp.requestOverlayPermission();
-
     if (!overlayGranted) {
       console.warn('Overlay permission not granted');
       return;
     }
     console.log('Overlay permission granted:', overlayGranted);
-
-    // Optional: request Accessibility permission too
-    // const res = await displayOverApp.requestAccessibilityPermission();
-    // console.log('Accessibility permission granted:', res);
-
-    console.warn('Code block reached after permissions');
-
-    // Show overlay for 10 seconds
     await displayOverApp.showOverlay(10);
   };
 
   const openYouTubeVideo = async () => {
     try {
-      await displayOverApp.startYoutubeWatch(); // ✅ New call to mark start time
-      Linking.openURL('vnd.youtube://watch?v=dQw4w9WgXcQ'); // Replace with your video ID
+      const overlayGranted = await displayOverApp.showOverlay(60);
+      if (overlayGranted) Linking.openURL('vnd.youtube://watch?v=dQw4w9WgXcQ');
+      await displayOverApp.startYoutubeWatch();
     } catch (err) {
       console.error('Error starting YouTube watch', err);
     }
