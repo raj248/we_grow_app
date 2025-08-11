@@ -4,6 +4,9 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Build
+import android.os.Handler
+import android.os.Looper
+
 import android.provider.Settings
 import android.view.Gravity
 import android.view.KeyEvent
@@ -194,8 +197,8 @@ class DisplayOverAppModule : Module() {
 
         AsyncFunction("startYoutubeWatch") {
             Log.d("DisplayOverApp", "startYoutubeWatch() called")
-            YoutubeWatchService.manualStartTime = System.currentTimeMillis()
-            Log.d("DisplayOverApp", "Manual start time recorded")
+            // YoutubeWatchService.manualStartTime = System.currentTimeMillis()
+            // Log.d("DisplayOverApp", "Manual start time recorded")
         }
 
     }
@@ -216,25 +219,30 @@ class DisplayOverAppModule : Module() {
 class YoutubeWatchService : AccessibilityService() {
 
     companion object {
-        var manualStartTime: Long? = null
         var youtubeStartTime: Long? = null
+        private const val YOUTUBE_PACKAGE = "com.google.android.youtube"
+        private const val TYPE_WINDOW_STATE_CHANGED = AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED
     }
 
     override fun onAccessibilityEvent(event: AccessibilityEvent?) {
-        val pkg = event?.packageName?.toString() ?: return
+        if (event == null) return
+        val pkg = event.packageName?.toString() ?: return
+        val type = event.eventType
 
-        if (pkg == "com.google.android.youtube") {
-            if (manualStartTime != null && youtubeStartTime == null) {
-                youtubeStartTime = manualStartTime
-                manualStartTime = null
-                Log.d("YoutubeWatchService", "YouTube watch started at $youtubeStartTime")
-            }
-        } else {
-            youtubeStartTime?.let { start ->
-                val durationSec = ((System.currentTimeMillis() - start) / 1000).toInt()
-                youtubeStartTime = null
-                Log.d("YoutubeWatchService", "YouTube stopped, duration: $durationSec seconds")
+        // Only track YouTube + TYPE_WINDOW_STATE_CHANGED
+        if (pkg == YOUTUBE_PACKAGE && type == TYPE_WINDOW_STATE_CHANGED) {
+            if (youtubeStartTime == null) {
+                // First TYPE_WINDOW_STATE_CHANGED — start timing
+                youtubeStartTime = System.currentTimeMillis()
+                Log.d("YoutubeWatchService", "YouTube started at $youtubeStartTime")
+            } else {
+                // Second TYPE_WINDOW_STATE_CHANGED — end timing
+                val durationSec = ((System.currentTimeMillis() - youtubeStartTime!!) / 1000).toInt()
+                Log.d("YoutubeWatchService", "YouTube ended, duration: $durationSec seconds")
                 sendWatchDuration(durationSec)
+
+                // Reset for the next session
+                youtubeStartTime = null
             }
         }
     }
@@ -248,3 +256,4 @@ class YoutubeWatchService : AccessibilityService() {
 
     override fun onInterrupt() {}
 }
+
