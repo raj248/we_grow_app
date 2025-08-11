@@ -1,0 +1,5 @@
+<resources>
+    <string name="accessibility_service_description">
+        Accessibility service to detect YouTube watch events.
+    </string>
+</resources>

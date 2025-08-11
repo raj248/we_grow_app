@@ -1,0 +1,9 @@
+{
+  "platforms": ["apple", "android", "web"],
+  "apple": {
+    "modules": ["DisplayOverAppModule"]
+  },
+  "android": {
+    "modules": ["expo.modules.displayoverapp.DisplayOverAppModule"]
+  }
+}

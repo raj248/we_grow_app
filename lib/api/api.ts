@@ -62,7 +62,6 @@ export async function updateLastActive(userId: string) {
     }
   );
 }
-
 export async function fetchActiveUserCount() {
   return safeFetch<number>(`${BASE_URL}/api/user/active`);
 }
