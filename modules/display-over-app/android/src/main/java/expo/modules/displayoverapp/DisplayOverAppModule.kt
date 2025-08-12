@@ -192,7 +192,6 @@ class DisplayOverAppModule : Module() {
         }
 
         fun stopTimerOverlay() {
-            Log.d("DisplayOverAppModule", "stopTimerOverlay")
             timerTextView?.let { wm?.removeView(it) }
             timerTextView = null
             isTimerOverlayVisible = false
@@ -225,7 +224,6 @@ class YoutubeWatchService : AccessibilityService() {
 
         private val updateRunnable = object : Runnable {
             override fun run() {
-                Log.d("YoutubeWatchService", "isTimerRunning: $isTimerRunning, secondsElapsed: $secondsElapsed")
                 if (!isTimerRunning) {
                     Log.d("YoutubeWatchService", "Timer not running, returning early")
                     return
@@ -253,7 +251,6 @@ class YoutubeWatchService : AccessibilityService() {
             isTimerRunning = false
             handler.removeCallbacks(updateRunnable)
             secondsElapsed = 0
-            Log.d("YoutubeWatchService", "Timer stopped")
         }
 
     }
@@ -261,7 +258,7 @@ class YoutubeWatchService : AccessibilityService() {
     override fun onAccessibilityEvent(event: AccessibilityEvent?) {
         val pkg = event?.packageName?.toString() ?: return
         if (event.eventType != AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED) return
-        Log.d("YoutubeWatchService", "onAccessibilityEvent: $pkg")
+        Log.d("YoutubeWatchService", "$pkg")
         when (pkg) {
             YOUTUBE_PACKAGE -> {
                 if (!DisplayOverAppModule.isOverlayVisible) return
@@ -285,7 +282,7 @@ class YoutubeWatchService : AccessibilityService() {
                     val duration = ((System.currentTimeMillis() - start) / 1000).toInt()
                     youtubeStartTime = null
                     // nothing in this block is being called cuz removeoverlay called in js
-                    Log.d("YoutubeWatchService", "Youtube watch duration: $duration")
+                    Log.d("YoutubeWatchService", "App Changed abruptly. Youtube watch duration: $duration")
                     stopNativeTimer()
                     DisplayOverAppModule.stopTimerOverlay()
 
