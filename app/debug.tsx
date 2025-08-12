@@ -68,11 +68,53 @@ export default function Modal() {
   const openYouTubeVideo = async () => {
     try {
       const overlayGranted = await displayOverApp.showOverlay(80);
-      if (overlayGranted) Linking.openURL('vnd.youtube://watch?v=dQw4w9WgXcQ');
-      await displayOverApp.startYoutubeWatch();
+      if (!overlayGranted) {
+        console.warn("Overlay permission not granted or overlay failed to show");
+        return;
+      }
+
+      // Open YouTube
+      Linking.openURL("vnd.youtube://watch?v=dQw4w9WgXcQ");
+
+      // Start timer overlay
+      const timerShown = await displayOverApp.showTimerOverlay();
+      if (!timerShown) {
+        console.warn("Timer overlay could not be shown");
+        return;
+      }
+
+      let seconds = 0;
+      // const timerId = setInterval(() => {
+      //   seconds++;
+      //   console.log("Timer: " + seconds + "s")
+      //   displayOverApp.updateTimerText(`Timer: ${seconds}s`);
+      // }, 1000);
+
+      // Store timerId somewhere so you can clear it later
+      // Example: in a ref or global store
+      // globalThis.currentTimerId = timerId;
+
     } catch (err) {
-      console.error('Error starting YouTube watch', err);
+      console.error("Error starting YouTube watch", err);
     }
+  };
+
+
+  const triggerShowTimer = async () => {
+    const overlayGranted = await displayOverApp.requestOverlayPermission();
+    if (!overlayGranted) {
+      console.warn('Overlay permission not granted');
+      return;
+    }
+    console.log('Overlay permission granted:', overlayGranted);
+    const ran = await displayOverApp.showTimerOverlay();
+    console.log('Ran:', ran);
+
+  };
+
+  const triggerHideTimer = async () => {
+    const ran = await displayOverApp.hideTimerOverlay();
+    console.log('Stopped:', ran);
   };
 
   return (
@@ -88,6 +130,8 @@ export default function Modal() {
         <Button title="Router.push(Template)" onPress={() => router.push('/template_index')} />
         <Button title="Show Overlay (10s)" onPress={triggerOverlay} />
         <Button title="Open YouTube Video" onPress={openYouTubeVideo} />
+        <Button title="Show Timer" onPress={triggerShowTimer} />
+        <Button title="Hide Timer" onPress={triggerHideTimer} />
       </View>
     </View>
   );

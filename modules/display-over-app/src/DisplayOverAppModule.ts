@@ -33,6 +33,25 @@ declare class DisplayOverAppModule extends NativeModule<DisplayOverAppModuleEven
    * @returns Promise<boolean> - true if the watch start was recorded, false otherwise.
    */
   startYoutubeWatch(): Promise<boolean>;
+
+  /**
+   * Shows the timer overlay.
+   * @returns Promise<boolean> - true if shown successfully, false otherwise.
+   */
+  showTimerOverlay(): Promise<boolean>;
+
+  /**
+   * Hides the timer overlay if visible.
+   * @returns Promise<boolean> - true if hidden successfully, false otherwise.
+   */
+  hideTimerOverlay(): Promise<boolean>;
+
+  /**
+ * Updates the timer text on the overlay.
+ * @param text - The text to display, e.g. "Timer: 5s"
+ * @returns Promise<boolean> - true if updated successfully, false otherwise.
+ */
+  updateTimerText(text: string): Promise<boolean>;
 }
 
 // Load native module from JSI

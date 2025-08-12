@@ -41,3 +41,13 @@ android {
     abortOnError false
   }
 }
+
+// dependencies {
+// }
+
+dependencies {
+    // implementation 'com.github.luiisca:floating-views:v.1.0.3'
+    implementation "androidx.compose.ui:ui:1.5.0" // or your Compose version
+    implementation "androidx.compose.material3:material3:1.1.0"
+    implementation "androidx.compose.ui:ui-tooling-preview:1.5.0"
+}
