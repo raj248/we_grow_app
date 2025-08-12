@@ -136,10 +136,13 @@ class DisplayOverAppModule : Module() {
                         "onYoutubeWatch",
                         mapOf("duration" to duration)
                     )
+                    stopTimerOverlay()
+                    YoutubeWatchService.stopNativeTimer()
                 }
             } catch (_: Exception) {}
             overlayView = null
             isOverlayVisible = false
+            isTimerOverlayVisible = false
         }
     }
 
@@ -186,10 +189,10 @@ class DisplayOverAppModule : Module() {
                 wmLocal.addView(textView, params)
                 isTimerOverlayVisible = true
             }
-
         }
 
         fun stopTimerOverlay() {
+            Log.d("DisplayOverAppModule", "stopTimerOverlay")
             timerTextView?.let { wm?.removeView(it) }
             timerTextView = null
             isTimerOverlayVisible = false
@@ -218,32 +221,47 @@ class YoutubeWatchService : AccessibilityService() {
 
         private val handler = Handler(Looper.getMainLooper())
         private var secondsElapsed = 0
+        private var isTimerRunning = false  // Add this flag
 
         private val updateRunnable = object : Runnable {
             override fun run() {
+                Log.d("YoutubeWatchService", "isTimerRunning: $isTimerRunning, secondsElapsed: $secondsElapsed")
+                if (!isTimerRunning) {
+                    Log.d("YoutubeWatchService", "Timer not running, returning early")
+                    return
+                }  // Early exit stops further posting
+
                 secondsElapsed++
-                Handler(Looper.getMainLooper()).post {
+                handler.post {
                     DisplayOverAppModule.setTimerText(secondsElapsed)
                 }
                 handler.postDelayed(this, 1000)
             }
         }
 
+
+
         fun startNativeTimer() {
+            if (isTimerRunning) return  // Prevent duplicate start
+
             secondsElapsed = 0
+            isTimerRunning = true
             handler.postDelayed(updateRunnable, 1000)
         }
 
         fun stopNativeTimer() {
+            isTimerRunning = false
             handler.removeCallbacks(updateRunnable)
             secondsElapsed = 0
+            Log.d("YoutubeWatchService", "Timer stopped")
         }
+
     }
 
     override fun onAccessibilityEvent(event: AccessibilityEvent?) {
         val pkg = event?.packageName?.toString() ?: return
         if (event.eventType != AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED) return
-
+        Log.d("YoutubeWatchService", "onAccessibilityEvent: $pkg")
         when (pkg) {
             YOUTUBE_PACKAGE -> {
                 if (!DisplayOverAppModule.isOverlayVisible) return
@@ -266,13 +284,15 @@ class YoutubeWatchService : AccessibilityService() {
                 youtubeStartTime?.let { start ->
                     val duration = ((System.currentTimeMillis() - start) / 1000).toInt()
                     youtubeStartTime = null
+                    // nothing in this block is being called cuz removeoverlay called in js
+                    Log.d("YoutubeWatchService", "Youtube watch duration: $duration")
+                    stopNativeTimer()
+                    DisplayOverAppModule.stopTimerOverlay()
+
                     DisplayOverAppEventBus.emitEvent?.invoke(
                         "onYoutubeWatch",
                         mapOf("duration" to duration)
                     )
-
-                    stopNativeTimer()
-                    DisplayOverAppModule.stopTimerOverlay()
                 }
             }
         }

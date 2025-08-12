@@ -34,6 +34,7 @@ export default function Modal() {
         console.log('App came to foreground → removing overlay');
         displayOverApp.removeOverlay()
           .then(() => console.log('Overlay removed due to app foreground'));
+        displayOverApp.hideTimerOverlay().then(() => console.log('Timer overlay hidden'));
       }
     });
 
