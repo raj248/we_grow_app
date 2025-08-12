@@ -103,7 +103,6 @@ class DisplayOverAppModule : Module() {
                 wm?.addView(blocker, params)
                 overlayView = blocker
                 isOverlayVisible = true
-                // sendEvent("onYoutubeWatch", mapOf("duration" to duration))
 
                 blocker.postDelayed({ removeOverlay() }, duration * 1000L)
                 true
@@ -143,10 +142,10 @@ class DisplayOverAppModule : Module() {
         }
     }
 
-    companion object { 
+    companion object {
         private const val TAG = "DisplayOverApp"
         var isOverlayVisible: Boolean = false
-     }
+    }
 }
 
 class YoutubeWatchService : AccessibilityService() {
