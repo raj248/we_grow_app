@@ -189,7 +189,7 @@ class DisplayOverAppModule : Module() {
 
                 wmLocal.addView(textView, params)
                 isTimerOverlayVisible = true
-                YoutubeWatchService.startNativeTimer()
+                // YoutubeWatchService.startNativeTimer()
             }
         }
 
@@ -197,7 +197,7 @@ class DisplayOverAppModule : Module() {
             timerTextView?.let { wm?.removeView(it) }
             timerTextView = null
             isTimerOverlayVisible = false
-            YoutubeWatchService.stopNativeTimer()
+            // YoutubeWatchService.stopNativeTimer()
         }
 
         fun setWindowManager(windowManager: WindowManager) {
@@ -223,7 +223,6 @@ class YoutubeWatchService : AccessibilityService() {
         private var serviceContext: Context? = null
 
         private val handler = Handler(Looper.getMainLooper())
-        private var secondsElapsed = 0
         private var isTimerRunning = false  // Add this flag
 
         private val updateRunnable = object : Runnable {
@@ -233,15 +232,19 @@ class YoutubeWatchService : AccessibilityService() {
                     return
                 }
 
-                secondsElapsed++
-                handler.post {
-                    DisplayOverAppModule.setTimerText(secondsElapsed)
+                val start = youtubeStartTime ?: run {
+                    Log.d("YoutubeWatchService", "youtubeStartTime is null, stopping timer")
+                    stopNativeTimer()
+                    return
                 }
-                
-                if (secondsElapsed >= 60) {
-                    // Timer reached 60 seconds — trigger returning to your app
+
+                val elapsedSeconds = ((System.currentTimeMillis() - start) / 1000).toInt()
+                handler.post {
+                    DisplayOverAppModule.setTimerText(elapsedSeconds)
+                }
+
+                if (elapsedSeconds >= 30) {
                     returnToOurApp()
-                    // Stop timer to avoid repeated calls
                     stopNativeTimer()
                 } else {
                     handler.postDelayed(this, 1000)
@@ -250,9 +253,13 @@ class YoutubeWatchService : AccessibilityService() {
         }
 
         fun startNativeTimer() {
-            if (isTimerRunning) return  // Prevent duplicate start
+            if (isTimerRunning) return
 
-            secondsElapsed = 0
+            if (youtubeStartTime == null) {
+                Log.e("YoutubeWatchService", "youtubeStartTime is null when starting timer!")
+                return
+            }
+
             isTimerRunning = true
             handler.postDelayed(updateRunnable, 1000)
             Log.d("YoutubeWatchService", "Native timer started")
@@ -261,7 +268,6 @@ class YoutubeWatchService : AccessibilityService() {
         fun stopNativeTimer() {
             isTimerRunning = false
             handler.removeCallbacks(updateRunnable)
-            secondsElapsed = 0
             Log.d("YoutubeWatchService", "Native timer stopped")
         }
 
