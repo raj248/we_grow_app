@@ -138,6 +138,7 @@ class DisplayOverAppModule : Module() {
                     )
                     stopTimerOverlay()
                     YoutubeWatchService.stopNativeTimer()
+                    Log.d("DisplayOverAppModule", "Removing Overlay. Youtube watch duration: $duration")
                 }
             } catch (_: Exception) {}
             overlayView = null
@@ -188,6 +189,7 @@ class DisplayOverAppModule : Module() {
 
                 wmLocal.addView(textView, params)
                 isTimerOverlayVisible = true
+                YoutubeWatchService.startNativeTimer()
             }
         }
 
@@ -195,6 +197,7 @@ class DisplayOverAppModule : Module() {
             timerTextView?.let { wm?.removeView(it) }
             timerTextView = null
             isTimerOverlayVisible = false
+            YoutubeWatchService.stopNativeTimer()
         }
 
         fun setWindowManager(windowManager: WindowManager) {
@@ -217,6 +220,7 @@ class YoutubeWatchService : AccessibilityService() {
         private const val YOUTUBE_PACKAGE = "com.google.android.youtube"
         private const val OUR_APP_PACKAGE = "com.we_grow"
         var youtubeStartTime: Long? = null
+        private var serviceContext: Context? = null
 
         private val handler = Handler(Looper.getMainLooper())
         private var secondsElapsed = 0
@@ -225,19 +229,25 @@ class YoutubeWatchService : AccessibilityService() {
         private val updateRunnable = object : Runnable {
             override fun run() {
                 if (!isTimerRunning) {
-                    Log.d("YoutubeWatchService", "Timer not running, returning early")
+                    Log.d("YoutubeWatchService", "Timer not running")
                     return
-                }  // Early exit stops further posting
+                }
 
                 secondsElapsed++
                 handler.post {
                     DisplayOverAppModule.setTimerText(secondsElapsed)
                 }
-                handler.postDelayed(this, 1000)
+                
+                if (secondsElapsed >= 60) {
+                    // Timer reached 60 seconds — trigger returning to your app
+                    returnToOurApp()
+                    // Stop timer to avoid repeated calls
+                    stopNativeTimer()
+                } else {
+                    handler.postDelayed(this, 1000)
+                }
             }
         }
-
-
 
         fun startNativeTimer() {
             if (isTimerRunning) return  // Prevent duplicate start
@@ -245,12 +255,26 @@ class YoutubeWatchService : AccessibilityService() {
             secondsElapsed = 0
             isTimerRunning = true
             handler.postDelayed(updateRunnable, 1000)
+            Log.d("YoutubeWatchService", "Native timer started")
         }
 
         fun stopNativeTimer() {
             isTimerRunning = false
             handler.removeCallbacks(updateRunnable)
             secondsElapsed = 0
+            Log.d("YoutubeWatchService", "Native timer stopped")
+        }
+
+        private fun returnToOurApp() {
+            val context = serviceContext ?: return
+            val launchIntent = context.packageManager.getLaunchIntentForPackage(OUR_APP_PACKAGE)
+            launchIntent?.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP)
+            if (launchIntent != null) {
+                Log.d("YoutubeWatchService", "Returning to app after 60 seconds")
+                context.startActivity(launchIntent)
+            } else {
+                Log.e("YoutubeWatchService", "Unable to find launch intent for app")
+            }
         }
 
     }
@@ -293,6 +317,12 @@ class YoutubeWatchService : AccessibilityService() {
                 }
             }
         }
+    }
+
+    override fun onServiceConnected() {
+        super.onServiceConnected()
+        serviceContext = this
+        Log.d("YoutubeWatchService", "Service connected")
     }
 
     override fun onInterrupt() {}
