@@ -62,12 +62,23 @@ export async function updateLastActive(userId: string) {
     }
   );
 }
+
+// ------------------- Wallet -------------------
+
+export async function fetchWalletBalance(userId: string): Promise<APIResponse<Wallet>> {
+  return safeFetch(
+    `${BASE_URL}/api/wallet/${userId}`
+  );
+}
+
+// SERVER SIDE API
 export async function fetchActiveUserCount() {
   return safeFetch<number>(`${BASE_URL}/api/user/active`);
 }
 
 // ------------------- Order / Purchase Options --------------------
 
+// SERVER SIDE API
 export async function createPurchaseOption(payload: {
   coins: number;
   googleProductId: string;
@@ -85,11 +96,11 @@ export async function createPurchaseOption(payload: {
     body: JSON.stringify(payload),
   });
 }
-
+// SERVER SIDE API
 export async function getPurchaseOptionById(id: string): Promise<APIResponse<PurchaseOption>> {
   return safeFetch(`${BASE_URL}/api/purchase-options/${id}`);
 }
-
+// SERVER SIDE API
 export async function updatePurchaseOption(id: string, payload: {
   coins?: number;
   googleProductId?: string;
@@ -101,19 +112,12 @@ export async function updatePurchaseOption(id: string, payload: {
     body: JSON.stringify(payload),
   });
 }
-
+// SERVER SIDE API
 export async function deletePurchaseOption(id: string): Promise<APIResponse<PurchaseOption>> {
   return safeFetch(
     `${BASE_URL}/api/purchase-options/${id}`,
     {
       method: "DELETE",
     }
-  );
-}
-
-
-export async function fetchWalletBalance(userId: string): Promise<APIResponse<Wallet>> {
-  return safeFetch(
-    `${BASE_URL}/api/wallet/${userId}`
   );
 }

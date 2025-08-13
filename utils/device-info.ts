@@ -21,7 +21,6 @@ const generate8CharGuestId = async (salt = 'superSecretSalt'): Promise<string> =
   const model = await DeviceInfo.getModel();
   const brand = await DeviceInfo.getBrand();
   const androidId = await DeviceInfo.getUniqueId();
-  console.log(model, brand, androidId)
 
   const raw = `${model}-${brand}-${androidId}-${salt}`;
   const hashHex = CryptoJS.SHA256(raw).toString(CryptoJS.enc.Hex);

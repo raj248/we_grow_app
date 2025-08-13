@@ -26,7 +26,7 @@ export default function Home() {
   const [openBoostViewSheet, setOpenBoostViewSheet] = useState(() => () => { });
   const [openGetSubscribersSheet, setOpenGetSubscribersSheet] = useState(() => () => { });
   const [openPromotShortsSheet, setOpenPromotShortsSheet] = useState(() => () => { });
-
+  const [openEarnSheet, setOpenEarnSheet] = useState(() => () => { });
 
   const loadData = useCallback(async () => {
     try {
@@ -86,6 +86,16 @@ export default function Home() {
             </View>
 
             <Text className="text-lg font-semibold mb-2">What you can do:</Text>
+
+            <Pressable
+              className="shadow-md bg-white rounded-xl p-4 mb-3"
+              onPress={() => {
+                console.log(`Earning Money`)
+              }}
+            >
+              <Text className="font-bold text-base">Watch And Earn</Text>
+              <Text className="text-sm text-gray-600">Watch videos, reels and subscribe to channels to earn coins.</Text>
+            </Pressable>
           </>
         }
         data={features}
@@ -98,6 +108,7 @@ export default function Home() {
             '1': openBoostViewSheet,
             '2': openGetSubscribersSheet,
             '3': openPromotShortsSheet,
+            '4': openEarnSheet,
           };
 
           return (

@@ -35,7 +35,7 @@ export default function BoostViewBottomSheet({ setOpenSheet }: { setOpenSheet: (
 
   const handleBoostNow = () => {
     // Add your boost logic here, e.g., validate URL, make API call
-    console.log('Boosting video:', videoUrl);
+    router.push({ pathname: '/boostviewplans', params: { videoUrl } });
     bottomSheetModalRef.current?.close();
   };
 
@@ -77,7 +77,6 @@ export default function BoostViewBottomSheet({ setOpenSheet }: { setOpenSheet: (
             // Handle boost logic here
             bottomSheetModalRef.current?.close();
             handleBoostNow();
-            router.push('/boostviewplans');
             handleSheetChanges(-1);
           }}
           className="bg-blue-600 rounded-lg p-4 mt-4"

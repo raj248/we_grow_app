@@ -11,6 +11,7 @@ interface PurchasePayload {
 type MakeOrderInput = {
   userId: string;
   planId: string;
+  url: string;
 };
 
 type MakeOrderResponse = {
@@ -63,8 +64,8 @@ export async function makeTopup(
   });
 }
 
-export async function makeOrder(input: MakeOrderInput): Promise<MakeOrderResponse> {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/order`, {
+export async function makeOrder(input: MakeOrderInput): Promise<APIResponse<MakeOrderResponse>> {
+  return safeFetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/order`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -74,25 +75,20 @@ export async function makeOrder(input: MakeOrderInput): Promise<MakeOrderRespons
     credentials: 'include', // if cookies/session required
   });
 
-  if (!res.ok) {
-    const error = await res.json().catch(() => ({}));
-    throw new Error(error.message || 'Failed to make order');
-  }
-
-  return res.json();
 }
 
 export const createOrder = async (
   userId: string,
-  planId: string
+  planId: string,
+  link: string
 ): Promise<APIResponse<MakeOrderResponse>> => {
   const url = `${BASE_URL}/api/wallet/order`;
-
+  console.log(`Creating order for ${userId} with plan ${planId} and video ${link}`)
   return safeFetch(url, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({ userId, planId }),
+    body: JSON.stringify({ userId, planId, link }),
   });
 };

@@ -1,4 +1,4 @@
-import { router, Stack } from 'expo-router';
+import { router, Stack, useLocalSearchParams } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import {
   FlatList,
@@ -18,6 +18,8 @@ import { getStoredUserId } from '~/utils/device-info';
 import Toast from 'react-native-toast-message';
 
 export default function BoostViewPlanModal() {
+  const { videoUrl } = useLocalSearchParams()
+  console.log('Boosting video:', videoUrl);
   const [tab, setTab] = useState<'VIEW' | 'LIKE'>('VIEW');
   const [selectedPlan, setSelectedPlan] = useState<string | null>(null);
   const [plans, setPlans] = useState<BoostPlan[]>([]);
@@ -102,7 +104,7 @@ export default function BoostViewPlanModal() {
                   if (!selectedPlan) return;
                   const userId = await getStoredUserId();
                   if (!userId) return;
-                  createOrder(useUserStore.getState().userId || userId, selectedPlan).then((res) => {
+                  createOrder(useUserStore.getState().userId || userId, selectedPlan, videoUrl as string).then((res) => {
                     if (res.success) {
                       Toast.show({ text1: 'Order Created', text2: res.data?.message, type: 'success' });
                     } else {

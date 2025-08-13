@@ -24,23 +24,23 @@ export function useTrackActiveUser() {
       if (diff > COOLDOWN_MS) {
         await updateLastActive(id);
         await AsyncStorage.setItem(LAST_SYNC_KEY, String(now));
-        console.log("✅ Updated Active User");
+        console.log("Updated Active User");
       } else {
-        console.log("⏳ Active user update on cooldown. Next update in:", (COOLDOWN_MS - diff) / 1000 / 60 / 60, "hours");
+        console.log("Active user update on cooldown. Next update in:", (COOLDOWN_MS - diff) / 1000 / 60 / 60, "hours");
       }
     };
 
     (async () => {
-      console.log("🚀 Initializing Active User Check...");
-      await tryUpdateLastActive(); // 🔥 Run once at app startup
+      console.log("Initializing Active User Check...");
+      await tryUpdateLastActive(); // Run once at app startup
 
       subscription = AppState.addEventListener('change', async (nextAppState) => {
         if (
           appState.current.match(/inactive|background/) &&
           nextAppState === 'active'
         ) {
-          console.log("📱 App returned to foreground");
-          await tryUpdateLastActive(); // 🔁 Run on foreground
+          console.log("App returned to foreground");
+          await tryUpdateLastActive(); // Run on foreground
         }
 
         appState.current = nextAppState;

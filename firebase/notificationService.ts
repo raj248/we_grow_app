@@ -9,7 +9,8 @@ import {
   setBackgroundMessageHandler,
   requestPermission,
   AuthorizationStatus,
-  FirebaseMessagingTypes
+  FirebaseMessagingTypes,
+  subscribeToTopic
 } from '@react-native-firebase/messaging';
 import Toast from 'react-native-toast-message';
 import { useNotificationStore } from '~/stores/notification.store';
@@ -24,10 +25,11 @@ const messaging = getMessaging(app);
 const requestNotificationPermission = async () => {
   const granted = await PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.POST_NOTIFICATIONS);
   if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-    console.log("Notification permission granted");
+    // console.log("Notification permission granted");
   } else {
-    console.log("Notification permission denied")
+    // console.log("Notification permission denied")
   }
+  return granted;
 };
 
 export async function requestUserPermission() {
@@ -38,7 +40,6 @@ export async function requestUserPermission() {
     authStatus === AuthorizationStatus.PROVISIONAL;
 
   if (enabled) {
-    console.log('✅ Authorization status:', authStatus);
     await handleFcmRegistration();
     await subscribeToAllDevicesTopic();
   } else {
@@ -56,7 +57,7 @@ const TOKEN_EXPIRY_DAYS = 250;
 export async function getFcmToken(): Promise<string | null> {
   try {
     const store = useUserStore.getState();
-    const storedToken = store.fcmToken; // ✅ Zustand store
+    const storedToken = store.fcmToken; // Zustand store
     const storedTimeStr = await AsyncStorage.getItem(FCM_TOKEN_TIME_KEY);
     const storedTime = storedTimeStr ? parseInt(storedTimeStr) : 0;
     const now = Date.now();
@@ -64,17 +65,17 @@ export async function getFcmToken(): Promise<string | null> {
     const isExpired = now - storedTime > TOKEN_EXPIRY_DAYS * 24 * 60 * 60 * 1000;
 
     if (storedToken && !isExpired) {
-      console.log('🗃️ Using cached FCM Token:', storedToken);
+      console.log(`Using cached FCM Token: ${storedToken.slice(0, 20)}.....`);
       return storedToken;
     }
 
     const newToken = await getToken(messaging);
     if (newToken) {
-      console.log('✅ New FCM Token:', newToken);
+      console.log(`FCM Token: ${newToken.slice(0, 20)}.....`);
       await AsyncStorage.setItem(FCM_TOKEN_KEY, newToken);
       await AsyncStorage.setItem(FCM_TOKEN_TIME_KEY, now.toString());
 
-      // ✅ update Zustand store
+      // update Zustand store
       store.setFcmToken(newToken);
     }
 
@@ -101,7 +102,7 @@ export async function refreshFcmToken(): Promise<string | null> {
       await AsyncStorage.setItem(FCM_TOKEN_KEY, newToken);
       await AsyncStorage.setItem(FCM_TOKEN_TIME_KEY, Date.now().toString());
       useUserStore.getState().setFcmToken(newToken);
-      console.log('🔄 Refreshed FCM Token:', newToken);
+      console.log(`Refreshed FCM Token: ${newToken.slice(0, 20)}.....`);
     }
     return newToken;
   } catch (error) {
@@ -121,10 +122,9 @@ async function handleFcmRegistration() {
   if (!token) return;
 
   const existingUserId = await getStoredUserId();
-  console.log("Existing user ID:", existingUserId);
 
   if (!existingUserId) {
-    console.log("👤 Registering new user...");
+    console.log("Registering new user...");
     const { success, data } = await registerUser(guestId, token);
 
     if (success && data?.data?.id) {
@@ -134,9 +134,9 @@ async function handleFcmRegistration() {
       store.setUserId(data.data.id);
       store.setFcmToken(token);
 
-      console.log("✅ Guest registered & Zustand user store updated:", data.data.id);
+      console.log("User registered & Zustand user store updated:", data.data.id);
     } else {
-      console.warn("❌ Failed to register guest user");
+      console.error("Failed to register guest user");
     }
   } else {
     const res = await updateFcmToken(existingUserId, token);
@@ -187,22 +187,34 @@ export function notificationListener() {
 
   onNotificationOpenedApp(messaging, remoteMessage => {
     console.log('📩 [Opened from Background] Notification:', remoteMessage.notification);
-    // same logic...
+    useNotificationStore.getState().addNotification({
+      messageId: remoteMessage.messageId ?? '',
+      title: remoteMessage.notification?.title ?? 'Notification',
+      body: remoteMessage.notification?.body ?? '',
+      sentTime: remoteMessage.sentTime ?? Date.now(),
+      data: remoteMessage.data ?? {},
+    });
   });
 
   getInitialNotification(messaging).then(remoteMessage => {
     if (remoteMessage) {
       console.log('📩 [Opened from Quit] Notification:', remoteMessage.notification);
-      // same logic...
+      useNotificationStore.getState().addNotification({
+        messageId: remoteMessage.messageId ?? '',
+        title: remoteMessage.notification?.title ?? 'Notification',
+        body: remoteMessage.notification?.body ?? '',
+        sentTime: remoteMessage.sentTime ?? Date.now(),
+        data: remoteMessage.data ?? {},
+      });
     }
   });
 }
 
 export async function subscribeToAllDevicesTopic() {
   try {
-    await messaging.subscribeToTopic('all-devices');
-    console.log('✅ Subscribed to "all-devices" topic');
+    await subscribeToTopic(messaging, 'all-devices');
+    console.log('Subscribed to "all-devices" topic');
   } catch (error) {
-    console.error('❌ Error subscribing to "all-devices" topic:', error);
+    console.error('Error subscribing to "all-devices" topic:', error);
   }
 }
