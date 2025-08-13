@@ -10,6 +10,7 @@ import { useUserStore } from '~/stores/useUserStore';
 import BoostViewBottomSheet from '~/components/BottomSheets/BoostViewBottomSheet';
 import PromoteShortsBottomSheet from '~/components/BottomSheets/PromoteShortsBottomSheet';
 import GetSubscribersBottomSheet from '~/components/BottomSheets/GetSubscribersBottomSheet';
+import { watchToEarn } from '~/lib/api/earn';
 
 const features = [
   { id: '1', title: 'Boost Views', description: 'Increase views on your videos using coins.', time: 150, count: 300 },
@@ -91,6 +92,7 @@ export default function Home() {
               className="shadow-md bg-white rounded-xl p-4 mb-3"
               onPress={() => {
                 console.log(`Earning Money`)
+                watchToEarn()
               }}
             >
               <Text className="font-bold text-base">Watch And Earn</Text>

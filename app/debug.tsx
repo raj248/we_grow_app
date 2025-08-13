@@ -83,18 +83,6 @@ export default function Modal() {
         console.warn("Timer overlay could not be shown");
         return;
       }
-
-      let seconds = 0;
-      // const timerId = setInterval(() => {
-      //   seconds++;
-      //   console.log("Timer: " + seconds + "s")
-      //   displayOverApp.updateTimerText(`Timer: ${seconds}s`);
-      // }, 1000);
-
-      // Store timerId somewhere so you can clear it later
-      // Example: in a ref or global store
-      // globalThis.currentTimerId = timerId;
-
     } catch (err) {
       console.error("Error starting YouTube watch", err);
     }
