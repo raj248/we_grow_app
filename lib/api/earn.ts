@@ -5,6 +5,7 @@ import { useUserStore } from "~/stores/useUserStore";
 import { APIResponse } from "~/types/api";
 import { Order } from "~/types/entities";
 import { getStoredUserId } from "~/utils/device-info";
+import { youtubeListenerService } from "~/services/youtubeListener";
 
 async function fetchRandomVideo(userId: string): Promise<APIResponse<Order>> {
   return safeFetch(
@@ -17,7 +18,6 @@ export const watchToEarn = async () => {
   if (!userId || userId === '' || !useUserStore.getState().userId) return;
   const order = await fetchRandomVideo(useUserStore.getState().userId || userId)
   if (!order.success || !order.data) return;
-  console.log('Order:', order)
   try {
     const overlayGranted = await displayOverApp.showOverlay(80);
     if (!overlayGranted) {
@@ -34,6 +34,12 @@ export const watchToEarn = async () => {
       console.warn("Timer overlay could not be shown");
       return;
     }
+    youtubeListenerService.onWatchDuration((duration) => {
+      console.log('Watch duration in earn.ts:', duration);
+      // Here you would typically send the duration to your backend
+      // to credit the user with coins.
+      // Example: await creditUserForWatch(userId, order.data.id, duration);
+    });
   } catch (err) {
     console.error("Error starting YouTube watch", err);
   }

@@ -33,6 +33,7 @@
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.0",
     "crypto-js": "^4.2.0",
+    "eventemitter3": "^5.0.1",
     "expo": "^53.0.20",
     "expo-application": "~6.1.5",
     "expo-constants": "~17.1.4",

@@ -23,6 +23,9 @@ export {
   ErrorBoundary,
 } from 'expo-router';
 
+import { youtubeListenerService } from "~/services/youtubeListener";
+youtubeListenerService.init(); // runs once
+
 export default function RootLayout() {
   useInitialAndroidBarSync();
   const { colorScheme, isDarkColorScheme } = useColorScheme();
