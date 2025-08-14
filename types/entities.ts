@@ -30,26 +30,29 @@ export type Transaction = {
 export type TransactionType = 'CREDIT' | 'DEBIT';
 export type TransactionStatus = 'SUCCESS' | 'PENDING' | 'FAILED';
 
+export type BoostPlan = {
+  id: string;
+  type: "VIEW" | "LIKE";
+  title: string;
+  description: string | null;
+  price: number;
+  views: number;
+  likes: number;
+  isActive: boolean;
+  createdAt: string; // ISO date string
+  updatedAt: string; // ISO date string
+};
+
 export type Order = {
   id: string;
   userId: string;
   planId: string;
   url: string;
-  status: "PENDING" | "COMPLETED" | "FAILED"; // Extend if you have more statuses
+  completedCount: number;
+  status: "PENDING" | "ACTIVE" | "COMPLETED" | "CANCELLED";
   createdAt: string; // ISO date string
   updatedAt: string; // ISO date string
+  boostPlan: BoostPlan;
+  videoTitle?: string;
+  videoThumbnail?: string;
 };
-
-export interface BoostPlan {
-  id: string;
-  type: "VIEW" | "LIKE";
-  title: string;
-  description?: string;
-  price: number;
-  views: number;
-  likes: number;
-  isActive: boolean;
-  createdAt: string;
-  updatedAt: string;
-}
-
