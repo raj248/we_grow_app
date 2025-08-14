@@ -35,7 +35,7 @@ export default function History() {
   return (
     <View className="flex-1 p-4">
       <Text variant="title1" className="mb-4 text-center">
-        Order History
+        Transaction History
       </Text>
 
       {loading ? (

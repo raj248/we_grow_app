@@ -3,21 +3,49 @@ import { safeFetch, BASE_URL } from "~/lib/api/api";
 import displayOverApp from "~/modules/display-over-app";
 import { useUserStore } from "~/stores/useUserStore";
 import { APIResponse } from "~/types/api";
-import { Order } from "~/types/entities";
 import { getStoredUserId } from "~/utils/device-info";
 import { youtubeListenerService } from "~/services/youtubeListener";
+import Toast from "react-native-toast-message";
 
-async function fetchRandomVideo(userId: string): Promise<APIResponse<Order>> {
+async function fetchRandomVideo(userId: string): Promise<APIResponse<{ url: string, token: string }>> {
   return safeFetch(
     `${BASE_URL}/api/wallet/earn/${userId}`
   );
 }
 
+async function fetchReward(token: string): Promise<APIResponse<{ message: string, rewardAmount: number }>> {
+  return safeFetch(`${BASE_URL}/api/wallet/reward`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ token }),
+  })
+}
+async function creditUserForWatch(token: string, duration: number) {
+  if (duration < 30) {
+    console.log("Watch duration too short to credit");
+    return;
+  }
+
+  const reward = await fetchReward(token);
+  if (!reward.success || !reward.data) {
+    console.error("Failed to fetch reward", reward.error);
+    return;
+  }
+
+  const { message, rewardAmount } = reward.data;
+  console.log(message, rewardAmount);
+
+}
 export const watchToEarn = async () => {
   const userId = await getStoredUserId();
   if (!userId || userId === '' || !useUserStore.getState().userId) return;
   const order = await fetchRandomVideo(useUserStore.getState().userId || userId)
-  if (!order.success || !order.data) return;
+  if (!order.success || !order.data) {
+    Toast.show({ text1: 'Failed to fetch random video', text2: order.error, type: 'error' });
+    return;
+  };
   try {
     const overlayGranted = await displayOverApp.showOverlay(80);
     if (!overlayGranted) {
@@ -39,6 +67,7 @@ export const watchToEarn = async () => {
       // Here you would typically send the duration to your backend
       // to credit the user with coins.
       // Example: await creditUserForWatch(userId, order.data.id, duration);
+      order.data && creditUserForWatch(order.data.token, duration);
     });
   } catch (err) {
     console.error("Error starting YouTube watch", err);
