@@ -1,41 +1,42 @@
+// stores/useOrderStore.ts
 import { create } from 'zustand';
-import { Transaction } from '~/types/entities';
-import { fetchTransactionHistory } from '~/lib/api/transactions';
 import { persist } from 'zustand/middleware';
+import { getOrders } from '~/lib/api/orders';
+import { Order } from '~/types/entities';
 
 type State = {
-  transactions: Transaction[];
+  orders: Order[];
   loading: boolean;
   error: string | null;
   lastFetched?: number;
-};
+}
 
 type Actions = {
-  loadTransactions: (userId: string) => Promise<void>;
-  clearTransactions: () => void;
-};
+  loadOrders: () => Promise<void>;
+  clearOrders: () => void;
+}
 
-export const useTransactionStore = create<State & Actions>()
-  (persist(
+export const useOrderStore = create<State & Actions>()(
+  persist(
     (set, get) => ({
-      transactions: [],
+      orders: [],
       loading: false,
       error: null,
       lastFetched: undefined,
 
-      loadTransactions: async (userId) => {
+      loadOrders: async () => {
         set({ loading: true, error: null });
         try {
-          const res = await fetchTransactionHistory(userId, get().lastFetched);
+          const res = await getOrders(get().lastFetched);
           if (res.code === 304) {
             console.log("Data is unchanged, skipping fetch")
             set({ loading: false });
             return;
           }
           if (res.success) {
-            set({ transactions: res.data || [], lastFetched: res.lastUpdated });
+            set({ orders: res.data || [], lastFetched: Date.now() });
           } else {
-            set({ error: res.error || 'Failed to load transactions' });
+            set({ error: res.error || 'Failed to load orders' });
           }
         } catch (err) {
           set({ error: 'Unexpected error occurred' });
@@ -44,12 +45,12 @@ export const useTransactionStore = create<State & Actions>()
         }
       },
 
-      clearTransactions: () => {
-        set({ transactions: [], error: null });
+      clearOrders: () => {
+        set({ orders: [], error: null, lastFetched: undefined });
       },
     }),
     {
-      name: 'transaction-storage', // unique name
+      name: 'order-storage', // unique name
       getStorage: () => ({
         setItem: (name, value) => {
           return localStorage.setItem(name, value);
@@ -64,4 +65,4 @@ export const useTransactionStore = create<State & Actions>()
       version: 1, // a migration will be triggered if the version differs
     }
   )
-  )
+);

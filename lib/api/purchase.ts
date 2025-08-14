@@ -64,25 +64,12 @@ export async function makeTopup(
   });
 }
 
-export async function makeOrder(input: MakeOrderInput): Promise<APIResponse<MakeOrderResponse>> {
-  return safeFetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/order`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      // Add Auth token if required
-    },
-    body: JSON.stringify(input),
-    credentials: 'include', // if cookies/session required
-  });
-
-}
-
 export const createOrder = async (
   userId: string,
   planId: string,
   link: string
 ): Promise<APIResponse<MakeOrderResponse>> => {
-  const url = `${BASE_URL}/api/wallet/order`;
+  const url = `${BASE_URL}/api/order/`;
   console.log(`Creating order for ${userId} with plan ${planId} and video ${link}`)
   return safeFetch(url, {
     method: "POST",

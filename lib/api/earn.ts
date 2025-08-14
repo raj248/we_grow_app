@@ -9,12 +9,11 @@ import Toast from "react-native-toast-message";
 
 async function fetchRandomVideo(userId: string): Promise<APIResponse<{ url: string, token: string }>> {
   return safeFetch(
-    `${BASE_URL}/api/wallet/earn/${userId}`
+    `${BASE_URL}/api/order/earn/${userId}`
   );
 }
-
 async function fetchReward(token: string): Promise<APIResponse<{ message: string, rewardAmount: number }>> {
-  return safeFetch(`${BASE_URL}/api/wallet/reward`, {
+  return safeFetch(`${BASE_URL}/api/order/reward`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
