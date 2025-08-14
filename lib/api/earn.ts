@@ -62,8 +62,10 @@ export const watchToEarn = async () => {
       console.warn("Timer overlay could not be shown");
       return;
     }
+    youtubeListenerService.removeWatchDurationListener()
+    let count = 0
     youtubeListenerService.onWatchDuration((duration) => {
-      console.log('Watch duration in earn.ts:', duration);
+      console.log('Watch duration in earn.ts:', duration, "count: ", ++count);
       // Here you would typically send the duration to your backend
       // to credit the user with coins.
       // Example: await creditUserForWatch(userId, order.data.id, duration);

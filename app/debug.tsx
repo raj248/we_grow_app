@@ -121,6 +121,10 @@ export default function Modal() {
         <Button title="Open YouTube Video" onPress={openYouTubeVideo} />
         <Button title="Show Timer" onPress={triggerShowTimer} />
         <Button title="Hide Timer" onPress={triggerHideTimer} />
+        <Button title="Video 1" onPress={() => Linking.openURL("vnd.youtube://watch?v=dQw4w9WgXcQ")} />
+        <Button title="Video 2" onPress={() => Linking.openURL("https://youtu.be/8-B6ryuBkCM?si=YVlVQhxLpKtPGmru")} />
+        <Button title="Video 3" onPress={() => Linking.openURL("https://youtu.be/7i_dwP2n90M?si=7GYUB5UQ3nVeEhx4")} />
+        <Button title="Video 4" onPress={() => Linking.openURL("https://youtu.be/La2w7GlXr2o?si=JXzHsm4ornRuBdgK")} />
       </View>
     </View>
   );
