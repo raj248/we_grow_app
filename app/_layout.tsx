@@ -48,6 +48,7 @@ export default function RootLayout() {
                 <Stack screenOptions={SCREEN_OPTIONS}>
                   <Stack.Screen name="(tabs)" options={TABS_OPTIONS} />
                   <Stack.Screen name="modal" options={MODAL_OPTIONS} />
+                  <Stack.Screen name="settings" options={MODAL_OPTIONS} />
                   <Stack.Screen name="boostviewplans" options={MODAL_OPTIONS} />
                   <Stack.Screen name="getsubscribersplans" options={MODAL_OPTIONS} />
                   <Stack.Screen name="promoteshortsplans" options={MODAL_OPTIONS} />

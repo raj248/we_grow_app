@@ -11,7 +11,6 @@ import displayOverApp from '~/modules/display-over-app';
 export default function Modal() {
   const [lastActiveCount, setLastActiveCount] = useState(-1);
   const [lastWatchDuration, setLastWatchDuration] = useState<number | null>(null);
-
   useEffect(() => {
     let youtubeOpenFired = false;
 
@@ -44,7 +43,6 @@ export default function Modal() {
       appStateSub.remove();
     };
   }, []);
-
   const triggerFetchActive = async () => {
     try {
       const res = await fetchActiveUserCount();
@@ -55,7 +53,6 @@ export default function Modal() {
       console.error('Error fetching active user count', err);
     }
   };
-
   const triggerOverlay = async () => {
     const overlayGranted = await displayOverApp.requestOverlayPermission();
     if (!overlayGranted) {
@@ -65,7 +62,6 @@ export default function Modal() {
     console.log('Overlay permission granted:', overlayGranted);
     await displayOverApp.showOverlay(10);
   };
-
   const openYouTubeVideo = async () => {
     try {
       const overlayGranted = await displayOverApp.showOverlay(80);
@@ -87,8 +83,6 @@ export default function Modal() {
       console.error("Error starting YouTube watch", err);
     }
   };
-
-
   const triggerShowTimer = async () => {
     const overlayGranted = await displayOverApp.requestOverlayPermission();
     if (!overlayGranted) {
@@ -100,7 +94,6 @@ export default function Modal() {
     console.log('Ran:', ran);
 
   };
-
   const triggerHideTimer = async () => {
     const ran = await displayOverApp.hideTimerOverlay();
     console.log('Stopped:', ran);

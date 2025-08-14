@@ -25,7 +25,7 @@ export default function TabLayout() {
           title: 'Home',
           tabBarIcon: ({ color }) => <TabBarIcon name="home" color={color} />,
           headerRight: () => (
-            <Link href="/modal" asChild>
+            <Link href="/settings" asChild>
               <HeaderButton />
             </Link>
           ),
@@ -41,20 +41,50 @@ export default function TabLayout() {
         options={{
           title: 'Top-up',
           tabBarIcon: ({ color }) => <TabBarIcon name="ticket" color={color} />,
+          headerRight: () => (
+            <Link href="/settings" asChild>
+              <HeaderButton />
+            </Link>
+          ),
+          headerLeft: () => (
+            <Link href="/debug" asChild>
+              <DebugHeaderButton />
+            </Link>
+          ),
         }}
       />
       <Tabs.Screen
         name="history"
         options={{
           title: 'Transaction History',
-          tabBarIcon: ({ color }) => <TabBarIcon name="archive" color={color} />,
+          tabBarIcon: ({ color }) => <TabBarIcon name="list-alt" color={color} />,
+          headerRight: () => (
+            <Link href="/settings" asChild>
+              <HeaderButton />
+            </Link>
+          ),
+          headerLeft: () => (
+            <Link href="/debug" asChild>
+              <DebugHeaderButton />
+            </Link>
+          ),
         }}
       />
       <Tabs.Screen
-        name="settings"
+        name="orders"
         options={{
-          title: 'Settings',
-          tabBarIcon: ({ color }) => <TabBarIcon name="cog" color={color} />,
+          title: 'Orders',
+          tabBarIcon: ({ color }) => <TabBarIcon name="archive" color={color} />,
+          headerRight: () => (
+            <Link href="/settings" asChild>
+              <HeaderButton />
+            </Link>
+          ),
+          headerLeft: () => (
+            <Link href="/debug" asChild>
+              <DebugHeaderButton />
+            </Link>
+          ),
         }}
       />
     </Tabs>

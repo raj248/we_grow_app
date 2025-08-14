@@ -6,7 +6,7 @@ import { getStoredUserId } from "~/utils/device-info";
 
 export async function getOrders(timestamp?: number): Promise<APIResponse<Order[]>> {
   const userId = useUserStore.getState().userId || await getStoredUserId()
-  const url = new URL(`${BASE_URL}/order/user/${userId}`);
+  const url = new URL(`${BASE_URL}/api/order/user/${userId}`);
 
   if (timestamp) {
     url.searchParams.set("timestamp", timestamp.toString());

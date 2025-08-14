@@ -26,7 +26,8 @@ export const useTransactionStore = create<State & Actions>()
       loadTransactions: async (userId) => {
         set({ loading: true, error: null });
         try {
-          const res = await fetchTransactionHistory(userId, get().lastFetched);
+          // const res = await fetchTransactionHistory(userId, get().lastFetched);
+          const res = await fetchTransactionHistory(userId);
           if (res.code === 304) {
             console.log("Data is unchanged, skipping fetch")
             set({ loading: false });
@@ -50,17 +51,17 @@ export const useTransactionStore = create<State & Actions>()
     }),
     {
       name: 'transaction-storage', // unique name
-      getStorage: () => ({
-        setItem: (name, value) => {
-          return localStorage.setItem(name, value);
-        },
-        getItem: (name) => {
-          return localStorage.getItem(name);
-        },
-        removeItem: (name) => {
-          return localStorage.removeItem(name);
-        },
-      }),
+      // getStorage: () => ({
+      //   setItem: (name, value) => {
+      //     return localStorage.setItem(name, value);
+      //   },
+      //   getItem: (name) => {
+      //     return localStorage.getItem(name);
+      //   },
+      //   removeItem: (name) => {
+      //     return localStorage.removeItem(name);
+      //   },
+      // }),
       version: 1, // a migration will be triggered if the version differs
     }
   )

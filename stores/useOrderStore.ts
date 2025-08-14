@@ -27,7 +27,8 @@ export const useOrderStore = create<State & Actions>()(
       loadOrders: async () => {
         set({ loading: true, error: null });
         try {
-          const res = await getOrders(get().lastFetched);
+          // const res = await getOrders(get().lastFetched);
+          const res = await getOrders();
           if (res.code === 304) {
             console.log("Data is unchanged, skipping fetch")
             set({ loading: false });
@@ -51,17 +52,17 @@ export const useOrderStore = create<State & Actions>()(
     }),
     {
       name: 'order-storage', // unique name
-      getStorage: () => ({
-        setItem: (name, value) => {
-          return localStorage.setItem(name, value);
-        },
-        getItem: (name) => {
-          return localStorage.getItem(name);
-        },
-        removeItem: (name) => {
-          return localStorage.removeItem(name);
-        },
-      }),
+      // storage: () => ({
+      //   setItem: (name, value) => {
+      //     return localStorage.setItem(name, value);
+      //   },
+      //   getItem: (name) => {
+      //     return localStorage.getItem(name);
+      //   },
+      //   removeItem: (name) => {
+      //     return localStorage.removeItem(name);
+      //   },
+      // }),
       version: 1, // a migration will be triggered if the version differs
     }
   )
