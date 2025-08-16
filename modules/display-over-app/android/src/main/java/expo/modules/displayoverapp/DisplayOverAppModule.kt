@@ -212,7 +212,7 @@ class DisplayOverAppModule : Module() {
             timerTextView = view
         }
         fun setTimerText(seconds: Int) {
-            timerTextView?.text = "Timer: ${seconds}s"
+            timerTextView?.text = "Timer: ${overlayDuration - seconds}s"
         }
 
     }
