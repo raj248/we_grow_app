@@ -12,22 +12,18 @@ async function fetchRandomVideo(userId: string): Promise<APIResponse<{ url: stri
     `${BASE_URL}/api/order/earn/${userId}`
   );
 }
-async function fetchReward(token: string): Promise<APIResponse<{ message: string, rewardAmount: number }>> {
+async function fetchReward(token: string, duration: number): Promise<APIResponse<{ message: string, rewardAmount: number }>> {
   return safeFetch(`${BASE_URL}/api/order/reward`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({ token }),
+    body: JSON.stringify({ token, duration }),
   })
 }
 async function creditUserForWatch(token: string, duration: number) {
-  if (duration < 30) {
-    console.log("Watch duration too short to credit");
-    return;
-  }
 
-  const reward = await fetchReward(token);
+  const reward = await fetchReward(token, duration);
   if (!reward.success || !reward.data) {
     console.error("Failed to fetch reward", reward.error);
     return;
