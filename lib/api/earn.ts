@@ -7,7 +7,7 @@ import { getStoredUserId } from "~/utils/device-info";
 import { youtubeListenerService } from "~/services/youtubeListener";
 import Toast from "react-native-toast-message";
 
-async function fetchRandomVideo(userId: string): Promise<APIResponse<{ url: string, token: string }>> {
+async function fetchRandomVideo(userId: string): Promise<APIResponse<{ url: string, token: string, duration: number }>> {
   return safeFetch(
     `${BASE_URL}/api/order/earn/${userId}`
   );
@@ -42,7 +42,7 @@ export const watchToEarn = async () => {
     return;
   };
   try {
-    const overlayGranted = await displayOverApp.showOverlay(120);
+    const overlayGranted = await displayOverApp.showOverlay(order.data.duration);
     if (!overlayGranted) {
       console.warn("Overlay permission not granted or overlay failed to show");
       return;

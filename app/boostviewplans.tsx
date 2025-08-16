@@ -86,6 +86,9 @@ export default function BoostViewPlanModal() {
               <Text style={{ marginTop: 4, color: '#555' }}>
                 {item.price} coins
               </Text>
+              <Text style={{ marginTop: 4, color: '#555' }}>
+                {item.duration} seconds
+              </Text>
             </Pressable>
           )}
           ListFooterComponent={

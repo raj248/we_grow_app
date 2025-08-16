@@ -117,11 +117,12 @@ class DisplayOverAppModule : Module() {
             overlayView = blocker
             isOverlayVisible = true
 
-            blockerhandler.postDelayed({ removeOverlay() }, duration * 1000L)
+            blockerhandler.postDelayed({ removeOverlay() }, 120 * 1000L)
             overlayDuration = duration
             true
         } catch (e: Exception) {
             isOverlayVisible = false
+            overlayDuration = 0
             false
         }
     }
@@ -145,6 +146,7 @@ class DisplayOverAppModule : Module() {
             overlayView = null
             isOverlayVisible = false
             isTimerOverlayVisible = false
+            overlayDuration = 0
         }
     }
 
@@ -244,7 +246,7 @@ class YoutubeWatchService : AccessibilityService() {
                 handler.post {
                     DisplayOverAppModule.setTimerText(elapsedSeconds)
                 }
-
+                
                 if (elapsedSeconds >= DisplayOverAppModule.overlayDuration) {
                     returnToOurApp()
                     stopNativeTimer()
@@ -265,6 +267,7 @@ class YoutubeWatchService : AccessibilityService() {
             isTimerRunning = true
             handler.postDelayed(updateRunnable, 1000)
             Log.d("YoutubeWatchService", "Native timer started")
+            Log.d("YoutubeWatchService", "Overlay Duration: $DisplayOverAppModule.overlayDuration")
         }
 
         fun stopNativeTimer() {
