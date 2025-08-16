@@ -42,7 +42,7 @@ export const watchToEarn = async () => {
     return;
   };
   try {
-    const overlayGranted = await displayOverApp.showOverlay(80);
+    const overlayGranted = await displayOverApp.showOverlay(120);
     if (!overlayGranted) {
       console.warn("Overlay permission not granted or overlay failed to show");
       return;
