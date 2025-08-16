@@ -115,7 +115,7 @@ export default function Orders() {
                     paddingHorizontal: 6,
                     borderRadius: 8,
                   }}>
-                    {`${item.boostPlan?.duration ?? 'N/A'} • ₹${item.boostPlan?.price ?? 0}`}
+                    {`${item.boostPlan?.duration ?? 'N/A'} Second • ₹${item.boostPlan?.price ?? 0}`}
                   </Badge>
                 </View>
 

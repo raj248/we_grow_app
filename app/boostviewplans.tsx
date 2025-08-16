@@ -41,7 +41,7 @@ export default function BoostViewPlanModal() {
     loadPlans();
   }, []);
 
-  const currentPlans = plans.filter((p) => p.type === tab.toUpperCase());
+  // const currentPlans = plans.filter((p) => p.type === tab.toUpperCase());
 
   return (
     <View style={{ flex: 1, padding: 16 }}>
@@ -52,7 +52,7 @@ export default function BoostViewPlanModal() {
         <ActivityIndicator size="large" style={{ marginTop: 32 }} />
       ) : (
         <FlatList
-          data={currentPlans}
+          data={plans}
           keyExtractor={(item) => item.id}
           ListHeaderComponent={
             <SegmentedButtons
@@ -93,7 +93,7 @@ export default function BoostViewPlanModal() {
               {selectedPlan && (
                 <Text style={{ marginBottom: 12, textAlign: 'center' }}>
                   Selected Plan:{' '}
-                  {currentPlans.find((p) => p.id === selectedPlan)?.title}
+                  {plans.find((p) => p.id === selectedPlan)?.title}
                 </Text>
               )}
               <Button
