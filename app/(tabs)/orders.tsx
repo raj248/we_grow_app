@@ -90,10 +90,7 @@ export default function Orders() {
               Completed: '#10b981',
               Failed: '#ef4444',
             };
-            const totalRequired =
-              item.boostPlan?.type === 'VIEW'
-                ? item.boostPlan.views
-                : item.boostPlan?.likes || 0;
+            const totalRequired = item.boostPlan.views
             const remaining = Math.max(totalRequired - item.completedCount, 0);
             const progress = totalRequired > 0 ? item.completedCount / totalRequired : 0;
 
@@ -118,7 +115,7 @@ export default function Orders() {
                     paddingHorizontal: 6,
                     borderRadius: 8,
                   }}>
-                    {`${item.boostPlan?.type ?? 'N/A'} • ₹${item.boostPlan?.price ?? 0}`}
+                    {`${item.boostPlan?.duration ?? 'N/A'} • ₹${item.boostPlan?.price ?? 0}`}
                   </Badge>
                 </View>
 

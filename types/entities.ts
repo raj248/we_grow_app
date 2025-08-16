@@ -32,12 +32,11 @@ export type TransactionStatus = 'SUCCESS' | 'PENDING' | 'FAILED';
 
 export type BoostPlan = {
   id: string;
-  type: "VIEW" | "LIKE";
   title: string;
   description: string | null;
   price: number;
   views: number;
-  likes: number;
+  duration: number;
   isActive: boolean;
   createdAt: string; // ISO date string
   updatedAt: string; // ISO date string
