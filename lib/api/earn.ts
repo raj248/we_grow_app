@@ -6,10 +6,9 @@ import { APIResponse } from '~/types/api';
 import { getStoredUserId } from '~/utils/device-info';
 import { youtubeListenerService } from '~/services/youtubeListener';
 import Toast from 'react-native-toast-message';
+import { randomVideo } from '~/types/entities';
 
-export async function fetchRandomVideo(
-  userId: string
-): Promise<APIResponse<{ url: string; token: string; duration: number }>> {
+export async function fetchRandomVideo(userId: string): Promise<APIResponse<randomVideo>> {
   return safeFetch(`${BASE_URL}/api/order/earn/${userId}`);
 }
 async function fetchReward(
@@ -34,6 +33,7 @@ async function creditUserForWatch(token: string, duration: number) {
   const { message, rewardAmount } = reward.data;
   console.log(message, rewardAmount);
 }
+// @DEPRECATED
 export const watchToEarn = async () => {
   const userId = await getStoredUserId();
   if (!userId || userId === '' || !useUserStore.getState().userId) return;
@@ -67,6 +67,40 @@ export const watchToEarn = async () => {
       // to credit the user with coins.
       // Example: await creditUserForWatch(userId, order.data.id, duration);
       order.data && creditUserForWatch(order.data.token, duration);
+    });
+  } catch (err) {
+    console.error('Error starting YouTube watch', err);
+  }
+};
+
+export const watchAndEarn = async (video: randomVideo) => {
+  const userId = await getStoredUserId();
+  if (!userId || userId === '' || !useUserStore.getState().userId) return;
+  try {
+    const overlayGranted = await displayOverApp.showOverlay(video.duration);
+    if (!overlayGranted) {
+      displayOverApp.requestOverlayPermission();
+      console.warn('Overlay permission not granted or overlay failed to show');
+      return;
+    }
+
+    // Open YouTube
+    Linking.openURL(video.url);
+
+    // Start timer overlay
+    const timerShown = await displayOverApp.showTimerOverlay();
+    if (!timerShown) {
+      console.warn('Timer overlay could not be shown');
+      return;
+    }
+    youtubeListenerService.removeWatchDurationListener();
+    let count = 0;
+    youtubeListenerService.onWatchDuration((duration) => {
+      console.log('Watch duration in earn.ts:', duration, 'count: ', ++count);
+      // Here you would typically send the duration to your backend
+      // to credit the user with coins.
+      // Example: await creditUserForWatch(userId, video.id, duration);
+      video && creditUserForWatch(video.token, duration);
     });
   } catch (err) {
     console.error('Error starting YouTube watch', err);

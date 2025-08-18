@@ -36,6 +36,7 @@ export type BoostPlan = {
   description: string | null;
   price: number;
   views: number;
+  reward: number;
   duration: number;
   isActive: boolean;
   createdAt: string; // ISO date string
@@ -48,7 +49,7 @@ export type Order = {
   planId: string;
   url: string;
   completedCount: number;
-  status: 'PENDING' | 'ACTIVE' | 'COMPLETED' | 'CANCELLED';
+  status: OrderStatus;
   createdAt: string; // ISO date string
   updatedAt: string; // ISO date string
   boostPlan: BoostPlan;
@@ -56,4 +57,15 @@ export type Order = {
   videoThumbnail?: string;
   duration?: number;
   token?: string;
+};
+
+export type OrderStatus = 'PENDING' | 'ACTIVE' | 'COMPLETED' | 'CANCELLED';
+
+export type randomVideo = {
+  url: string;
+  token: string;
+  duration: number;
+  reward: number;
+  videoTitle?: string;
+  videoThumbnail?: string;
 };

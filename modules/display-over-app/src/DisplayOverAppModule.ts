@@ -9,6 +9,11 @@ declare class DisplayOverAppModule extends NativeModule<DisplayOverAppModuleEven
   requestOverlayPermission(): Promise<boolean>;
 
   /**
+   *Checks if the accessibility permissions have been granted
+   * @returns Promise<boolean> - true if granted, false otherwise
+   */
+  hasAccessibilityPermission(): Promise<boolean>;
+  /**
    * Opens accessibility settings for the user to enable our tracking service.
    * @returns Promise<boolean> - true if enabled after settings, false otherwise.
    */
@@ -47,10 +52,10 @@ declare class DisplayOverAppModule extends NativeModule<DisplayOverAppModuleEven
   hideTimerOverlay(): Promise<boolean>;
 
   /**
- * Updates the timer text on the overlay.
- * @param text - The text to display, e.g. "Timer: 5s"
- * @returns Promise<boolean> - true if updated successfully, false otherwise.
- */
+   * Updates the timer text on the overlay.
+   * @param text - The text to display, e.g. "Timer: 5s"
+   * @returns Promise<boolean> - true if updated successfully, false otherwise.
+   */
   updateTimerText(text: string): Promise<boolean>;
 }
 

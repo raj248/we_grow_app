@@ -31,7 +31,8 @@ export default function Modal() {
     const appStateSub = AppState.addEventListener('change', (nextState) => {
       if (nextState === 'active') {
         console.log('App came to foreground → removing overlay');
-        displayOverApp.removeOverlay()
+        displayOverApp
+          .removeOverlay()
           .then(() => console.log('Overlay removed due to app foreground'));
         displayOverApp.hideTimerOverlay().then(() => console.log('Timer overlay hidden'));
       }
@@ -66,21 +67,21 @@ export default function Modal() {
     try {
       const overlayGranted = await displayOverApp.showOverlay(80);
       if (!overlayGranted) {
-        console.warn("Overlay permission not granted or overlay failed to show");
+        console.warn('Overlay permission not granted or overlay failed to show');
         return;
       }
 
       // Open YouTube
-      Linking.openURL("vnd.youtube://watch?v=dQw4w9WgXcQ");
+      Linking.openURL('vnd.youtube://watch?v=dQw4w9WgXcQ');
 
       // Start timer overlay
       const timerShown = await displayOverApp.showTimerOverlay();
       if (!timerShown) {
-        console.warn("Timer overlay could not be shown");
+        console.warn('Timer overlay could not be shown');
         return;
       }
     } catch (err) {
-      console.error("Error starting YouTube watch", err);
+      console.error('Error starting YouTube watch', err);
     }
   };
   const triggerShowTimer = async () => {
@@ -92,7 +93,6 @@ export default function Modal() {
     console.log('Overlay permission granted:', overlayGranted);
     const ran = await displayOverApp.showTimerOverlay();
     console.log('Ran:', ran);
-
   };
   const triggerHideTimer = async () => {
     const ran = await displayOverApp.hideTimerOverlay();
@@ -114,10 +114,30 @@ export default function Modal() {
         <Button title="Open YouTube Video" onPress={openYouTubeVideo} />
         <Button title="Show Timer" onPress={triggerShowTimer} />
         <Button title="Hide Timer" onPress={triggerHideTimer} />
-        <Button title="Video 1" onPress={() => Linking.openURL("vnd.youtube://watch?v=dQw4w9WgXcQ")} />
-        <Button title="Video 2" onPress={() => Linking.openURL("https://youtu.be/8-B6ryuBkCM?si=YVlVQhxLpKtPGmru")} />
-        <Button title="Video 3" onPress={() => Linking.openURL("https://youtu.be/7i_dwP2n90M?si=7GYUB5UQ3nVeEhx4")} />
-        <Button title="Video 4" onPress={() => Linking.openURL("https://youtu.be/La2w7GlXr2o?si=JXzHsm4ornRuBdgK")} />
+        <Button
+          title="check acceess permission"
+          onPress={() =>
+            displayOverApp
+              .requestAccessibilityPermission()
+              .then((res) => console.log('Accessibility permission: ', res))
+          }
+        />
+        <Button
+          title="Video 1"
+          onPress={() => Linking.openURL('vnd.youtube://watch?v=dQw4w9WgXcQ')}
+        />
+        <Button
+          title="Video 2"
+          onPress={() => Linking.openURL('https://youtu.be/8-B6ryuBkCM?si=YVlVQhxLpKtPGmru')}
+        />
+        <Button
+          title="Video 3"
+          onPress={() => Linking.openURL('https://youtu.be/7i_dwP2n90M?si=7GYUB5UQ3nVeEhx4')}
+        />
+        <Button
+          title="Video 4"
+          onPress={() => Linking.openURL('https://youtu.be/La2w7GlXr2o?si=JXzHsm4ornRuBdgK')}
+        />
       </View>
     </View>
   );

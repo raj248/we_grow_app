@@ -19,6 +19,8 @@ import android.widget.FrameLayout
 import android.widget.TextView
 import expo.modules.kotlin.modules.Module
 import expo.modules.kotlin.modules.ModuleDefinition
+import android.content.ComponentName
+import android.text.TextUtils
 
 // Simple event bus to communicate with JS
 object DisplayOverAppEventBus {
@@ -56,6 +58,11 @@ class DisplayOverAppModule : Module() {
             true
         }
 
+        AsyncFunction("hasAccessibilityPermission") { ->
+            val context = appContext.reactContext ?: return@AsyncFunction false
+            return@AsyncFunction isAccessibilityServiceEnabled(context, YoutubeWatchService::class.java)
+        }
+
         AsyncFunction("requestAccessibilityPermission") {
             val context = appContext.currentActivity ?: appContext.reactContext ?: return@AsyncFunction false
             try {
@@ -88,6 +95,26 @@ class DisplayOverAppModule : Module() {
         AsyncFunction("updateTimerText") { seconds: Int ->
             timerTextView?.text = "Timer: ${seconds}s"
         }
+    }
+
+    private fun isAccessibilityServiceEnabled(context: Context, serviceClass: Class<out AccessibilityService>): Boolean {
+        val expectedComponentName = ComponentName(context, serviceClass)
+
+        val enabledServices = Settings.Secure.getString(
+            context.contentResolver,
+            Settings.Secure.ENABLED_ACCESSIBILITY_SERVICES
+        ) ?: return false
+
+        val colonSplitter = TextUtils.SimpleStringSplitter(':')
+        colonSplitter.setString(enabledServices)
+
+        while (colonSplitter.hasNext()) {
+            val componentName = colonSplitter.next()
+            if (componentName.equals(expectedComponentName.flattenToString(), ignoreCase = true)) {
+                return true
+            }
+        }
+        return false
     }
 
     private fun showBlockerOverlay(duration: Int): Boolean {

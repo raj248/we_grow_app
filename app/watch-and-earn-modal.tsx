@@ -2,12 +2,15 @@ import { useEffect, useState } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Toast from 'react-native-toast-message';
 import { Text } from '~/components/nativewindui/Text';
-import { fetchRandomVideo } from '~/lib/api/earn';
+import { fetchRandomVideo, watchAndEarn } from '~/lib/api/earn';
 import { useUserStore } from '~/stores/useUserStore';
-import { Order } from '~/types/entities';
+import { Order, randomVideo } from '~/types/entities';
 import { getStoredUserId } from '~/utils/device-info';
 import { Image, TouchableOpacity, View } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { Button } from '~/components/Button';
+import { Divider } from 'react-native-paper';
+import { router } from 'expo-router';
 
 const fetchVideoDetails = async (url: string) => {
   try {
@@ -41,7 +44,7 @@ const fetchVideoDetails = async (url: string) => {
 
 export default function Modal() {
   const [refreshing, setRefreshing] = useState(false);
-  const [enrichedOrder, setEnrichedOrder] = useState<Order>();
+  const [enrichedOrder, setEnrichedOrder] = useState<randomVideo>();
   useEffect(() => {
     const loadVideo = async () => {
       setRefreshing(true);
@@ -54,7 +57,7 @@ export default function Modal() {
         return;
       }
       const videoDetails = await fetchVideoDetails(order.data.url);
-      setEnrichedOrder({ ...order.data, ...videoDetails } as Order);
+      setEnrichedOrder({ ...order.data, ...videoDetails });
       setRefreshing(false);
     };
     loadVideo();
@@ -62,22 +65,19 @@ export default function Modal() {
 
   return (
     <SafeAreaView>
-      <Text>{enrichedOrder?.token}</Text>
-      <Text>{enrichedOrder?.videoTitle}</Text>
       <TouchableOpacity
         style={{
           borderRadius: 10,
           marginVertical: 8,
           marginHorizontal: 16,
-          shadowColor: '#000',
-          shadowOffset: { width: 0, height: 2 },
-          shadowOpacity: 0.1,
-          shadowRadius: 4,
-          elevation: 3,
+          elevation: 5,
           overflow: 'hidden',
         }}
-        // onPress={() => router.push({ pathname: '../_(test)/videoplayer', params: { url: video.url, title: video.title ?? '' } })}
-      >
+        onPress={() => {
+          enrichedOrder && watchAndEarn(enrichedOrder);
+          setEnrichedOrder(undefined);
+          router.back();
+        }}>
         {enrichedOrder?.videoThumbnail && (
           <View>
             <Image
@@ -97,13 +97,34 @@ export default function Modal() {
             </View>
           </View>
         )}
-        <View style={{ padding: 12 }}>
-          <Text style={{ fontSize: 16, fontWeight: '600' }}>
-            {enrichedOrder?.videoTitle ?? 'Untitled Video'}
-          </Text>
-          <Text style={{ fontSize: 12, marginTop: 4 }}>Tap to play on embedded player</Text>
-        </View>
       </TouchableOpacity>
+      <View style={{ padding: 12 }}>
+        <Text className="text-center" style={{ fontSize: 16, fontWeight: '600' }}>
+          {enrichedOrder?.videoTitle ?? 'Untitled Video'}
+        </Text>
+        <Text variant={'callout'} className="text-center" style={{ fontSize: 14, marginTop: 4 }}>
+          Earn
+          {enrichedOrder ? ' ' + enrichedOrder?.reward + ' ' : 'NA'}
+          Coins 🪙 in
+          {enrichedOrder ? ' ' + enrichedOrder?.duration + ' ' : 'NA'}
+          seconds
+        </Text>
+        <Text className="text-center" style={{ fontSize: 12, marginTop: 4 }}>
+          Tap to play and earn
+        </Text>
+      </View>
+
+      <Divider horizontalInset bold className="mb-4 mt-4" />
+      <Text variant={'heading'} className="text-center">
+        Don't Want to Watch? Top-up Coins NOW!
+      </Text>
+      <Button
+        style={{ backgroundColor: 'green', width: '80%', alignSelf: 'center' }}
+        title="Get 10000+ COINS 🪙 !!"
+        onPress={() => {
+          router.replace('/top-up');
+        }}
+      />
     </SafeAreaView>
   );
 }
