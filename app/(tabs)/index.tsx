@@ -11,12 +11,30 @@ import BoostViewBottomSheet from '~/components/BottomSheets/BoostViewBottomSheet
 import PromoteShortsBottomSheet from '~/components/BottomSheets/PromoteShortsBottomSheet';
 import GetSubscribersBottomSheet from '~/components/BottomSheets/GetSubscribersBottomSheet';
 import { watchToEarn } from '~/lib/api/earn';
+import { router } from 'expo-router';
 const features = [
-  { id: '1', title: 'Boost Views', description: 'Increase views on your videos using coins.', time: 150, count: 300 },
-  { id: '2', title: 'Get Subscribers', description: 'Gain real engagement via smart distribution.', time: 150, count: 300 },
-  { id: '3', title: 'Promote Shorts', description: 'Targeted exposure for YouTube Shorts.', time: 150, count: 300 },
+  {
+    id: '1',
+    title: 'Boost Views',
+    description: 'Increase views on your videos using coins.',
+    time: 150,
+    count: 300,
+  },
+  {
+    id: '2',
+    title: 'Get Subscribers',
+    description: 'Gain real engagement via smart distribution.',
+    time: 150,
+    count: 300,
+  },
+  {
+    id: '3',
+    title: 'Promote Shorts',
+    description: 'Targeted exposure for YouTube Shorts.',
+    time: 150,
+    count: 300,
+  },
 ];
-
 
 export default function Home() {
   useTrackActiveUser();
@@ -24,14 +42,14 @@ export default function Home() {
   const [progress, setProgress] = useState(0.4);
   const [coins, setCoins] = useState<number | null>(null);
   const [refreshing, setRefreshing] = useState(false);
-  const [openBoostViewSheet, setOpenBoostViewSheet] = useState(() => () => { });
-  const [openGetSubscribersSheet, setOpenGetSubscribersSheet] = useState(() => () => { });
-  const [openPromotShortsSheet, setOpenPromotShortsSheet] = useState(() => () => { });
-  const [openEarnSheet, setOpenEarnSheet] = useState(() => () => { });
+  const [openBoostViewSheet, setOpenBoostViewSheet] = useState(() => () => {});
+  const [openGetSubscribersSheet, setOpenGetSubscribersSheet] = useState(() => () => {});
+  const [openPromotShortsSheet, setOpenPromotShortsSheet] = useState(() => () => {});
+  const [openEarnSheet, setOpenEarnSheet] = useState(() => () => {});
 
   const loadData = useCallback(async () => {
     try {
-      const userId = useUserStore.getState().userId || await getOrCreateUserId();
+      const userId = useUserStore.getState().userId || (await getOrCreateUserId());
       setId(userId);
       const res = await fetchWalletBalance(userId);
       if (res.success && res.data) {
@@ -59,14 +77,16 @@ export default function Home() {
       <FlatList
         ListHeaderComponent={
           <>
-            <Text variant="title1" className="text-center mb-2">Welcome to BoostHub</Text>
+            <Text variant="title1" className="mb-2 text-center">
+              Welcome to BoostHub
+            </Text>
 
-            <View className="bg-gray-100 p-4 rounded-xl mb-4">
+            <View className="mb-4 rounded-xl bg-gray-100 p-4">
               <Text className="text-sm font-semibold text-gray-700">Your User ID:</Text>
-              <Text className="text-lg font-mono text-primary">{id}</Text>
+              <Text className="font-mono text-lg text-primary">{id}</Text>
             </View>
 
-            <View className="bg-green-100 border border-green-300 rounded-xl p-4 mb-4">
+            <View className="mb-4 rounded-xl border border-green-300 bg-green-100 p-4">
               <Text className="font-semibold text-green-900">Your Coins</Text>
               {coins === null ? (
                 <ActivityIndicator color="#10b981" />
@@ -75,36 +95,25 @@ export default function Home() {
               )}
             </View>
 
-            <View className="bg-yellow-100 border border-yellow-300 rounded-xl p-4 mb-4">
-              <Text className="font-semibold text-yellow-900 mb-2">Pending Order</Text>
-              <Text className="text-sm text-yellow-800 mb-1">Boosting "My Summer Vlog"... (Views)</Text>
-              <ProgressBar
-                progress={progress}
-                color="#fbbf24"
-                className="h-2 rounded-full"
-              />
-              <Text className="text-right text-xs text-yellow-700 mt-1">{Math.floor(progress * 100)}%</Text>
-            </View>
-
-            <Text className="text-lg font-semibold mb-2">What you can do:</Text>
+            <Text className="mb-2 text-lg font-semibold">What you can do:</Text>
 
             <Pressable
-              className="shadow-md bg-white rounded-xl p-4 mb-3"
+              className="mb-3 rounded-xl bg-white p-4 shadow-md"
               onPress={() => {
-                console.log(`Earning Money`)
-                watchToEarn()
-              }}
-            >
-              <Text className="font-bold text-base">Watch And Earn</Text>
-              <Text className="text-sm text-gray-600">Watch videos, reels and subscribe to channels to earn coins.</Text>
+                console.log(`Earning Money`);
+                // watchToEarn();
+                router.push('/watch-and-earn-modal');
+              }}>
+              <Text className="text-base font-bold">Watch And Earn</Text>
+              <Text className="text-sm text-gray-600">
+                Watch videos, reels and subscribe to channels to earn coins.
+              </Text>
             </Pressable>
           </>
         }
         data={features}
         keyExtractor={(item) => item.id}
-        refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-        }
+        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
         renderItem={({ item }) => {
           const openSheetMap: Record<string, () => void> = {
             '1': openBoostViewSheet,
@@ -115,14 +124,13 @@ export default function Home() {
 
           return (
             <Pressable
-              className="shadow-md bg-white rounded-xl p-4 mb-3"
+              className="mb-3 rounded-xl bg-white p-4 shadow-md"
               onPress={() => {
                 const openSheet = openSheetMap[item.id];
-                console.log('Opening sheet:', openSheet)
+                console.log('Opening sheet:', openSheet);
                 if (openSheet) openSheet();
-              }}
-            >
-              <Text className="font-bold text-base">{item.title}</Text>
+              }}>
+              <Text className="text-base font-bold">{item.title}</Text>
               <Text className="text-sm text-gray-600">{item.description}</Text>
             </Pressable>
           );

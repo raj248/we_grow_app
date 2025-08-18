@@ -23,7 +23,7 @@ export {
   ErrorBoundary,
 } from 'expo-router';
 
-import { youtubeListenerService } from "~/services/youtubeListener";
+import { youtubeListenerService } from '~/services/youtubeListener';
 youtubeListenerService.init(); // runs once
 
 export default function RootLayout() {
@@ -49,6 +49,7 @@ export default function RootLayout() {
                   <Stack.Screen name="(tabs)" options={TABS_OPTIONS} />
                   <Stack.Screen name="modal" options={MODAL_OPTIONS} />
                   <Stack.Screen name="settings" options={MODAL_OPTIONS} />
+                  <Stack.Screen name="watch-and-earn-modal" options={WATCH_EARN_OPTIONS} />
                   <Stack.Screen name="boostviewplans" options={MODAL_OPTIONS} />
                   <Stack.Screen name="getsubscribersplans" options={MODAL_OPTIONS} />
                   <Stack.Screen name="promoteshortsplans" options={MODAL_OPTIONS} />
@@ -57,12 +58,12 @@ export default function RootLayout() {
                 <Toast
                   avoidKeyboard
                   autoHide
-                  position='top'
+                  position="top"
                   swipeable
                   visibilityTime={3000}
                   bottomOffset={80}
                   topOffset={80}
-                // config={{}}
+                  // config={{}}
                 />
               </NavThemeProvider>
             </ActionSheetProvider>
@@ -94,5 +95,12 @@ const DEBUG_PANEL_OPTIONS = {
   presentation: 'modal',
   animation: 'fade_from_bottom', // for android
   title: 'Debug',
+  headerRight: () => <ThemeToggle />,
+} as const;
+
+const WATCH_EARN_OPTIONS = {
+  presentation: 'modal',
+  animation: 'fade_from_bottom', // for android
+  title: 'Watch & Earn',
   headerRight: () => <ThemeToggle />,
 } as const;

@@ -25,7 +25,7 @@ export type Transaction = {
   status: TransactionStatus;
   createdAt: Date;
   updatedAt: Date;
-}
+};
 
 export type TransactionType = 'CREDIT' | 'DEBIT';
 export type TransactionStatus = 'SUCCESS' | 'PENDING' | 'FAILED';
@@ -48,10 +48,12 @@ export type Order = {
   planId: string;
   url: string;
   completedCount: number;
-  status: "PENDING" | "ACTIVE" | "COMPLETED" | "CANCELLED";
+  status: 'PENDING' | 'ACTIVE' | 'COMPLETED' | 'CANCELLED';
   createdAt: string; // ISO date string
   updatedAt: string; // ISO date string
   boostPlan: BoostPlan;
   videoTitle?: string;
   videoThumbnail?: string;
+  duration?: number;
+  token?: string;
 };
