@@ -88,6 +88,12 @@ const MODAL_OPTIONS = {
   presentation: 'modal',
   animation: 'fade_from_bottom', // for android
   title: 'Settings',
+  gestureEnabled: true, // allow swipe down to dismiss
+  contentStyle: {
+    // optional styling for the modal container
+    paddingTop: 0, // remove default padding if needed
+    // backgroundColor: '#fff',        // make sure background is white
+  },
   headerRight: () => <ThemeToggle />,
 } as const;
 
@@ -95,12 +101,25 @@ const DEBUG_PANEL_OPTIONS = {
   presentation: 'modal',
   animation: 'fade_from_bottom', // for android
   title: 'Debug',
+  gestureEnabled: true, // allow swipe down to dismiss
+  contentStyle: {
+    // optional styling for the modal container
+    paddingTop: 0, // remove default padding if needed
+    // backgroundColor: '#fff',        // make sure background is white
+  },
   headerRight: () => <ThemeToggle />,
 } as const;
 
 const WATCH_EARN_OPTIONS = {
-  presentation: 'modal',
-  animation: 'fade_from_bottom', // for android
+  presentation: 'modal', // keeps modal style
+  animation: 'fade_from_bottom', // Android-friendly
   title: 'Watch & Earn',
+  // headerShown: false, // hides default header (prevents status bar overlap)
+  gestureEnabled: true, // allow swipe down to dismiss
+  contentStyle: {
+    // optional styling for the modal container
+    paddingTop: 0, // remove default padding if needed
+    // backgroundColor: '#fff',        // make sure background is white
+  },
   headerRight: () => <ThemeToggle />,
 } as const;

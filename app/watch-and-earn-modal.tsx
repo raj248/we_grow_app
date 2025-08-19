@@ -81,7 +81,7 @@ export default function Modal() {
   }, []);
 
   return (
-    <SafeAreaView>
+    <SafeAreaView edges={['top', 'left', 'right']}>
       {/* Video Card */}
       <TouchableOpacity
         style={{
