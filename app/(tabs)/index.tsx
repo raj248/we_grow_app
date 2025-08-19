@@ -12,6 +12,7 @@ import PromoteShortsBottomSheet from '~/components/BottomSheets/PromoteShortsBot
 import GetSubscribersBottomSheet from '~/components/BottomSheets/GetSubscribersBottomSheet';
 import { watchToEarn } from '~/lib/api/earn';
 import { router } from 'expo-router';
+import BoostPlanDialog from '~/components/Dialog/BoostPlanDialog';
 const features = [
   {
     id: '1',
@@ -39,9 +40,9 @@ const features = [
 export default function Home() {
   useTrackActiveUser();
   const [id, setId] = useState('Loading...');
-  const [progress, setProgress] = useState(0.4);
   const [coins, setCoins] = useState<number | null>(null);
   const [refreshing, setRefreshing] = useState(false);
+  const [open, setOpen] = useState(false);
   const [openBoostViewSheet, setOpenBoostViewSheet] = useState(() => () => {});
   const [openGetSubscribersSheet, setOpenGetSubscribersSheet] = useState(() => () => {});
   const [openPromotShortsSheet, setOpenPromotShortsSheet] = useState(() => () => {});
@@ -127,8 +128,8 @@ export default function Home() {
               className="mb-3 rounded-xl bg-white p-4 shadow-md"
               onPress={() => {
                 const openSheet = openSheetMap[item.id];
-                console.log('Opening sheet:', openSheet);
-                if (openSheet) openSheet();
+                setOpen(true);
+                // if (openSheet) openSheet();
               }}>
               <Text className="text-base font-bold">{item.title}</Text>
               <Text className="text-sm text-gray-600">{item.description}</Text>
@@ -136,6 +137,7 @@ export default function Home() {
           );
         }}
       />
+      <BoostPlanDialog visible={open} onDismiss={() => setOpen(false)} />
       <BoostViewBottomSheet setOpenSheet={setOpenBoostViewSheet} />
       <GetSubscribersBottomSheet setOpenSheet={setOpenGetSubscribersSheet} />
       <PromoteShortsBottomSheet setOpenSheet={setOpenPromotShortsSheet} />
