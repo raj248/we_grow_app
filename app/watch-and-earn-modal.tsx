@@ -44,7 +44,14 @@ const fetchVideoDetails = async (url: string) => {
 
 export default function Modal() {
   const [refreshing, setRefreshing] = useState(false);
-  const [enrichedOrder, setEnrichedOrder] = useState<randomVideo>();
+  const [enrichedOrder, setEnrichedOrder] = useState<randomVideo>({
+    url: '',
+    reward: 0,
+    duration: 0,
+    videoTitle: '',
+    videoThumbnail: 'https://placehold.co/320x180?text=Play+Video+Here',
+    token: '',
+  });
   useEffect(() => {
     const loadVideo = async () => {
       setRefreshing(true);
@@ -75,7 +82,14 @@ export default function Modal() {
         }}
         onPress={() => {
           enrichedOrder && watchAndEarn(enrichedOrder);
-          setEnrichedOrder(undefined);
+          setEnrichedOrder({
+            url: '',
+            reward: 0,
+            duration: 0,
+            videoTitle: 'Play Video Here',
+            videoThumbnail: 'https://placehold.co/320x180?text=Play+Video+Here',
+            token: '',
+          });
           router.back();
         }}>
         {enrichedOrder?.videoThumbnail && (

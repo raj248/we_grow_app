@@ -1,10 +1,11 @@
-import { FlatList, Pressable, RefreshControl, View, Image } from 'react-native';
+import { FlatList, Pressable, RefreshControl, View, Image, TouchableOpacity } from 'react-native';
 import { Text } from '~/components/nativewindui/Text';
 import { useState, useCallback, useEffect } from 'react';
 import { Badge, ProgressBar } from 'react-native-paper';
 import { useFocusEffect } from '@react-navigation/native';
 import { useOrderStore } from '~/stores/useOrderStore';
 import { Order } from '~/types/entities';
+import { router } from 'expo-router';
 
 const fetchVideoDetails = async (orders: Order[]) => {
   if (!orders || orders.length === 0) return [];
@@ -88,6 +89,21 @@ export default function Orders() {
           data={enrichedOrders}
           keyExtractor={(item) => item.id}
           refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
+          ListEmptyComponent={
+            <View className="flex-1 items-center justify-center px-4">
+              <Text className="text-center text-lg font-semibold">
+                Oops! You haven’t placed any orders yet.
+              </Text>
+              <Text className="mt-2 text-center text-gray-600">
+                Don’t miss out! Unlock awesome features and perks by choosing a plan that fits you.
+              </Text>
+              <TouchableOpacity
+                onPress={() => router.push('/(tabs)')} // adjust to your plan screen
+                className="mt-4 self-center rounded-full bg-blue-500 px-6 py-2">
+                <Text className="text-center font-bold text-white">View Plans</Text>
+              </TouchableOpacity>
+            </View>
+          }
           renderItem={({ item }) => {
             const statusLabel =
               item.status === 'PENDING'
