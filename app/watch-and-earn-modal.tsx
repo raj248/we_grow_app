@@ -52,26 +52,37 @@ export default function Modal() {
     videoThumbnail: 'https://placehold.co/320x180?text=Play+Video+Here',
     token: '',
   });
-  useEffect(() => {
-    const loadVideo = async () => {
-      setRefreshing(true);
+
+  const loadVideo = async () => {
+    setRefreshing(true);
+    try {
       const userId = await getStoredUserId();
-      if (!userId || userId === '' || !useUserStore.getState().userId) return;
+      if (!userId || !useUserStore.getState().userId) return;
+
       const order = await fetchRandomVideo(useUserStore.getState().userId || userId);
       if (!order.success || !order.data) {
         Toast.show({ text1: 'Failed to fetch random video', text2: order.error, type: 'error' });
         setRefreshing(false);
         return;
       }
+
       const videoDetails = await fetchVideoDetails(order.data.url);
       setEnrichedOrder({ ...order.data, ...videoDetails });
+    } catch (err) {
+      console.error(err);
+      Toast.show({ text1: 'Error', text2: 'Unable to load video', type: 'error' });
+    } finally {
       setRefreshing(false);
-    };
+    }
+  };
+
+  useEffect(() => {
     loadVideo();
   }, []);
 
   return (
     <SafeAreaView>
+      {/* Video Card */}
       <TouchableOpacity
         style={{
           borderRadius: 10,
@@ -82,51 +93,48 @@ export default function Modal() {
         }}
         onPress={() => {
           enrichedOrder && watchAndEarn(enrichedOrder);
-          setEnrichedOrder({
-            url: '',
-            reward: 0,
-            duration: 0,
-            videoTitle: 'Play Video Here',
-            videoThumbnail: 'https://placehold.co/320x180?text=Play+Video+Here',
-            token: '',
-          });
           router.back();
         }}>
-        {enrichedOrder?.videoThumbnail && (
-          <View>
-            <Image
-              source={{ uri: enrichedOrder?.videoThumbnail }}
-              style={{ width: '100%', height: 180 }}
-              resizeMode="cover"
-            />
-            {/* Play Icon Overlay */}
-            <View
-              style={{
-                position: 'absolute',
-                top: '50%',
-                left: '50%',
-                transform: [{ translateX: -20 }, { translateY: -20 }],
-              }}>
-              <Ionicons name="play-circle" size={48} color="white" />
-            </View>
+        <View>
+          <Image
+            source={{ uri: enrichedOrder?.videoThumbnail }}
+            style={{ width: '100%', height: 180 }}
+            resizeMode="cover"
+          />
+          <View
+            style={{
+              position: 'absolute',
+              top: '50%',
+              left: '50%',
+              transform: [{ translateX: -24 }, { translateY: -24 }],
+            }}>
+            <Ionicons name="play-circle" size={48} color="white" />
           </View>
-        )}
+        </View>
       </TouchableOpacity>
+
+      {/* Video Info */}
       <View style={{ padding: 12 }}>
         <Text className="text-center" style={{ fontSize: 16, fontWeight: '600' }}>
           {enrichedOrder?.videoTitle ?? 'Untitled Video'}
         </Text>
         <Text variant={'callout'} className="text-center" style={{ fontSize: 14, marginTop: 4 }}>
-          Earn
-          {enrichedOrder ? ' ' + enrichedOrder?.reward + ' ' : 'NA'}
-          Coins 🪙 in
-          {enrichedOrder ? ' ' + enrichedOrder?.duration + ' ' : 'NA'}
-          seconds
-        </Text>
-        <Text className="text-center" style={{ fontSize: 12, marginTop: 4 }}>
-          Tap to play and earn
+          Earn {enrichedOrder?.reward ?? 'NA'} Coins 🪙 in {enrichedOrder?.duration ?? 'NA'} seconds
         </Text>
       </View>
+
+      {/* Refresh Button */}
+      <Button
+        style={{
+          backgroundColor: '#007bff',
+          width: '60%',
+          alignSelf: 'center',
+          marginVertical: 16,
+        }}
+        title={refreshing ? 'Loading...' : 'Reload Video'}
+        disabled={refreshing}
+        onPress={loadVideo}
+      />
 
       <Divider horizontalInset bold className="mb-4 mt-4" />
       <Text variant={'heading'} className="text-center">

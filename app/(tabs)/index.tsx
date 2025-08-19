@@ -127,7 +127,7 @@ export default function Home() {
             <Pressable
               className="mb-3 rounded-xl bg-white p-4 shadow-md"
               onPress={() => {
-                const openSheet = openSheetMap[item.id];
+                // const openSheet = openSheetMap[item.id];
                 setOpen(true);
                 // if (openSheet) openSheet();
               }}>
