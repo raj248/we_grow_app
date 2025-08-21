@@ -1,6 +1,13 @@
-import { View, FlatList, ActivityIndicator, RefreshControl, Pressable } from 'react-native';
+import {
+  View,
+  FlatList,
+  ActivityIndicator,
+  RefreshControl,
+  Pressable,
+  useWindowDimensions,
+} from 'react-native';
 import { Text } from '~/components/nativewindui/Text';
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState, useCallback, useMemo } from 'react';
 import { getOrCreateUserId } from '~/utils/device-info';
 import { ProgressBar } from 'react-native-paper';
 import { useTrackActiveUser } from '~/lib/useTrackActiveUser';
@@ -13,27 +20,35 @@ import GetSubscribersBottomSheet from '~/components/BottomSheets/GetSubscribersB
 import { watchToEarn } from '~/lib/api/earn';
 import { router } from 'expo-router';
 import BoostPlanDialog from '~/components/Dialog/BoostPlanDialog';
+import { CardButton } from '~/components/CardButton';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { useColorScheme } from '~/lib/useColorScheme';
 const features = [
+  {
+    id: '4',
+    title: 'Watch And Earn',
+    description: 'Watch videos, reels and subscribe to channels to earn coins.',
+    icon: require('~/assets/icons/earn.png'),
+    border_color: 'rgba(216, 94, 94, 1)',
+    bg_color: 'rgba(245, 201, 201, 1)',
+  },
   {
     id: '1',
     title: 'Boost Views',
     description: 'Increase views on your videos using coins.',
-    time: 150,
-    count: 300,
+    icon: require('~/assets/icons/boost_view.png'),
   },
   {
     id: '2',
     title: 'Get Subscribers',
     description: 'Gain real engagement via smart distribution.',
-    time: 150,
-    count: 300,
+    icon: require('~/assets/icons/get_subscriber.png'),
   },
   {
     id: '3',
     title: 'Promote Shorts',
     description: 'Targeted exposure for YouTube Shorts.',
-    time: 150,
-    count: 300,
+    icon: require('~/assets/icons/promote_shorts.png'),
   },
 ];
 
@@ -47,6 +62,18 @@ export default function Home() {
   const [openGetSubscribersSheet, setOpenGetSubscribersSheet] = useState(() => () => {});
   const [openPromotShortsSheet, setOpenPromotShortsSheet] = useState(() => () => {});
   const [openEarnSheet, setOpenEarnSheet] = useState(() => () => {});
+  const { colors } = useColorScheme();
+  const { width, height } = useWindowDimensions();
+  const insets = useSafeAreaInsets();
+
+  const isLandscape = width > height;
+  const numColumns = isLandscape ? 3 : 2;
+
+  const ITEM_HEIGHT = useMemo(() => {
+    const verticalPadding = insets.top + insets.bottom + 90; // adjust if needed
+    const rows = Math.ceil(features.length / numColumns);
+    return (height - verticalPadding) / rows - 160;
+  }, [height, width, insets, numColumns]);
 
   const loadData = useCallback(async () => {
     try {
@@ -76,43 +103,48 @@ export default function Home() {
   return (
     <View className="flex-1 p-4">
       <FlatList
-        ListHeaderComponent={
-          <>
-            <Text variant="title1" className="mb-2 text-center">
-              Welcome to BoostHub
-            </Text>
+        // ListHeaderComponent={
+        //   <>
+        //     <Text variant="title1" className="mb-2 text-center">
+        //       Welcome to BoostHub
+        //     </Text>
 
-            <View className="mb-4 rounded-xl bg-gray-100 p-4">
-              <Text className="text-sm font-semibold text-gray-700">Your User ID:</Text>
-              <Text className="font-mono text-lg text-primary">{id}</Text>
-            </View>
+        //     <View className="mb-4 rounded-xl bg-gray-100 p-4">
+        //       <Text className="text-sm font-semibold text-gray-700">Your User ID:</Text>
+        //       <Text className="font-mono text-lg text-primary">{id}</Text>
+        //     </View>
 
-            <View className="mb-4 rounded-xl border border-green-300 bg-green-100 p-4">
-              <Text className="font-semibold text-green-900">Your Coins</Text>
-              {coins === null ? (
-                <ActivityIndicator color="#10b981" />
-              ) : (
-                <Text className="text-xl font-bold text-green-800">{coins} Coins</Text>
-              )}
-            </View>
+        //     <View className="mb-4 rounded-xl border border-green-300 bg-green-100 p-4">
+        //       <Text className="font-semibold text-green-900">Your Coins</Text>
+        //       {coins === null ? (
+        //         <ActivityIndicator color="#10b981" />
+        //       ) : (
+        //         <Text className="text-xl font-bold text-green-800">{coins} Coins</Text>
+        //       )}
+        //     </View>
 
-            <Text className="mb-2 text-lg font-semibold">What you can do:</Text>
+        //     <Text className="mb-2 text-lg font-semibold">What you can do:</Text>
 
-            <Pressable
-              className="mb-3 rounded-xl bg-white p-4 shadow-md"
-              onPress={() => {
-                console.log(`Earning Money`);
-                // watchToEarn();
-                router.push('/watch-and-earn-modal');
-              }}>
-              <Text className="text-base font-bold">Watch And Earn</Text>
-              <Text className="text-sm text-gray-600">
-                Watch videos, reels and subscribe to channels to earn coins.
-              </Text>
-            </Pressable>
-          </>
-        }
+        //     {/* <Pressable
+        //       className="mb-3 rounded-xl bg-white p-4 shadow-md"
+        //       onPress={() => {
+        //         console.log(`Earning Money`);
+        //         // watchToEarn();
+        //         router.push('/watch-and-earn-modal');
+        //       }}>
+        //       <Text className="text-base font-bold">Watch And Earn</Text>
+        //       <Text className="text-sm text-gray-600">
+        //         Watch videos, reels and subscribe to channels to earn coins.
+        //       </Text>
+        //     </Pressable> */}
+        //   </>
+        // }
         data={features}
+        numColumns={numColumns}
+        key={numColumns}
+        contentContainerStyle={{
+          backgroundColor: colors.background,
+        }}
         keyExtractor={(item) => item.id}
         refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
         renderItem={({ item }) => {
@@ -124,16 +156,24 @@ export default function Home() {
           };
 
           return (
-            <Pressable
-              className="mb-3 rounded-xl bg-white p-4 shadow-md"
-              onPress={() => {
-                // const openSheet = openSheetMap[item.id];
-                setOpen(true);
-                // if (openSheet) openSheet();
-              }}>
-              <Text className="text-base font-bold">{item.title}</Text>
-              <Text className="text-sm text-gray-600">{item.description}</Text>
-            </Pressable>
+            // <Pressable
+            //   className="mb-3 rounded-xl bg-white p-4 shadow-md"
+            //   onPress={() => {
+            //     // const openSheet = openSheetMap[item.id];
+            //     setOpen(true);
+            //     // if (openSheet) openSheet();
+            //   }}>
+            //   <Text className="text-base font-bold">{item.title}</Text>
+            //   <Text className="text-sm text-gray-600">{item.description}</Text>
+            // </Pressable>
+            <View style={{ flex: 1, margin: 8, height: ITEM_HEIGHT }}>
+              <CardButton
+                icon={item.icon}
+                title={item.title}
+                description={item.description}
+                onPress={() => {}}
+              />
+            </View>
           );
         }}
       />
