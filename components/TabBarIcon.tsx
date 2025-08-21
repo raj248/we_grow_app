@@ -5,7 +5,15 @@ export const TabBarIcon = (props: {
   name: React.ComponentProps<typeof FontAwesome>['name'];
   color: string;
 }) => {
-  return <FontAwesome size={28} style={styles.tabBarIcon} {...props} />;
+  console.log(`${props.name}: color is ${props.color}`);
+  return (
+    <FontAwesome
+      size={28}
+      style={styles.tabBarIcon}
+      name={props.name}
+      color={props.color == 'black' ? 'black' : 'white'}
+    />
+  );
 };
 
 export const styles = StyleSheet.create({

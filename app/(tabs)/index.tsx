@@ -30,25 +30,31 @@ const features = [
     description: 'Watch videos, reels and subscribe to channels to earn coins.',
     icon: require('~/assets/icons/earn.png'),
     border_color: 'rgba(216, 94, 94, 1)',
-    bg_color: 'rgba(245, 201, 201, 1)',
+    bg_color: 'rgba(255, 228, 227, 1)',
   },
   {
     id: '1',
     title: 'Boost Views',
     description: 'Increase views on your videos using coins.',
     icon: require('~/assets/icons/boost_view.png'),
+    border_color: 'rgba(133, 216, 94, 1)',
+    bg_color: 'rgba(237, 255, 238, 1)',
   },
   {
     id: '2',
     title: 'Get Subscribers',
     description: 'Gain real engagement via smart distribution.',
     icon: require('~/assets/icons/get_subscriber.png'),
+    // border_color: 'rgba(94, 216, 133, 1)',
+    // bg_color: 'rgba(234, 255, 242, 1)',
   },
   {
     id: '3',
     title: 'Promote Shorts',
     description: 'Targeted exposure for YouTube Shorts.',
     icon: require('~/assets/icons/promote_shorts.png'),
+    border_color: 'rgba(94, 208, 216, 1)',
+    bg_color: 'rgba(226, 251, 255, 1)',
   },
 ];
 
@@ -78,10 +84,9 @@ export default function Home() {
   const loadData = useCallback(async () => {
     try {
       const userId = useUserStore.getState().userId || (await getOrCreateUserId());
-      setId(userId);
       const res = await fetchWalletBalance(userId);
       if (res.success && res.data) {
-        setCoins(res.data.balance);
+        useUserStore.getState().setCoins(res.data.balance);
       }
     } catch (err) {
       setId(String(err));
@@ -171,7 +176,14 @@ export default function Home() {
                 icon={item.icon}
                 title={item.title}
                 description={item.description}
-                onPress={() => {}}
+                bgColor={item.bg_color}
+                borderColor={item.border_color}
+                onPress={() => {
+                  if (item.id !== '4') {
+                    // openSheetMap[item.id]()
+                    setOpen(true);
+                  } else router.push('/watch-and-earn-modal');
+                }}
               />
             </View>
           );

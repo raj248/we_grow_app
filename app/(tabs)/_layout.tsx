@@ -2,11 +2,18 @@ import { Link, Tabs } from 'expo-router';
 import { HeaderButton } from '../../components/HeaderButton';
 import { DebugHeaderButton } from '../../components/DebugHeaderButton';
 import { TabBarIcon } from '../../components/TabBarIcon';
-import { useEffect } from 'react';
+import { use, useEffect } from 'react';
 import { requestUserPermission, notificationListener } from '~/firebase/notificationService';
-import { useTrackActiveUser } from '~/lib/useTrackActiveUser';
+import { View } from 'react-native';
+import { CoinHeader } from '~/components/CoinHeader';
+import { useUserStore } from '~/stores/useUserStore';
 
 export default function TabLayout() {
+  const { refreshCoins, coins } = useUserStore((state) => ({
+    refreshCoins: state.refreshCoins,
+    coins: state.coins,
+  }));
+
   useEffect(() => {
     // useTrackActiveUser()
     requestUserPermission();
@@ -23,11 +30,29 @@ export default function TabLayout() {
         name="index"
         options={{
           title: 'Home',
+          headerTitleAlign: 'left', // 👈 this is the proper way
+          headerStyle: {
+            backgroundColor: '#ff0000',
+          },
+          headerTitleStyle: {
+            fontSize: 20,
+            color: 'white',
+            fontWeight: 'bold',
+          },
+          tabBarStyle: {
+            backgroundColor: '#ff0000',
+          },
           tabBarIcon: ({ color }) => <TabBarIcon name="home" color={color} />,
+          tabBarLabelStyle: {
+            color: 'white',
+          },
           headerRight: () => (
-            <Link href="/settings" asChild>
-              <HeaderButton />
-            </Link>
+            <View className="flex-row">
+              <CoinHeader onPress={refreshCoins} coins={coins} />
+              <Link href="/settings" asChild>
+                <HeaderButton />
+              </Link>
+            </View>
           ),
           headerLeft: () => (
             <Link href="/debug" asChild>
@@ -36,15 +61,34 @@ export default function TabLayout() {
           ),
         }}
       />
+
       <Tabs.Screen
         name="top-up"
         options={{
           title: 'Top-up',
           tabBarIcon: ({ color }) => <TabBarIcon name="ticket" color={color} />,
+          headerTitleAlign: 'left', // 👈 this is the proper way
+          headerTitleStyle: {
+            fontSize: 20,
+            color: 'white',
+            fontWeight: 'bold',
+          },
+          tabBarStyle: {
+            backgroundColor: '#ff0000',
+          },
+          tabBarLabelStyle: {
+            color: 'white',
+          },
+          headerStyle: {
+            backgroundColor: '#ff0000',
+          },
           headerRight: () => (
-            <Link href="/settings" asChild>
-              <HeaderButton />
-            </Link>
+            <View className="flex-row">
+              <CoinHeader onPress={refreshCoins} coins={coins} />
+              <Link href="/settings" asChild>
+                <HeaderButton />
+              </Link>
+            </View>
           ),
           headerLeft: () => (
             <Link href="/debug" asChild>
@@ -58,10 +102,28 @@ export default function TabLayout() {
         options={{
           title: 'Transaction History',
           tabBarIcon: ({ color }) => <TabBarIcon name="list-alt" color={color} />,
+          headerTitleAlign: 'left', // 👈 this is the proper way
+          headerTitleStyle: {
+            fontSize: 20,
+            color: 'white',
+            fontWeight: 'bold',
+          },
+          tabBarStyle: {
+            backgroundColor: '#ff0000',
+          },
+          tabBarLabelStyle: {
+            color: 'white',
+          },
+          headerStyle: {
+            backgroundColor: '#ff0000',
+          },
           headerRight: () => (
-            <Link href="/settings" asChild>
-              <HeaderButton />
-            </Link>
+            <View className="flex-row">
+              <CoinHeader onPress={refreshCoins} coins={coins} />
+              <Link href="/settings" asChild>
+                <HeaderButton />
+              </Link>
+            </View>
           ),
           headerLeft: () => (
             <Link href="/debug" asChild>
@@ -75,10 +137,28 @@ export default function TabLayout() {
         options={{
           title: 'Orders',
           tabBarIcon: ({ color }) => <TabBarIcon name="archive" color={color} />,
+          headerTitleAlign: 'left', // 👈 this is the proper way
+          headerTitleStyle: {
+            fontSize: 20,
+            color: 'white',
+            fontWeight: 'bold',
+          },
+          tabBarStyle: {
+            backgroundColor: '#ff0000',
+          },
+          tabBarLabelStyle: {
+            color: 'white',
+          },
+          headerStyle: {
+            backgroundColor: '#ff0000',
+          },
           headerRight: () => (
-            <Link href="/settings" asChild>
-              <HeaderButton />
-            </Link>
+            <View className="flex-row">
+              <CoinHeader onPress={refreshCoins} coins={coins} />
+              <Link href="/settings" asChild>
+                <HeaderButton />
+              </Link>
+            </View>
           ),
           headerLeft: () => (
             <Link href="/debug" asChild>
@@ -90,3 +170,47 @@ export default function TabLayout() {
     </Tabs>
   );
 }
+
+/**
+ 
+import { Image } from "react-native";
+
+<Tabs.Screen
+  name="index"
+  options={{
+    title: "Home",
+    headerTitleAlign: "left",
+    tabBarIcon: ({ color, size, focused }) => (
+      <Image
+        source={require("../assets/icons/home.png")} // 👈 your image file
+        style={{
+          width: size,
+          height: size,
+          tintColor: focused ? "black" : "gray", // 👈 works if PNG has transparent background
+        }}
+        resizeMode="contain"
+      />
+    ),
+  }}
+/>
+
+
+import HomeIcon from "../assets/icons/home.svg";
+
+<Tabs.Screen
+  name="index"
+  options={{
+    title: "Home",
+    tabBarIcon: ({ color, size, focused }) => (
+      <HomeIcon
+        width={size}
+        height={size}
+        fill={focused ? "black" : "gray"} // change color dynamically
+      />
+    ),
+  }}
+/>
+
+
+
+ */

@@ -1,11 +1,21 @@
 // stores/useUserStore.ts
 import { create } from 'zustand';
-import { persist } from 'zustand/middleware';
+import { createJSONStorage, persist } from 'zustand/middleware';
 
 interface UserState {
   userId: string | null;
   coins: number;
   fcmToken?: string;
+  loading: boolean;
+  error: string | null;
+  lastFetched?: number;
+
+  setloading: (loading: boolean) => void;
+  setError: (error: string) => void;
+  setLastFetched: (lastFetched: number) => void;
+
+  refreshCoins: () => Promise<void>;
+
   setUserId: (id: string) => void;
   setCoins: (coins: number) => void;
   updateCoins: (delta: number) => void;
@@ -15,10 +25,37 @@ interface UserState {
 
 export const useUserStore = create<UserState>()(
   persist(
-    (set) => ({
+    (set, get) => ({
       userId: null,
       coins: 0,
       fcmToken: undefined,
+      loading: false,
+      error: null,
+      lastFetched: undefined,
+
+      setloading: (loading) => set({ loading }),
+      setError: (error) => set({ error, loading: false }),
+      setLastFetched: (lastFetched) => set({ lastFetched }),
+
+      refreshCoins: async () => {
+        set({ loading: true, error: null });
+        try {
+          const { fetchWalletBalance } = await import('~/lib/api/api');
+          const userId = get().userId;
+          if (!userId) {
+            console.log('User ID not found');
+            return;
+          }
+          const res = await fetchWalletBalance(userId);
+          if (res.success && res.data) {
+            set({ coins: res.data.balance, lastFetched: Date.now(), loading: false });
+          } else {
+            set({ error: res.error || 'Failed to fetch coins', loading: false });
+          }
+        } catch (err: any) {
+          set({ error: err.message || 'Error refreshing coins', loading: false });
+        }
+      },
 
       setUserId: (id) => set({ userId: id }),
       setCoins: (coins) => set({ coins }),
@@ -34,6 +71,8 @@ export const useUserStore = create<UserState>()(
     }),
     {
       name: 'user-storage', // localStorage/AsyncStorage key
+      storage: createJSONStorage(() => localStorage),
+      version: 1, // a migration will be triggered if the version differs
     }
   )
 );

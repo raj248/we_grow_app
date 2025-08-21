@@ -3,7 +3,7 @@ const IS_DEV = process.env.APP_VARIANT === 'development';
 
 export default {
   expo: {
-    name: IS_DEV ? 'we_grow(dev)' : 'we_grow',
+    name: IS_DEV ? 'we_grow(dev)' : 'YouReach Booster',
     slug: 'we_grow',
     version: '1.0.0',
     scheme: 'we_grow',
@@ -28,7 +28,7 @@ export default {
     },
     orientation: 'default',
     icon: './assets/icon.png',
-    userInterfaceStyle: 'dark',
+    userInterfaceStyle: 'light',
     splash: {
       image: './assets/splash.png',
       resizeMode: 'contain',

@@ -89,6 +89,7 @@ const MODAL_OPTIONS = {
   animation: 'fade_from_bottom', // for android
   title: 'Settings',
   gestureEnabled: true, // allow swipe down to dismiss
+  showHeader: false, // hides default header (prevents status bar overlap)
   contentStyle: {
     // optional styling for the modal container
     paddingTop: 0, // remove default padding if needed
@@ -102,6 +103,7 @@ const DEBUG_PANEL_OPTIONS = {
   animation: 'fade_from_bottom', // for android
   title: 'Debug',
   gestureEnabled: true, // allow swipe down to dismiss
+  showHeader: false, // hides default header (prevents status bar overlap)
   contentStyle: {
     // optional styling for the modal container
     paddingTop: 0, // remove default padding if needed

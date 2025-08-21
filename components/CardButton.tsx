@@ -30,8 +30,9 @@ export const CardButton: React.FC<CardButtonProps> = ({
         // 'shadow-md dark:shadow-lg',
       )}
       style={{
-        backgroundColor: bgColor ?? 'rgba(245, 201, 201, 1)',
-        borderColor: borderColor ?? 'rgba(133, 216, 94, 1)',
+        backgroundColor: bgColor ?? 'rgba(255, 235, 231, 1)',
+        borderColor: borderColor ?? 'rgb(182, 91, 34)',
+
         borderWidth: 1,
       }}
       android_ripple={{ color: isDarkColorScheme ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.1)' }}>

@@ -10,7 +10,7 @@ export const DebugHeaderButton = forwardRef<typeof Pressable, { onPress?: () => 
           <FontAwesome
             name="bug"
             size={25}
-            color="gray"
+            color="white"
             style={[
               styles.headerRight,
               {

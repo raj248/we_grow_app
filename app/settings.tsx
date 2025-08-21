@@ -3,18 +3,20 @@ import { Text } from '~/components/nativewindui/Text';
 import { useEffect, useState } from 'react';
 import * as Application from 'expo-application';
 import { getStoredUserId } from '~/utils/device-info'; // your AsyncStorage util
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { Stack } from 'expo-router';
 
 const items = [
   {
-    label: "Current Subscription",
-    url: "https://play.google.com/store/account/subscriptions?sku=premium_monthly&package=com.yourcompany.yourapp"
+    label: 'Current Subscription',
+    url: 'https://play.google.com/store/account/subscriptions?sku=premium_monthly&package=com.yourcompany.yourapp',
   },
-  { label: "Contact Us", url: "mailto:support@example.com" },
-  { label: "Rate Us", url: "https://play.google.com/store/apps/details?id=com.example.app" },
-  { label: "FAQ", url: "https://example.com/faq" },
-  { label: "Privacy Policy", url: "https://example.com/privacy" },
-  { label: "Your ID", isStatic: true },
-  { label: "App Version", isStatic: true },
+  { label: 'Contact Us', url: 'mailto:support@example.com' },
+  { label: 'Rate Us', url: 'https://play.google.com/store/apps/details?id=com.example.app' },
+  { label: 'FAQ', url: 'https://example.com/faq' },
+  { label: 'Privacy Policy', url: 'https://example.com/privacy' },
+  { label: 'Your ID', isStatic: true },
+  { label: 'App Version', isStatic: true },
 ];
 
 export default function Settings() {
@@ -23,43 +25,46 @@ export default function Settings() {
 
   useEffect(() => {
     getStoredUserId().then((id) => setGuestId(id ?? 'Loading...'));
-    setAppVersion(Application.nativeApplicationVersion ?? "1.0.0");
+    setAppVersion(Application.nativeApplicationVersion ?? '1.0.0');
   }, []);
 
   return (
-    <View className="flex-1 p-6">
-      <Text variant="title1" className="mb-4 text-center">Settings</Text>
+    <SafeAreaView className="flex-1 p-6">
+      {/* <Stack.Screen options={{ title: 'Settings' }} /> */}
+      <Text variant="title1" className="mb-4 text-center">
+        Settings
+      </Text>
 
       <FlatList
         data={items}
         keyExtractor={(item) => item.label}
-        ItemSeparatorComponent={() => <View className="h-px bg-gray-200 my-2" />}
+        ItemSeparatorComponent={() => <View className="my-2 h-px bg-gray-200" />}
         renderItem={({ item }) => {
-          if (item.label === "Your ID") {
+          if (item.label === 'Your ID') {
             return (
               <View className="py-2">
                 <Text className="text-base font-semibold">{item.label}</Text>
-                <Text className="text-sm text-gray-600 mt-1">{guestId}</Text>
+                <Text className="mt-1 text-sm text-gray-600">{guestId}</Text>
               </View>
             );
           }
 
-          if (item.label === "App Version") {
+          if (item.label === 'App Version') {
             return (
               <View className="py-2">
                 <Text className="text-base font-semibold">{item.label}</Text>
-                <Text className="text-sm text-gray-600 mt-1">{appVersion}</Text>
+                <Text className="mt-1 text-sm text-gray-600">{appVersion}</Text>
               </View>
             );
           }
 
           return (
             <Pressable onPress={() => Linking.openURL(item.url ?? '')} className="py-2">
-              <Text className="text-base text-blue-600 font-semibold">{item.label}</Text>
+              <Text className="text-base font-semibold text-blue-600">{item.label}</Text>
             </Pressable>
           );
         }}
       />
-    </View>
+    </SafeAreaView>
   );
 }
