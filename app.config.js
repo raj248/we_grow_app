@@ -37,7 +37,7 @@ export default {
     assetBundlePatterns: ['**/*'],
     ios: {
       supportsTablet: true,
-      bundleIdentifier: 'com.we-grow',
+      bundleIdentifier: 'com.youreachbooster.tech.zenex',
     },
     android: {
       permissions: ['INTERNET'],
@@ -46,7 +46,7 @@ export default {
         foregroundImage: './assets/adaptive-icon.png',
         backgroundColor: '#ffffff',
       },
-      package: 'com.we_grow',
+      package: 'com.youreachbooster.tech.zenex',
       googleServicesFile: process.env.GOOGLE_SERVICES_FILE,
       useNextNotificationsApi: true,
     },

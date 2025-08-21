@@ -1,6 +1,7 @@
 // stores/useUserStore.ts
 import { create } from 'zustand';
 import { createJSONStorage, persist } from 'zustand/middleware';
+import { fetchWalletBalance } from '~/lib/api/api';
 
 interface UserState {
   userId: string | null;
@@ -40,7 +41,6 @@ export const useUserStore = create<UserState>()(
       refreshCoins: async () => {
         set({ loading: true, error: null });
         try {
-          const { fetchWalletBalance } = await import('~/lib/api/api');
           const userId = get().userId;
           if (!userId) {
             console.log('User ID not found');
