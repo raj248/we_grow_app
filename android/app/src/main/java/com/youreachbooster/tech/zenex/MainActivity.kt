@@ -1,4 +1,4 @@
-package com.we_grow
+package com.youreachbooster.tech.zenex
 
 import android.os.Build
 import android.os.Bundle

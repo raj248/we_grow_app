@@ -87,9 +87,9 @@ android {
     buildToolsVersion rootProject.ext.buildToolsVersion
     compileSdk rootProject.ext.compileSdkVersion
 
-    namespace 'com.we_grow'
+    namespace 'com.youreachbooster.tech.zenex'
     defaultConfig {
-        applicationId 'com.we_grow'
+        applicationId 'com.youreachbooster.tech.zenex'
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
