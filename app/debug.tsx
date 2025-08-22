@@ -138,6 +138,11 @@ export default function Modal() {
           title="Video 4"
           onPress={() => Linking.openURL('https://youtu.be/La2w7GlXr2o?si=JXzHsm4ornRuBdgK')}
         />
+
+        <Button
+          title="Google Services File"
+          onPress={() => console.log(process.env.GOOGLE_SERVICES_FILE)}
+        />
       </View>
     </View>
   );
