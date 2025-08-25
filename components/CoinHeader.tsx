@@ -1,6 +1,6 @@
 import { forwardRef } from 'react';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
-import { Pressable, StyleSheet, View } from 'react-native';
+import { Image, Pressable, StyleSheet, View } from 'react-native';
 import { Text } from './nativewindui/Text';
 
 export const CoinHeader = forwardRef<typeof Pressable, { onPress?: () => void; coins?: number }>(
@@ -24,12 +24,16 @@ export const CoinHeader = forwardRef<typeof Pressable, { onPress?: () => void; c
           paddingVertical: 4,
         }}>
         {({ pressed }) => (
-          <View className="flex-row items-center gap-2">
+          <View className="flex-row items-center justify-center gap-1">
             {/* <FontAwesome name="refresh" size={15} color="gray" /> */}
             {/* <Text className="ml-1 text-base font-semibold text-gray-700">100</Text> */}
-
+            <Image
+              source={require('~/assets/icons/rupee.png')}
+              className="h-5 w-5"
+              resizeMode="contain"
+            />
             <Text variant={'footnote'} className="font-semibold text-gray-700">
-              🪙 {coins}
+              {coins}
             </Text>
           </View>
         )}
