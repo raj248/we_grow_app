@@ -48,6 +48,8 @@ export type Order = {
   userId: string;
   planId: string;
   url: string;
+  viewCount: number;
+  completedViewCount: number;
   completedCount: number;
   status: OrderStatus;
   createdAt: string; // ISO date string
