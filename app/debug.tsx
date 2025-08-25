@@ -7,6 +7,7 @@ import { Button } from '~/components/Button';
 import { Text } from '~/components/nativewindui/Text';
 import { fetchActiveUserCount } from '~/lib/api/api';
 import displayOverApp from '~/modules/display-over-app';
+import { fetchVideoDetailsYoutube } from '~/lib/fetchVideoDetail';
 
 export default function Modal() {
   const [lastActiveCount, setLastActiveCount] = useState(-1);
@@ -142,6 +143,15 @@ export default function Modal() {
         <Button
           title="Google Services File"
           onPress={() => console.log(process.env.GOOGLE_SERVICES_FILE)}
+        />
+        <Button
+          title="Fetch Video Details"
+          onPress={async () => {
+            const res = await fetchVideoDetailsYoutube(
+              'https://youtu.be/La2w7GlXr2o?si=JXzHsm4ornRuBdgK'
+            );
+            console.log(res);
+          }}
         />
       </View>
     </View>

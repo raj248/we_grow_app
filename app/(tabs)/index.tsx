@@ -17,7 +17,6 @@ import { useUserStore } from '~/stores/useUserStore';
 import BoostViewBottomSheet from '~/components/BottomSheets/BoostViewBottomSheet';
 import PromoteShortsBottomSheet from '~/components/BottomSheets/PromoteShortsBottomSheet';
 import GetSubscribersBottomSheet from '~/components/BottomSheets/GetSubscribersBottomSheet';
-import { watchToEarn } from '~/lib/api/earn';
 import { router } from 'expo-router';
 import BoostPlanDialog from '~/components/Dialog/BoostPlanDialog';
 import { CardButton } from '~/components/CardButton';

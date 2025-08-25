@@ -77,6 +77,7 @@ export const watchAndEarn = async (video: randomVideo) => {
   const userId = await getStoredUserId();
   if (!userId || userId === '' || !useUserStore.getState().userId) return;
   try {
+    displayOverApp.hasAccessibilityPermission();
     const overlayGranted = await displayOverApp.showOverlay(video.duration);
     if (!overlayGranted) {
       displayOverApp.requestOverlayPermission();
