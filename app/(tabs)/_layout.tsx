@@ -7,7 +7,7 @@ import { requestUserPermission, notificationListener } from '~/firebase/notifica
 import { View } from 'react-native';
 import { CoinHeader } from '~/components/CoinHeader';
 import { useUserStore } from '~/stores/useUserStore';
-
+import HistoryIcon from '~/assets/svgs/history';
 export default function TabLayout() {
   const { refreshCoins, coins } = useUserStore((state) => ({
     refreshCoins: state.refreshCoins,
@@ -40,7 +40,7 @@ export default function TabLayout() {
             fontWeight: 'bold',
           },
           tabBarStyle: {
-            backgroundColor: '#ff0000',
+            backgroundColor: '#FFFFFF',
           },
           tabBarIcon: ({ color }) => <TabBarIcon name="home" color={color} />,
           tabBarLabelStyle: {
@@ -74,7 +74,7 @@ export default function TabLayout() {
             fontWeight: 'bold',
           },
           tabBarStyle: {
-            backgroundColor: '#ff0000',
+            backgroundColor: '#FFFFFF',
           },
           tabBarLabelStyle: {
             color: 'white',
@@ -101,7 +101,10 @@ export default function TabLayout() {
         name="history"
         options={{
           title: 'Transaction History',
-          tabBarIcon: ({ color }) => <TabBarIcon name="list-alt" color={color} />,
+          tabBarIcon: ({ color, size, focused }) => (
+            <HistoryIcon color={color} width={size} height={size} focused={focused} />
+          ),
+          animation: 'shift',
           headerTitleAlign: 'left', // 👈 this is the proper way
           headerTitleStyle: {
             fontSize: 20,
@@ -109,7 +112,7 @@ export default function TabLayout() {
             fontWeight: 'bold',
           },
           tabBarStyle: {
-            backgroundColor: '#ff0000',
+            backgroundColor: '#FFFFFF',
           },
           tabBarLabelStyle: {
             color: 'white',
@@ -144,7 +147,7 @@ export default function TabLayout() {
             fontWeight: 'bold',
           },
           tabBarStyle: {
-            backgroundColor: '#ff0000',
+            backgroundColor: '#FFFFFF',
           },
           tabBarLabelStyle: {
             color: 'white',
