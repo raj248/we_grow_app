@@ -1,13 +1,15 @@
 import { Link, Tabs } from 'expo-router';
 import { HeaderButton } from '../../components/HeaderButton';
 import { DebugHeaderButton } from '../../components/DebugHeaderButton';
-import { TabBarIcon } from '../../components/TabBarIcon';
-import { use, useEffect } from 'react';
+import { useEffect } from 'react';
 import { requestUserPermission, notificationListener } from '~/firebase/notificationService';
 import { View } from 'react-native';
 import { CoinHeader } from '~/components/CoinHeader';
 import { useUserStore } from '~/stores/useUserStore';
+import HomeIcon from '~/assets/svgs/home';
+import TopupIcon from '~/assets/svgs/topup';
 import HistoryIcon from '~/assets/svgs/history';
+import OrderIcon from '~/assets/svgs/order';
 export default function TabLayout() {
   const { refreshCoins, coins } = useUserStore((state) => ({
     refreshCoins: state.refreshCoins,
@@ -42,9 +44,11 @@ export default function TabLayout() {
           tabBarStyle: {
             backgroundColor: '#FFFFFF',
           },
-          tabBarIcon: ({ color }) => <TabBarIcon name="home" color={color} />,
+          tabBarIcon: ({ color, size, focused }) => (
+            <HomeIcon color={color} width={size + 10} height={size} focused={focused} />
+          ),
           tabBarLabelStyle: {
-            color: 'white',
+            color: 'black',
           },
           headerRight: () => (
             <View className="flex-row">
@@ -66,7 +70,9 @@ export default function TabLayout() {
         name="top-up"
         options={{
           title: 'Top-up',
-          tabBarIcon: ({ color }) => <TabBarIcon name="ticket" color={color} />,
+          tabBarIcon: ({ color, size, focused }) => (
+            <TopupIcon color={color} width={size + 10} height={size} focused={focused} />
+          ),
           headerTitleAlign: 'left', // 👈 this is the proper way
           headerTitleStyle: {
             fontSize: 20,
@@ -77,7 +83,7 @@ export default function TabLayout() {
             backgroundColor: '#FFFFFF',
           },
           tabBarLabelStyle: {
-            color: 'white',
+            color: 'black',
           },
           headerStyle: {
             backgroundColor: '#ff0000',
@@ -115,7 +121,7 @@ export default function TabLayout() {
             backgroundColor: '#FFFFFF',
           },
           tabBarLabelStyle: {
-            color: 'white',
+            color: 'black',
           },
           headerStyle: {
             backgroundColor: '#ff0000',
@@ -139,7 +145,9 @@ export default function TabLayout() {
         name="orders"
         options={{
           title: 'Orders',
-          tabBarIcon: ({ color }) => <TabBarIcon name="archive" color={color} />,
+          tabBarIcon: ({ color, size, focused }) => (
+            <OrderIcon color={color} width={size + 10} height={size} focused={focused} />
+          ),
           headerTitleAlign: 'left', // 👈 this is the proper way
           headerTitleStyle: {
             fontSize: 20,
@@ -150,7 +158,7 @@ export default function TabLayout() {
             backgroundColor: '#FFFFFF',
           },
           tabBarLabelStyle: {
-            color: 'white',
+            color: 'black',
           },
           headerStyle: {
             backgroundColor: '#ff0000',

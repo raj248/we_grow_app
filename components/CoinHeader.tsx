@@ -21,7 +21,7 @@ export const CoinHeader = forwardRef<typeof Pressable, { onPress?: () => void; c
           elevation: 5,
 
           paddingHorizontal: 10,
-          paddingVertical: 4,
+          paddingVertical: 2,
         }}>
         {({ pressed }) => (
           <View className="flex-row items-center justify-center gap-1">
@@ -32,7 +32,7 @@ export const CoinHeader = forwardRef<typeof Pressable, { onPress?: () => void; c
               className="h-5 w-5"
               resizeMode="contain"
             />
-            <Text variant={'footnote'} className="font-semibold text-gray-700">
+            <Text variant={'subhead'} className="font-semibold text-gray-700">
               {coins}
             </Text>
           </View>
