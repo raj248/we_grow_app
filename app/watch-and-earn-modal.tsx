@@ -11,36 +11,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { Button } from '~/components/Button';
 import { Divider } from 'react-native-paper';
 import { router } from 'expo-router';
-
-const fetchVideoDetails = async (url: string) => {
-  try {
-    if (!url?.includes('youtube.com') && !url?.includes('youtu.be')) {
-      return {
-        videoTitle: 'Invalid YouTube URL',
-        videoThumbnail: 'https://via.placeholder.com/320x180?text=Invalid+URL',
-      };
-    }
-    try {
-      const res = await fetch(
-        `https://www.youtube.com/oembed?url=${encodeURIComponent(url)}&format=json`
-      );
-      if (!res.ok) throw new Error('Failed to fetch');
-      const data = await res.json();
-      return { videoTitle: data.title, videoThumbnail: data.thumbnail_url };
-    } catch {
-      return {
-        videoTitle: 'Failed to fetch title',
-        videoThumbnail: 'https://via.placeholder.com/320x180?text=Error',
-      };
-    }
-  } catch (e) {
-    console.error(e);
-    return {
-      videoTitle: 'Error',
-      videoThumbnail: 'https://via.placeholder.com/320x180?text=Error',
-    };
-  }
-};
+import { fetchVideoDetails } from '~/lib/fetchVideoDetail';
 
 export default function Modal() {
   const [refreshing, setRefreshing] = useState(false);

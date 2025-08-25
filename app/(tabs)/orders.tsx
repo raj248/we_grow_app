@@ -6,41 +6,7 @@ import { useFocusEffect } from '@react-navigation/native';
 import { useOrderStore } from '~/stores/useOrderStore';
 import { Order } from '~/types/entities';
 import { router } from 'expo-router';
-
-const fetchVideoDetails = async (orders: Order[]) => {
-  if (!orders || orders.length === 0) return [];
-  try {
-    return await Promise.all(
-      orders.map(async (order) => {
-        const url = order.url;
-        if (!url?.includes('youtube.com') && !url?.includes('youtu.be')) {
-          return {
-            ...order,
-            videoTitle: 'Invalid YouTube URL',
-            videoThumbnail: 'https://via.placeholder.com/320x180?text=Invalid+URL',
-          };
-        }
-        try {
-          const res = await fetch(
-            `https://www.youtube.com/oembed?url=${encodeURIComponent(url)}&format=json`
-          );
-          if (!res.ok) throw new Error('Failed to fetch');
-          const data = await res.json();
-          return { ...order, videoTitle: data.title, videoThumbnail: data.thumbnail_url };
-        } catch {
-          return {
-            ...order,
-            videoTitle: 'Failed to fetch title',
-            videoThumbnail: 'https://via.placeholder.com/320x180?text=Error',
-          };
-        }
-      })
-    );
-  } catch (e) {
-    console.error(e);
-    return orders;
-  }
-};
+import { fetchMultipleVideoDetails } from '~/lib/fetchVideoDetail';
 
 export default function Orders() {
   const [refreshing, setRefreshing] = useState(false);
@@ -71,7 +37,7 @@ export default function Orders() {
     setEnrichedOrders(orders); // show instantly with raw data
     const unenriched = orders.filter((o) => !o.videoTitle || !o.videoThumbnail);
     if (unenriched.length > 0) {
-      fetchVideoDetails(unenriched).then((enriched) => {
+      fetchMultipleVideoDetails(unenriched).then((enriched) => {
         setEnrichedOrders((prev) => prev.map((o) => enriched.find((e) => e.id === o.id) ?? o));
       });
     }
