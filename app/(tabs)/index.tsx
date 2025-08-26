@@ -26,6 +26,7 @@ const features = [
   {
     id: '4',
     title: 'Watch And Earn',
+    inputLabel: '',
     description: 'Watch videos, reels and subscribe to channels to earn coins.',
     icon: require('~/assets/icons/earn.png'),
     border_color: 'rgba(216, 94, 94, 1)',
@@ -34,6 +35,7 @@ const features = [
   {
     id: '1',
     title: 'Boost Views',
+    inputLabel: 'YouTube Video URL',
     description: 'Increase views on your videos using coins.',
     icon: require('~/assets/icons/boost_view.png'),
     border_color: 'rgba(133, 216, 94, 1)',
@@ -42,6 +44,7 @@ const features = [
   {
     id: '2',
     title: 'Get Subscribers',
+    inputLabel: 'YouTube Channel URL',
     description: 'Gain real engagement via smart distribution.',
     icon: require('~/assets/icons/get_subscriber.png'),
     // border_color: 'rgba(94, 216, 133, 1)',
@@ -50,6 +53,7 @@ const features = [
   {
     id: '3',
     title: 'Promote Shorts',
+    inputLabel: 'YouTube Video URL',
     description: 'Targeted exposure for YouTube Shorts.',
     icon: require('~/assets/icons/promote_shorts.png'),
     border_color: 'rgba(94, 208, 216, 1)',
@@ -60,13 +64,11 @@ const features = [
 export default function Home() {
   useTrackActiveUser();
   const [id, setId] = useState('Loading...');
-  const [coins, setCoins] = useState<number | null>(null);
   const [refreshing, setRefreshing] = useState(false);
   const [open, setOpen] = useState(false);
-  const [openBoostViewSheet, setOpenBoostViewSheet] = useState(() => () => {});
-  const [openGetSubscribersSheet, setOpenGetSubscribersSheet] = useState(() => () => {});
-  const [openPromotShortsSheet, setOpenPromotShortsSheet] = useState(() => () => {});
-  const [openEarnSheet, setOpenEarnSheet] = useState(() => () => {});
+  const [title, setTitle] = useState('');
+  const [label, setLabel] = useState('');
+
   const { colors } = useColorScheme();
   const { width, height } = useWindowDimensions();
   const insets = useSafeAreaInsets();
@@ -116,13 +118,6 @@ export default function Home() {
         keyExtractor={(item) => item.id}
         refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
         renderItem={({ item }) => {
-          const openSheetMap: Record<string, () => void> = {
-            '1': openBoostViewSheet,
-            '2': openGetSubscribersSheet,
-            '3': openPromotShortsSheet,
-            '4': openEarnSheet,
-          };
-
           return (
             <View style={{ flex: 1, margin: 8, height: ITEM_HEIGHT }}>
               <CardButton
@@ -134,6 +129,8 @@ export default function Home() {
                 onPress={() => {
                   if (item.id !== '4') {
                     setOpen(true);
+                    setLabel(item.inputLabel);
+                    setTitle(item.title);
                   } else router.push('/watch-and-earn-modal');
                 }}
               />
@@ -141,10 +138,14 @@ export default function Home() {
           );
         }}
       />
-      <BoostPlanDialog visible={open} onDismiss={() => setOpen(false)} />
-      <BoostViewBottomSheet setOpenSheet={setOpenBoostViewSheet} />
-      <GetSubscribersBottomSheet setOpenSheet={setOpenGetSubscribersSheet} />
-      <PromoteShortsBottomSheet setOpenSheet={setOpenPromotShortsSheet} />
+      <BoostPlanDialog
+        visible={open}
+        titleLabel={title}
+        inputLabel={label}
+        onDismiss={() => {
+          setOpen(false);
+        }}
+      />
     </View>
   );
 }

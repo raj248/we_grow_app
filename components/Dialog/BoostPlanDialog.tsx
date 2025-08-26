@@ -6,10 +6,17 @@ import { Text } from '../nativewindui/Text';
 
 interface DialogProps {
   visible: boolean;
+  titleLabel?: string;
+  inputLabel?: string;
   onDismiss: () => void;
 }
 
-export default function BoostPlanDialog({ visible, onDismiss }: DialogProps) {
+export default function BoostPlanDialog({
+  visible,
+  onDismiss,
+  titleLabel,
+  inputLabel,
+}: DialogProps) {
   const [videoUrl, setVideoUrl] = useState('');
 
   const handleClick = () => {
@@ -25,11 +32,11 @@ export default function BoostPlanDialog({ visible, onDismiss }: DialogProps) {
         onDismiss={onDismiss}
         style={styles.dialog} // custom rounded style
       >
-        <Dialog.Title style={styles.title}>Boost Views</Dialog.Title>
+        <Dialog.Title style={styles.title}>{titleLabel}</Dialog.Title>
 
         <Dialog.Content>
           <TextInput
-            placeholder="YouTube Video URL"
+            placeholder={inputLabel}
             value={videoUrl}
             mode="outlined"
             style={styles.input}
