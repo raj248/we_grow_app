@@ -6,7 +6,7 @@ import { ActionSheetProvider } from '@expo/react-native-action-sheet';
 
 import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
 
-import { Stack } from 'expo-router';
+import { Link, Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
@@ -24,6 +24,9 @@ export {
 } from 'expo-router';
 
 import { youtubeListenerService } from '~/services/youtubeListener';
+import { HeaderButton } from '~/components/HeaderButton';
+import { View } from 'react-native';
+import { CoinHeader } from '~/components/CoinHeader';
 youtubeListenerService.init(); // runs once
 
 export default function RootLayout() {
@@ -50,6 +53,8 @@ export default function RootLayout() {
                   <Stack.Screen name="modal" options={MODAL_OPTIONS} />
                   <Stack.Screen name="settings" options={MODAL_OPTIONS} />
                   <Stack.Screen name="watch-and-earn-modal" options={WATCH_EARN_OPTIONS} />
+                  <Stack.Screen name="earn-or-purchase" options={WATCH_EARN_OPTIONS} />
+
                   <Stack.Screen name="boostviewplans" options={MODAL_OPTIONS} />
                   <Stack.Screen name="getsubscribersplans" options={MODAL_OPTIONS} />
                   <Stack.Screen name="promoteshortsplans" options={MODAL_OPTIONS} />
@@ -113,15 +118,19 @@ const DEBUG_PANEL_OPTIONS = {
 } as const;
 
 const WATCH_EARN_OPTIONS = {
-  presentation: 'modal', // keeps modal style
-  animation: 'fade_from_bottom', // Android-friendly
+  presentation: 'modal', // modal presentation
+  animation: 'fade_from_bottom',
   title: 'Watch & Earn',
-  // headerShown: false, // hides default header (prevents status bar overlap)
-  gestureEnabled: true, // allow swipe down to dismiss
+  gestureEnabled: true,
   contentStyle: {
-    // optional styling for the modal container
-    paddingTop: 0, // remove default padding if needed
-    // backgroundColor: '#fff',        // make sure background is white
+    paddingTop: 0,
   },
-  headerRight: () => <ThemeToggle />,
+  headerRight: () => (
+    <View className="flex-row">
+      <CoinHeader />
+      <Link href="/settings" asChild>
+        <HeaderButton />
+      </Link>
+    </View>
+  ),
 } as const;

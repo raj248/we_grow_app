@@ -2,9 +2,11 @@ import { forwardRef } from 'react';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import { Image, Pressable, StyleSheet, View } from 'react-native';
 import { Text } from './nativewindui/Text';
+import { useUserStore } from '~/stores/useUserStore';
 
 export const CoinHeader = forwardRef<typeof Pressable, { onPress?: () => void; coins?: number }>(
   ({ onPress, coins }, ref) => {
+    const tempCoins = coins ?? useUserStore.getState().coins;
     return (
       <Pressable
         onPress={onPress}
@@ -33,7 +35,7 @@ export const CoinHeader = forwardRef<typeof Pressable, { onPress?: () => void; c
               resizeMode="contain"
             />
             <Text variant={'subhead'} className="font-semibold text-gray-700">
-              {coins}
+              {coins ?? tempCoins}
             </Text>
           </View>
         )}

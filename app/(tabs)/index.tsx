@@ -131,7 +131,7 @@ export default function Home() {
                     setOpen(true);
                     setLabel(item.inputLabel);
                     setTitle(item.title);
-                  } else router.push('/watch-and-earn-modal');
+                  } else router.push('/earn-or-purchase');
                 }}
               />
             </View>

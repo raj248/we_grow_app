@@ -49,7 +49,7 @@ export const useUserStore = create<UserState>()(
           }
           const res = await fetchWalletBalance(userId);
           if (res.success && res.data) {
-            set({ coins: res.data.balance, lastFetched: Date.now(), loading: false });
+            set({ coins: res.data.balance, lastFetched: res.lastUpdated, loading: false });
           } else {
             set({ error: res.error || 'Failed to fetch coins', loading: false });
           }

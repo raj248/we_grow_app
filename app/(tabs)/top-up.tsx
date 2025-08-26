@@ -77,7 +77,7 @@ export default function Topup() {
         </View>
         <Pressable
           className="rounded-md border bg-gray-100 px-4 py-1"
-          onPress={() => router.push('/watch-and-earn-modal')}>
+          onPress={() => router.push('/earn-or-purchase')}>
           <Text className="font-semibold text-gray-700">GO</Text>
         </Pressable>
       </View>
