@@ -70,7 +70,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="top-up"
         options={{
-          title: 'Top-up',
+          title: 'Top-Up',
           tabBarIcon: ({ color, size, focused }) => (
             <TopupIcon color={color} width={size + 10} height={size} focused={focused} />
           ),
@@ -84,6 +84,7 @@ export default function TabLayout() {
           tabBarIcon: ({ color, size, focused }) => (
             <HistoryIcon color={color} width={size} height={size} focused={focused} />
           ),
+          tabBarLabel: 'History',
           animation: 'shift',
           headerTitleAlign: 'left',
         }}
@@ -91,10 +92,12 @@ export default function TabLayout() {
       <Tabs.Screen
         name="orders"
         options={{
-          title: 'Orders',
+          title: 'Orders History',
           tabBarIcon: ({ color, size, focused }) => (
             <OrderIcon color={color} width={size + 10} height={size} focused={focused} />
           ),
+          tabBarLabel: 'Orders',
+          animation: 'shift',
           headerTitleAlign: 'left',
         }}
       />

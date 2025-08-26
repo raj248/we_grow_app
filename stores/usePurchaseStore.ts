@@ -19,6 +19,7 @@ type Actions = {
     productId: string,
     purchaseToken: string
   ) => Promise<APIResponse<{ wallet: any; transaction: any }>>;
+  clearStore: () => void;
 };
 
 export const usePurchaseStore = create<State & Actions>()(
@@ -60,6 +61,9 @@ export const usePurchaseStore = create<State & Actions>()(
           set({ error: res.error ?? 'Failed to purchase', loading: false });
         }
         return res;
+      },
+      clearStore: () => {
+        set({ purchaseOptions: [], loading: false, error: null, lastFetched: undefined });
       },
     }),
     {

@@ -8,6 +8,8 @@ import { Text } from '~/components/nativewindui/Text';
 import { fetchActiveUserCount } from '~/lib/api/api';
 import displayOverApp from '~/modules/display-over-app';
 import { fetchVideoDetailsYoutube } from '~/lib/fetchVideoDetail';
+import { ScrollView } from 'react-native-gesture-handler';
+import { usePurchaseStore } from '~/stores/usePurchaseStore';
 
 export default function Modal() {
   const [lastActiveCount, setLastActiveCount] = useState(-1);
@@ -108,7 +110,13 @@ export default function Modal() {
       <Text>Last Active Users: {lastActiveCount}</Text>
       <Text>Last YouTube Watch Duration: {lastWatchDuration ?? 'N/A'} sec</Text>
 
-      <View className="mt-4 space-y-2">
+      <ScrollView className="mt-4 space-y-2">
+        <Button
+          title="Clear All Store"
+          onPress={() => {
+            usePurchaseStore.getState().clearStore();
+          }}
+        />
         <Button title="Fetch Active User" onPress={triggerFetchActive} />
         <Button title="Router.push(Template)" onPress={() => router.push('/template_index')} />
         <Button title="Show Overlay (10s)" onPress={triggerOverlay} />
@@ -153,7 +161,8 @@ export default function Modal() {
             console.log(res);
           }}
         />
-      </View>
+        <View className="my-8 " />
+      </ScrollView>
     </View>
   );
 }
