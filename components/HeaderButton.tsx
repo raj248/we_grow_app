@@ -10,7 +10,7 @@ export const HeaderButton = forwardRef<typeof Pressable, { onPress?: () => void 
 
     return (
       <View className="flex flex-row items-center gap-2 space-x-3 pr-3">
-        <Pressable className="opacity-80">
+        <Pressable className="opacity-80" onPress={onPress}>
           {({ pressed }) => (
             <View className={cn(pressed ? 'opacity-50' : 'opacity-90')}>
               <SettingIcon width={26} height={26} color={'white'} />

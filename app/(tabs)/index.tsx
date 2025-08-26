@@ -107,42 +107,6 @@ export default function Home() {
   return (
     <View className="flex-1 p-4">
       <FlatList
-        // ListHeaderComponent={
-        //   <>
-        //     <Text variant="title1" className="mb-2 text-center">
-        //       Welcome to BoostHub
-        //     </Text>
-
-        //     <View className="mb-4 rounded-xl bg-gray-100 p-4">
-        //       <Text className="text-sm font-semibold text-gray-700">Your User ID:</Text>
-        //       <Text className="font-mono text-lg text-primary">{id}</Text>
-        //     </View>
-
-        //     <View className="mb-4 rounded-xl border border-green-300 bg-green-100 p-4">
-        //       <Text className="font-semibold text-green-900">Your Coins</Text>
-        //       {coins === null ? (
-        //         <ActivityIndicator color="#10b981" />
-        //       ) : (
-        //         <Text className="text-xl font-bold text-green-800">{coins} Coins</Text>
-        //       )}
-        //     </View>
-
-        //     <Text className="mb-2 text-lg font-semibold">What you can do:</Text>
-
-        //     {/* <Pressable
-        //       className="mb-3 rounded-xl bg-white p-4 shadow-md"
-        //       onPress={() => {
-        //         console.log(`Earning Money`);
-        //         // watchToEarn();
-        //         router.push('/watch-and-earn-modal');
-        //       }}>
-        //       <Text className="text-base font-bold">Watch And Earn</Text>
-        //       <Text className="text-sm text-gray-600">
-        //         Watch videos, reels and subscribe to channels to earn coins.
-        //       </Text>
-        //     </Pressable> */}
-        //   </>
-        // }
         data={features}
         numColumns={numColumns}
         key={numColumns}
@@ -160,16 +124,6 @@ export default function Home() {
           };
 
           return (
-            // <Pressable
-            //   className="mb-3 rounded-xl bg-white p-4 shadow-md"
-            //   onPress={() => {
-            //     // const openSheet = openSheetMap[item.id];
-            //     setOpen(true);
-            //     // if (openSheet) openSheet();
-            //   }}>
-            //   <Text className="text-base font-bold">{item.title}</Text>
-            //   <Text className="text-sm text-gray-600">{item.description}</Text>
-            // </Pressable>
             <View style={{ flex: 1, margin: 8, height: ITEM_HEIGHT }}>
               <CardButton
                 icon={item.icon}
@@ -179,7 +133,6 @@ export default function Home() {
                 borderColor={item.border_color}
                 onPress={() => {
                   if (item.id !== '4') {
-                    // openSheetMap[item.id]()
                     setOpen(true);
                   } else router.push('/watch-and-earn-modal');
                 }}
