@@ -29,8 +29,8 @@ const features = [
     inputLabel: '',
     description: 'Watch videos, reels and subscribe to channels to earn coins.',
     icon: require('~/assets/icons/earn.png'),
-    border_color: 'rgba(216, 94, 94, 1)',
-    bg_color: 'rgba(255, 228, 227, 1)',
+    border_color: '#9A1212',
+    bg_color: '#FFDED7',
   },
   {
     id: '1',
@@ -38,8 +38,8 @@ const features = [
     inputLabel: 'YouTube Video URL',
     description: 'Increase views on your videos using coins.',
     icon: require('~/assets/icons/boost_view.png'),
-    border_color: 'rgba(133, 216, 94, 1)',
-    bg_color: 'rgba(237, 255, 238, 1)',
+    border_color: '#69BA7F',
+    bg_color: '#CDFFDC',
   },
   {
     id: '2',
@@ -47,8 +47,8 @@ const features = [
     inputLabel: 'YouTube Channel URL',
     description: 'Gain real engagement via smart distribution.',
     icon: require('~/assets/icons/get_subscriber.png'),
-    // border_color: 'rgba(94, 216, 133, 1)',
-    // bg_color: 'rgba(234, 255, 242, 1)',
+    border_color: '#292966',
+    bg_color: '#DEDEFF',
   },
   {
     id: '3',
@@ -56,8 +56,8 @@ const features = [
     inputLabel: 'YouTube Video URL',
     description: 'Targeted exposure for YouTube Shorts.',
     icon: require('~/assets/icons/promote_shorts.png'),
-    border_color: 'rgba(94, 208, 216, 1)',
-    bg_color: 'rgba(226, 251, 255, 1)',
+    border_color: '#F57D02',
+    bg_color: '#FFEED4',
   },
 ];
 
