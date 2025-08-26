@@ -125,6 +125,15 @@ const WATCH_EARN_OPTIONS = {
   contentStyle: {
     paddingTop: 0,
   },
+  headerStyle: {
+    backgroundColor: '#ff0000',
+    elevation: 5,
+  },
+  headerTitleStyle: {
+    fontSize: 20,
+    color: 'white',
+    fontWeight: 'bold',
+  },
   headerRight: () => (
     <View className="flex-row">
       <CoinHeader />

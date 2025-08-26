@@ -64,12 +64,12 @@ export default function Modal() {
         }}
         onPress={() => {
           enrichedOrder && watchAndEarn(enrichedOrder);
-          router.back();
+          router.dismissAll();
         }}>
         <View>
           <Image
             source={{ uri: enrichedOrder?.videoThumbnail }}
-            style={{ width: '100%', height: 180 }}
+            style={{ width: '100%', height: 280 }}
             resizeMode="cover"
           />
           <View
@@ -77,37 +77,51 @@ export default function Modal() {
               position: 'absolute',
               top: '50%',
               left: '50%',
-              transform: [{ translateX: -24 }, { translateY: -24 }],
+              transform: [{ translateX: -34 }, { translateY: -34 }],
             }}>
-            <Ionicons name="play-circle" size={48} color="white" />
+            <Ionicons name="play-circle" size={68} color="red" />
           </View>
         </View>
       </TouchableOpacity>
 
       {/* Video Info */}
-      <View style={{ padding: 12 }}>
+      {/* <View style={{ padding: 12 }}>
         <Text className="text-center" style={{ fontSize: 16, fontWeight: '600' }}>
           {enrichedOrder?.videoTitle ?? 'Untitled Video'}
         </Text>
         <Text variant={'callout'} className="text-center" style={{ fontSize: 14, marginTop: 4 }}>
           Earn {enrichedOrder?.reward ?? 'NA'} Coins 🪙 in {enrichedOrder?.duration ?? 'NA'} seconds
         </Text>
-      </View>
+      </View> */}
 
       {/* Refresh Button */}
-      <Button
-        style={{
-          backgroundColor: '#007bff',
-          width: '60%',
-          alignSelf: 'center',
-          marginVertical: 16,
-        }}
-        title={refreshing ? 'Loading...' : 'Reload Video'}
-        disabled={refreshing}
-        onPress={loadVideo}
-      />
+      <View className="mt-4 flex-row justify-evenly ">
+        <Button
+          style={{
+            backgroundColor: '#27A84A',
+            width: '45%',
+            alignSelf: 'center',
+          }}
+          title={refreshing ? 'Loading...' : 'Watch Now'}
+          disabled={refreshing}
+          onPress={() => {
+            enrichedOrder && watchAndEarn(enrichedOrder);
+            router.dismissAll();
+          }}
+        />
+        <Button
+          style={{
+            backgroundColor: '#FE0000',
+            width: '45%',
+            alignSelf: 'center',
+          }}
+          title={refreshing ? 'Loading...' : 'Next Video'}
+          disabled={refreshing}
+          onPress={loadVideo}
+        />
+      </View>
 
-      <Divider horizontalInset bold className="mb-4 mt-4" />
+      {/* <Divider horizontalInset bold className="mb-4 mt-4" />
       <Text variant={'heading'} className="text-center">
         Don't Want to Watch? Top-up Coins NOW!
       </Text>
@@ -117,7 +131,7 @@ export default function Modal() {
         onPress={() => {
           router.replace('/top-up');
         }}
-      />
+      /> */}
     </SafeAreaView>
   );
 }
