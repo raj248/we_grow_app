@@ -17,7 +17,6 @@ export default function TabLayout() {
   }));
 
   useEffect(() => {
-    // useTrackActiveUser()
     requestUserPermission();
     notificationListener();
   }, []);
@@ -27,41 +26,43 @@ export default function TabLayout() {
       screenOptions={{
         tabBarActiveTintColor: 'black',
         headerTitleAlign: 'center',
+        tabBarStyle: {
+          backgroundColor: '#FFFFFF',
+          elevation: 5,
+        },
+        headerStyle: {
+          backgroundColor: '#ff0000',
+          elevation: 5,
+        },
+        headerTitleStyle: {
+          fontSize: 20,
+          color: 'white',
+          fontWeight: 'bold',
+        },
+        tabBarLabelStyle: {
+          color: 'black',
+        },
+        headerRight: () => (
+          <View className="flex-row">
+            <CoinHeader onPress={refreshCoins} coins={coins} />
+            <Link href="/settings" asChild>
+              <HeaderButton />
+            </Link>
+          </View>
+        ),
+        headerLeft: () => (
+          <Link href="/debug" asChild>
+            <DebugHeaderButton />
+          </Link>
+        ),
       }}>
       <Tabs.Screen
         name="index"
         options={{
           title: 'Home',
-          headerTitleAlign: 'left', // 👈 this is the proper way
-          headerStyle: {
-            backgroundColor: '#ff0000',
-          },
-          headerTitleStyle: {
-            fontSize: 20,
-            color: 'white',
-            fontWeight: 'bold',
-          },
-          tabBarStyle: {
-            backgroundColor: '#FFFFFF',
-          },
+          headerTitleAlign: 'left',
           tabBarIcon: ({ color, size, focused }) => (
             <HomeIcon color={color} width={size + 10} height={size} focused={focused} />
-          ),
-          tabBarLabelStyle: {
-            color: 'black',
-          },
-          headerRight: () => (
-            <View className="flex-row">
-              <CoinHeader onPress={refreshCoins} coins={coins} />
-              <Link href="/settings" asChild>
-                <HeaderButton />
-              </Link>
-            </View>
-          ),
-          headerLeft: () => (
-            <Link href="/debug" asChild>
-              <DebugHeaderButton />
-            </Link>
           ),
         }}
       />
@@ -73,34 +74,7 @@ export default function TabLayout() {
           tabBarIcon: ({ color, size, focused }) => (
             <TopupIcon color={color} width={size + 10} height={size} focused={focused} />
           ),
-          headerTitleAlign: 'left', // 👈 this is the proper way
-          headerTitleStyle: {
-            fontSize: 20,
-            color: 'white',
-            fontWeight: 'bold',
-          },
-          tabBarStyle: {
-            backgroundColor: '#FFFFFF',
-          },
-          tabBarLabelStyle: {
-            color: 'black',
-          },
-          headerStyle: {
-            backgroundColor: '#ff0000',
-          },
-          headerRight: () => (
-            <View className="flex-row">
-              <CoinHeader onPress={refreshCoins} coins={coins} />
-              <Link href="/settings" asChild>
-                <HeaderButton />
-              </Link>
-            </View>
-          ),
-          headerLeft: () => (
-            <Link href="/debug" asChild>
-              <DebugHeaderButton />
-            </Link>
-          ),
+          headerTitleAlign: 'left',
         }}
       />
       <Tabs.Screen
@@ -111,34 +85,7 @@ export default function TabLayout() {
             <HistoryIcon color={color} width={size} height={size} focused={focused} />
           ),
           animation: 'shift',
-          headerTitleAlign: 'left', // 👈 this is the proper way
-          headerTitleStyle: {
-            fontSize: 20,
-            color: 'white',
-            fontWeight: 'bold',
-          },
-          tabBarStyle: {
-            backgroundColor: '#FFFFFF',
-          },
-          tabBarLabelStyle: {
-            color: 'black',
-          },
-          headerStyle: {
-            backgroundColor: '#ff0000',
-          },
-          headerRight: () => (
-            <View className="flex-row">
-              <CoinHeader onPress={refreshCoins} coins={coins} />
-              <Link href="/settings" asChild>
-                <HeaderButton />
-              </Link>
-            </View>
-          ),
-          headerLeft: () => (
-            <Link href="/debug" asChild>
-              <DebugHeaderButton />
-            </Link>
-          ),
+          headerTitleAlign: 'left',
         }}
       />
       <Tabs.Screen
@@ -148,34 +95,7 @@ export default function TabLayout() {
           tabBarIcon: ({ color, size, focused }) => (
             <OrderIcon color={color} width={size + 10} height={size} focused={focused} />
           ),
-          headerTitleAlign: 'left', // 👈 this is the proper way
-          headerTitleStyle: {
-            fontSize: 20,
-            color: 'white',
-            fontWeight: 'bold',
-          },
-          tabBarStyle: {
-            backgroundColor: '#FFFFFF',
-          },
-          tabBarLabelStyle: {
-            color: 'black',
-          },
-          headerStyle: {
-            backgroundColor: '#ff0000',
-          },
-          headerRight: () => (
-            <View className="flex-row">
-              <CoinHeader onPress={refreshCoins} coins={coins} />
-              <Link href="/settings" asChild>
-                <HeaderButton />
-              </Link>
-            </View>
-          ),
-          headerLeft: () => (
-            <Link href="/debug" asChild>
-              <DebugHeaderButton />
-            </Link>
-          ),
+          headerTitleAlign: 'left',
         }}
       />
     </Tabs>
