@@ -1,6 +1,7 @@
 // store/useNotificationStore.ts
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { create } from 'zustand';
-import { persist } from 'zustand/middleware';
+import { createJSONStorage, persist } from 'zustand/middleware';
 
 export interface NotificationItem {
   messageId: string;
@@ -21,7 +22,7 @@ export const useNotificationStore = create<NotificationState>()(
     (set, get) => ({
       notifications: [],
       addNotification: (item) => {
-        const exists = get().notifications.some(n => n.messageId === item.messageId);
+        const exists = get().notifications.some((n) => n.messageId === item.messageId);
         if (!exists) {
           set({ notifications: [item, ...get().notifications] });
         }
@@ -30,6 +31,7 @@ export const useNotificationStore = create<NotificationState>()(
     }),
     {
       name: 'notification-store',
+      storage: createJSONStorage(() => AsyncStorage),
     }
   )
 );

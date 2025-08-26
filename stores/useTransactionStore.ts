@@ -1,7 +1,8 @@
 import { create } from 'zustand';
 import { Transaction } from '~/types/entities';
 import { fetchTransactionHistory } from '~/lib/api/transactions';
-import { persist } from 'zustand/middleware';
+import { createJSONStorage, persist } from 'zustand/middleware';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 type State = {
   transactions: Transaction[];
@@ -15,8 +16,8 @@ type Actions = {
   clearTransactions: () => void;
 };
 
-export const useTransactionStore = create<State & Actions>()
-  (persist(
+export const useTransactionStore = create<State & Actions>()(
+  persist(
     (set, get) => ({
       transactions: [],
       loading: false,
@@ -26,10 +27,10 @@ export const useTransactionStore = create<State & Actions>()
       loadTransactions: async (userId) => {
         set({ loading: true, error: null });
         try {
-          // const res = await fetchTransactionHistory(userId, get().lastFetched);
-          const res = await fetchTransactionHistory(userId);
+          const res = await fetchTransactionHistory(userId, get().lastFetched);
+          // const res = await fetchTransactionHistory(userId);
           if (res.code === 304) {
-            console.log("Data is unchanged, skipping fetch")
+            console.log('Data is unchanged, skipping fetch');
             set({ loading: false });
             return;
           }
@@ -51,6 +52,8 @@ export const useTransactionStore = create<State & Actions>()
     }),
     {
       name: 'transaction-storage', // unique name
+      storage: createJSONStorage(() => AsyncStorage),
+
       // getStorage: () => ({
       //   setItem: (name, value) => {
       //     return localStorage.setItem(name, value);
@@ -65,4 +68,4 @@ export const useTransactionStore = create<State & Actions>()
       version: 1, // a migration will be triggered if the version differs
     }
   )
-  )
+);

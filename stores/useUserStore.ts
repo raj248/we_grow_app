@@ -1,4 +1,5 @@
 // stores/useUserStore.ts
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { create } from 'zustand';
 import { createJSONStorage, persist } from 'zustand/middleware';
 import { fetchWalletBalance } from '~/lib/api/api';
@@ -71,7 +72,7 @@ export const useUserStore = create<UserState>()(
     }),
     {
       name: 'user-storage', // localStorage/AsyncStorage key
-      storage: createJSONStorage(() => localStorage),
+      storage: createJSONStorage(() => AsyncStorage),
       version: 1, // a migration will be triggered if the version differs
     }
   )

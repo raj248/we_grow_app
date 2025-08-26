@@ -1,6 +1,7 @@
 // stores/useOrderStore.ts
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { create } from 'zustand';
-import { persist } from 'zustand/middleware';
+import { createJSONStorage, persist } from 'zustand/middleware';
 import { getOrders } from '~/lib/api/orders';
 import { Order } from '~/types/entities';
 
@@ -9,12 +10,12 @@ type State = {
   loading: boolean;
   error: string | null;
   lastFetched?: number;
-}
+};
 
 type Actions = {
   loadOrders: () => Promise<void>;
   clearOrders: () => void;
-}
+};
 
 export const useOrderStore = create<State & Actions>()(
   persist(
@@ -27,15 +28,15 @@ export const useOrderStore = create<State & Actions>()(
       loadOrders: async () => {
         set({ loading: true, error: null });
         try {
-          // const res = await getOrders(get().lastFetched);
-          const res = await getOrders();
+          const res = await getOrders(get().lastFetched);
+          // const res = await getOrders();
           if (res.code === 304) {
-            console.log("Data is unchanged, skipping fetch")
+            console.log('Data is unchanged, skipping fetch');
             set({ loading: false });
             return;
           }
           if (res.success) {
-            set({ orders: res.data || [], lastFetched: Date.now() });
+            set({ orders: res.data || [], lastFetched: res.lastUpdated });
           } else {
             set({ error: res.error || 'Failed to load orders' });
           }
@@ -52,6 +53,8 @@ export const useOrderStore = create<State & Actions>()(
     }),
     {
       name: 'order-storage', // unique name
+      storage: createJSONStorage(() => AsyncStorage),
+
       // storage: () => ({
       //   setItem: (name, value) => {
       //     return localStorage.setItem(name, value);
