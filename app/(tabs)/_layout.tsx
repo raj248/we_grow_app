@@ -3,13 +3,20 @@ import { HeaderButton } from '../../components/HeaderButton';
 import { DebugHeaderButton } from '../../components/DebugHeaderButton';
 import { useEffect } from 'react';
 import { requestUserPermission, notificationListener } from '~/firebase/notificationService';
-import { View } from 'react-native';
+import { Pressable, TouchableOpacity, View } from 'react-native';
 import { CoinHeader } from '~/components/CoinHeader';
 import { useUserStore } from '~/stores/useUserStore';
 import HomeIcon from '~/assets/svgs/home';
 import TopupIcon from '~/assets/svgs/topup';
 import HistoryIcon from '~/assets/svgs/history';
 import OrderIcon from '~/assets/svgs/order';
+
+const NoRippleButton = ({ children, onPress, style }: any) => (
+  <TouchableOpacity activeOpacity={0.7} onPress={onPress} style={style}>
+    {children}
+  </TouchableOpacity>
+);
+
 export default function TabLayout() {
   const { refreshCoins, coins } = useUserStore((state) => ({
     refreshCoins: state.refreshCoins,
@@ -42,6 +49,7 @@ export default function TabLayout() {
         tabBarLabelStyle: {
           color: 'black',
         },
+        tabBarButton: (props) => <NoRippleButton {...props} />,
         headerRight: () => (
           <View className="flex-row">
             <CoinHeader onPress={refreshCoins} coins={coins} />

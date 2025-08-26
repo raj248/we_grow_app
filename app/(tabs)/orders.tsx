@@ -45,9 +45,6 @@ export default function Orders() {
 
   return (
     <View className="flex-1 p-4">
-      <Text variant="title1" className="mb-4 text-center">
-        Order History
-      </Text>
       {loading ? (
         <Text className="mt-4 text-center">Loading...</Text>
       ) : (
@@ -147,9 +144,21 @@ export default function Orders() {
                 )}
 
                 {/* Date */}
-                <Text className="text-sm text-muted-foreground">
-                  {new Date(item.createdAt).toLocaleString()}
-                </Text>
+                <View className="flex-row justify-between">
+                  <Text className="text-sm text-muted-foreground">
+                    {new Date(item.createdAt).toLocaleString()}
+                  </Text>
+                  <View
+                    className="flex-row items-center gap-1 rounded-full bg-gray-100 px-2 py-1"
+                    style={{ borderWidth: 1, borderRadius: 15, borderColor: '#ccc' }}>
+                    <Image
+                      source={require('~/assets/icons/rupee.png')}
+                      className="h-5 w-5"
+                      resizeMode="contain"
+                    />
+                    <Text className="text-sm text-muted-foreground">{item.boostPlan.price}</Text>
+                  </View>
+                </View>
               </Pressable>
             );
           }}
