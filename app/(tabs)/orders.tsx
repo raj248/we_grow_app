@@ -87,7 +87,7 @@ export default function Orders() {
             const progress = totalRequired > 0 ? item.completedCount / totalRequired : 0;
 
             return (
-              <Pressable className="mb-2 rounded-xl border border-border bg-background p-4 shadow-md">
+              <Pressable className="mb-2 rounded-xl border border-border bg-background p-4 shadow-md active:opacity-70">
                 {/* Status Badges */}
                 <View className="mb-1 flex-row items-center justify-between">
                   <Badge

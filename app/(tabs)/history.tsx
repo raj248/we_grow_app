@@ -59,7 +59,7 @@ export default function History() {
 
             return (
               <Pressable
-                className="mb-3 rounded-lg border border-gray-300 bg-white p-3 shadow-sm"
+                className="mb-3 rounded-lg border border-gray-300 bg-white p-3 shadow-md active:opacity-70"
                 onPress={() => console.log('Show Transaction Details Dialog')}>
                 {/* Top row */}
                 <View className="mb-2 flex-row items-center justify-between">

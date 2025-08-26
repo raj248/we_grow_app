@@ -94,7 +94,7 @@ export default function Topup() {
     return (
       <Pressable
         onPress={() => handleDummyPurchase(item)}
-        className="mb-3 flex-row items-center justify-between rounded-xl bg-white px-4 py-3 shadow-sm active:opacity-70"
+        className="mb-3 flex-row items-center justify-between rounded-xl bg-white px-4 py-3 shadow-md active:opacity-70"
         style={{ borderWidth: 1 }}>
         {/* Left side (coins) */}
         <View className="flex-row items-center">
