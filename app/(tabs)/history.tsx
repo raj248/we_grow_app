@@ -34,19 +34,13 @@ export default function History() {
 
   return (
     <View className="flex-1 p-4">
-      <Text variant="title1" className="mb-4 text-center">
-        Transaction History
-      </Text>
-
       {loading ? (
-        <Text className="text-center mt-4">Loading...</Text>
+        <Text className="mt-4 text-center">Loading...</Text>
       ) : (
         <FlatList
           data={transactions}
           keyExtractor={(item) => item.id}
-          refreshControl={
-            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-          }
+          refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
           renderItem={({ item }) => {
             const statusLabel =
               item.status === 'PENDING'
@@ -64,56 +58,57 @@ export default function History() {
             const amountColor = item.type === 'CREDIT' ? '#10b981' : '#ef4444';
 
             return (
-              <Pressable className="p-4 bg-background rounded-xl mb-2 border border-border shadow-md">
-                {/* Top row with source and badges */}
-                <View className="flex-row justify-between items-center mb-1">
-                  <Text variant="title3">{item.source}</Text>
-                  <View className="flex-row gap-2">
-                    <Badge
+              <Pressable
+                className="mb-3 rounded-lg border border-gray-300 bg-white p-3 shadow-sm"
+                onPress={() => console.log('Show Transaction Details Dialog')}>
+                {/* Top row */}
+                <View className="mb-2 flex-row items-center justify-between">
+                  <Text className="text-lg font-semibold">{item.source}</Text>
+                  <View className="flex-row space-x-2">
+                    <View
+                      className="mr-2 rounded-full px-3"
                       style={{
-                        backgroundColor: 'transparent',
+                        backgroundColor: '#ecfdf5',
                         borderWidth: 1,
                         borderColor: colorMap[statusLabel],
-                        color: colorMap[statusLabel],
-                        fontSize: 12,
-                        fontWeight: '600',
-                        paddingHorizontal: 6,
-                        borderRadius: 8,
-                      }}
-                    >
-                      {statusLabel}
-                    </Badge>
-                    <Badge
-                      style={{
-                        backgroundColor: '#F0F0F0',
-                        color: '#333',
-                        fontSize: 12,
-                        paddingHorizontal: 6,
-                        borderRadius: 8,
-                      }}
-                    >
-                      {item.type}
-                    </Badge>
+                      }}>
+                      <Text
+                        style={{
+                          paddingHorizontal: 10,
+                          color: colorMap[statusLabel],
+                          fontWeight: '600',
+                          fontSize: 12,
+                        }}>
+                        {statusLabel}
+                      </Text>
+                    </View>
+                    <View
+                      className="rounded-full px-3 py-1"
+                      style={{ backgroundColor: item.type == 'CREDIT' ? '#ecfdf5' : '#f8f4f4' }}>
+                      <Text
+                        className="px-4 text-xs font-semibold"
+                        style={{
+                          textDecorationColor: item.type == 'CREDIT' ? '#10b981' : '#ef4444',
+                          color: item.type == 'CREDIT' ? '#10b981' : '#ef4444',
+                        }}>
+                        {item.type}
+                      </Text>
+                    </View>
                   </View>
                 </View>
 
-                {/* Amount in bold, right aligned */}
-                <View className="flex-row justify-end mb-1">
-                  <Text
-                    className="font-bold text-base"
-                    style={{ color: amountColor }}
-                  >
-                    ₹{item.amount}
+                {/* Amount */}
+                <View className="mb-1 flex-row justify-end">
+                  <Text className="text-base font-bold" style={{ color: amountColor }}>
+                    ₹{item.amount.toFixed(2)}
                   </Text>
                 </View>
 
-                {/* Bottom row with date and transactionId */}
+                {/* Bottom row */}
                 <View className="flex-row justify-between">
-                  <Text className="text-sm text-muted-foreground">
+                  <Text className="text-sm text-gray-500">Check Details</Text>
+                  <Text className="text-sm text-gray-500">
                     {new Date(item.createdAt).toLocaleString()}
-                  </Text>
-                  <Text className="text-sm text-muted-foreground">
-                    {item.transactionId ?? 'Not available'}
                   </Text>
                 </View>
               </Pressable>
