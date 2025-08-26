@@ -118,7 +118,7 @@ export default function Topup() {
             style={{ borderWidth: 1, borderRadius: 5, borderColor: 'green' }}
             className="px-5 py-1">
             <Text className="text-lg font-bold text-green-600">
-              ₹{item.salePrice || item.originalPrice.toFixed(2)}
+              ₹{item.salePrice || item.originalPrice}
             </Text>
           </View>
         </View>
