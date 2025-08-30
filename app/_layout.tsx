@@ -121,7 +121,7 @@ const WATCH_EARN_OPTIONS = {
   presentation: 'modal', // modal presentation
   animation: 'fade_from_bottom',
   title: 'Watch & Earn',
-  gestureEnabled: true,
+  // gestureEnabled: true,
   contentStyle: {
     paddingTop: 0,
   },

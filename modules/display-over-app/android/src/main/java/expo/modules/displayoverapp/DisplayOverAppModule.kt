@@ -314,28 +314,28 @@ class YoutubeWatchService : AccessibilityService() {
                 Log.e("YoutubeWatchService", "Unable to find launch intent for app")
             }
         }
-        
-        private fun getTopAppPackage(): String? {
-            val usageStatsManager =
-                getSystemService(Context.USAGE_STATS_SERVICE) as UsageStatsManager
 
-            val endTime = System.currentTimeMillis()
-            val beginTime = endTime - 1000 * 10 // last 10 seconds
+        // private fun getTopAppPackage(): String? {
+        //     val usageStatsManager =
+        //         getSystemService(Context.USAGE_STATS_SERVICE) as UsageStatsManager
 
-            val stats = usageStatsManager.queryUsageStats(
-                UsageStatsManager.INTERVAL_DAILY,
-                beginTime,
-                endTime
-            )
+        //     val endTime = System.currentTimeMillis()
+        //     val beginTime = endTime - 1000 * 10 // last 10 seconds
 
-            if (stats.isNullOrEmpty()) {
-                Log.w("YoutubeWatchService", "No usage stats available. Permission not granted?")
-                return null
-            }
+        //     val stats = usageStatsManager.queryUsageStats(
+        //         UsageStatsManager.INTERVAL_DAILY,
+        //         beginTime,
+        //         endTime
+        //     )
 
-            val recentStat = stats.maxByOrNull { it.lastTimeUsed }
-            return recentStat?.packageName
-        }
+        //     if (stats.isNullOrEmpty()) {
+        //         Log.w("YoutubeWatchService", "No usage stats available. Permission not granted?")
+        //         return null
+        //     }
+
+        //     val recentStat = stats.maxByOrNull { it.lastTimeUsed }
+        //     return recentStat?.packageName
+        // }
 
 
     }

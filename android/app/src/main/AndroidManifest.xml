@@ -29,6 +29,8 @@
         <category android:name="android.intent.category.BROWSABLE"/>
         <data android:scheme="we_grow"/>
         <data android:scheme="exp+wegrow"/>
+        <data android:scheme="you-reach-booster"/>
+        <data android:scheme="exp+you-reach-booster"/>
       </intent-filter>
     </activity>
   </application>
