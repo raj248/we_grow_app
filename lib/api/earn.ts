@@ -102,6 +102,7 @@ export const watchAndEarn = async (video: randomVideo) => {
       // to credit the user with coins.
       // Example: await creditUserForWatch(userId, video.id, duration);
       video && creditUserForWatch(video.token, duration);
+      displayOverApp.hideTimerOverlay();
     });
   } catch (err) {
     console.error('Error starting YouTube watch', err);

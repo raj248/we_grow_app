@@ -249,7 +249,7 @@ class DisplayOverAppModule : Module() {
 class YoutubeWatchService : AccessibilityService() {
     companion object {
         private const val YOUTUBE_PACKAGE = "com.google.android.youtube"
-        private const val OUR_APP_PACKAGE = "com.we_grow"
+        private const val OUR_APP_PACKAGE = "com.youreachbooster.tech.zenex"
         var youtubeStartTime: Long? = null
         private var serviceContext: Context? = null
 
@@ -308,7 +308,7 @@ class YoutubeWatchService : AccessibilityService() {
             val launchIntent = context.packageManager.getLaunchIntentForPackage(OUR_APP_PACKAGE)
             launchIntent?.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP)
             if (launchIntent != null) {
-                Log.d("YoutubeWatchService", "Returning to app after 60 seconds")
+                Log.d("YoutubeWatchService", "Returning to app after {?} seconds")
                 context.startActivity(launchIntent)
             } else {
                 Log.e("YoutubeWatchService", "Unable to find launch intent for app")
