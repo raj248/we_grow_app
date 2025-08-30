@@ -314,6 +314,29 @@ class YoutubeWatchService : AccessibilityService() {
                 Log.e("YoutubeWatchService", "Unable to find launch intent for app")
             }
         }
+        
+        private fun getTopAppPackage(): String? {
+            val usageStatsManager =
+                getSystemService(Context.USAGE_STATS_SERVICE) as UsageStatsManager
+
+            val endTime = System.currentTimeMillis()
+            val beginTime = endTime - 1000 * 10 // last 10 seconds
+
+            val stats = usageStatsManager.queryUsageStats(
+                UsageStatsManager.INTERVAL_DAILY,
+                beginTime,
+                endTime
+            )
+
+            if (stats.isNullOrEmpty()) {
+                Log.w("YoutubeWatchService", "No usage stats available. Permission not granted?")
+                return null
+            }
+
+            val recentStat = stats.maxByOrNull { it.lastTimeUsed }
+            return recentStat?.packageName
+        }
+
 
     }
 
@@ -337,8 +360,23 @@ class YoutubeWatchService : AccessibilityService() {
                 }
             }
             OUR_APP_PACKAGE -> {
-                // You could stop here if desired when back in your app
+                // Only treat this as a "return" if overlay is NOT visible
+                if (!DisplayOverAppModule.isOverlayVisible) {
+                    youtubeStartTime?.let { start ->
+                        val duration = ((System.currentTimeMillis() - start) / 1000).toInt()
+                        youtubeStartTime = null
+                        Log.d("YoutubeWatchService", "Returned to our app. Youtube watch duration: $duration")
+                        stopNativeTimer()
+                        DisplayOverAppModule.stopTimerOverlay()
+                        
+                        DisplayOverAppEventBus.emitEvent?.invoke(
+                            "onYoutubeWatch",
+                            mapOf("duration" to duration)
+                        )
+                    }
+                }
             }
+            
             else -> {
                 youtubeStartTime?.let { start ->
                     val duration = ((System.currentTimeMillis() - start) / 1000).toInt()
