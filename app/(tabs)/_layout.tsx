@@ -38,7 +38,7 @@ export default function TabLayout() {
           elevation: 5,
         },
         headerStyle: {
-          backgroundColor: '#ff0000',
+          backgroundColor: '#ff0033',
           elevation: 5,
         },
         headerTitleStyle: {
