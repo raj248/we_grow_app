@@ -46,6 +46,15 @@ class DisplayOverAppModule : Module() {
             DisplayOverAppEventBus.emitEvent = null
         }
 
+        AsyncFunction("hasOverlayPermission") {
+            val context = appContext.reactContext ?: return@AsyncFunction false
+            return@AsyncFunction if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                Settings.canDrawOverlays(context)
+            } else {
+                true // On pre-Marshmallow devices, this permission is granted by default
+            }
+        }
+
         AsyncFunction("requestOverlayPermission") {
             val context = appContext.reactContext ?: return@AsyncFunction false
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && !Settings.canDrawOverlays(context)) {
@@ -57,7 +66,7 @@ class DisplayOverAppModule : Module() {
             }
             true
         }
-
+    
         AsyncFunction("hasAccessibilityPermission") { ->
             val context = appContext.reactContext ?: return@AsyncFunction false
             return@AsyncFunction isAccessibilityServiceEnabled(context, YoutubeWatchService::class.java)

@@ -5,7 +5,7 @@ export default {
   expo: {
     name: IS_DEV ? 'we_grow(dev)' : 'YouReach Booster',
     slug: 'you-reach-booster',
-    version: '1.0.0',
+    version: '1.0.1',
     scheme: 'you-reach-booster',
     web: {
       bundler: 'metro',
@@ -14,6 +14,7 @@ export default {
     },
     plugins: [
       'expo-router',
+      'expo-font',
       [
         'expo-dev-launcher',
         {
@@ -52,9 +53,7 @@ export default {
     },
     extra: {
       router: {},
-      eas: {
-        projectId: '5fd3cbdb-f423-4c38-9eae-e41aa34c373c',
-      },
+      eas: { projectId: '583090e5-0174-479b-9bf4-a65737f26d4a' },
       BASE_URL: process.env.EXPO_PUBLIC_API_SERVER_URL,
     },
   },

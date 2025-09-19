@@ -132,6 +132,14 @@ export default function Modal() {
           }
         />
         <Button
+          title="has accessibility permission"
+          onPress={() =>
+            displayOverApp
+              .hasAccessibilityPermission()
+              .then((res) => console.log('Accessibility permission: ', res))
+          }
+        />
+        <Button
           title="Video 1"
           onPress={() => Linking.openURL('vnd.youtube://watch?v=dQw4w9WgXcQ')}
         />

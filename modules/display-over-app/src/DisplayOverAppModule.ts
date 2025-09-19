@@ -3,6 +3,12 @@ import { DisplayOverAppModuleEvents } from './DisplayOverApp.types';
 
 declare class DisplayOverAppModule extends NativeModule<DisplayOverAppModuleEvents> {
   /**
+   * Checks if the app has permission to display overlay windows.
+   * @returns Promise<boolean> - true if granted, false otherwise.
+   */
+  hasOverlayPermission(): Promise<boolean>;
+
+  /**
    * Requests permission to display overlay windows.
    * @returns Promise<boolean> - true if granted, false otherwise.
    */

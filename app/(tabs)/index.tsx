@@ -5,6 +5,7 @@ import {
   RefreshControl,
   Pressable,
   useWindowDimensions,
+  Alert,
 } from 'react-native';
 import { Text } from '~/components/nativewindui/Text';
 import React, { useEffect, useState, useCallback, useMemo } from 'react';
@@ -22,6 +23,7 @@ import BoostPlanDialog from '~/components/Dialog/BoostPlanDialog';
 import { CardButton } from '~/components/CardButton';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useColorScheme } from '~/lib/useColorScheme';
+import displayOverApp from '~/modules/display-over-app';
 const features = [
   {
     id: '4',

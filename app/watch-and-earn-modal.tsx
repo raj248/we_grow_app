@@ -1,17 +1,18 @@
-import { useEffect, useState } from 'react';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { useCallback, useEffect, useState } from 'react';
+import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import Toast from 'react-native-toast-message';
 import { Text } from '~/components/nativewindui/Text';
 import { fetchRandomVideo, watchAndEarn } from '~/lib/api/earn';
 import { useUserStore } from '~/stores/useUserStore';
 import { Order, randomVideo } from '~/types/entities';
 import { getStoredUserId } from '~/utils/device-info';
-import { Image, TouchableOpacity, View } from 'react-native';
+import { Alert, Image, TouchableOpacity, View } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { Button } from '~/components/Button';
 import { Divider } from 'react-native-paper';
-import { router } from 'expo-router';
+import { router, Stack, useFocusEffect } from 'expo-router';
 import { fetchVideoDetails } from '~/lib/fetchVideoDetail';
+import displayOverApp from '~/modules/display-over-app';
 
 export default function Modal() {
   const [refreshing, setRefreshing] = useState(false);
@@ -51,8 +52,69 @@ export default function Modal() {
     loadVideo();
   }, []);
 
+  useFocusEffect(
+    useCallback(() => {
+      (async () => {
+        try {
+          const hasAcc = await displayOverApp.hasAccessibilityPermission();
+          if (!hasAcc) {
+            Alert.alert(
+              'Permission Required',
+              'Accessibility Permission is required to detect YouTube activity and earn coins.',
+              [
+                { text: 'Cancel', style: 'cancel' },
+                {
+                  text: 'Grant Permission',
+                  onPress: () => displayOverApp.requestAccessibilityPermission(),
+                },
+              ],
+              { cancelable: false }
+            );
+          }
+        } catch (err) {
+          console.error(err);
+        }
+      })();
+    }, [])
+  );
+
+  // 2️⃣ Overlay Permission
+  useFocusEffect(
+    useCallback(() => {
+      (async () => {
+        try {
+          const hasOverlay = await displayOverApp.hasOverlayPermission();
+          if (!hasOverlay) {
+            Alert.alert(
+              'Permission Required',
+              'Display Over Other Apps Permission is required to detect YouTube activity and earn coins.',
+              [
+                { text: 'Cancel', style: 'cancel' },
+                {
+                  text: 'Grant Permission',
+                  onPress: () => displayOverApp.requestOverlayPermission(),
+                },
+              ],
+              { cancelable: false }
+            );
+          }
+        } catch (err) {
+          console.error(err);
+        }
+      })();
+    }, [])
+  );
+  const insets = useSafeAreaInsets();
   return (
-    <SafeAreaView edges={['top', 'left', 'right']}>
+    <SafeAreaView className="flex-1 " edges={['left', 'right', 'bottom']}>
+      <Stack.Screen
+        options={{
+          headerShown: true,
+          contentStyle: {
+            paddingTop: insets.top,
+          },
+        }}
+      />
       {/* Video Card */}
       <TouchableOpacity
         style={{

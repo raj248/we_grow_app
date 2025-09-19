@@ -118,13 +118,9 @@ const DEBUG_PANEL_OPTIONS = {
 } as const;
 
 const WATCH_EARN_OPTIONS = {
-  presentation: 'modal', // modal presentation
   animation: 'fade_from_bottom',
   title: 'Watch & Earn',
-  // gestureEnabled: true,
-  contentStyle: {
-    paddingTop: 0,
-  },
+
   headerStyle: {
     backgroundColor: '#ff0000',
     elevation: 5,
