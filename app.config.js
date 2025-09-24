@@ -15,6 +15,15 @@ export default {
     plugins: [
       'expo-router',
       'expo-font',
+      'expo-iap',
+      [
+        'expo-build-properties',
+        {
+          android: {
+            kotlinVersion: '2.1.20',
+          },
+        },
+      ],
       [
         'expo-dev-launcher',
         {

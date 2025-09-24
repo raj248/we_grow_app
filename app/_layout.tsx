@@ -59,6 +59,7 @@ export default function RootLayout() {
                   <Stack.Screen name="getsubscribersplans" options={MODAL_OPTIONS} />
                   <Stack.Screen name="promoteshortsplans" options={MODAL_OPTIONS} />
                   <Stack.Screen name="debug" options={DEBUG_PANEL_OPTIONS} />
+                  <Stack.Screen name="iap" options={DEBUG_PANEL_OPTIONS} />
                 </Stack>
                 <Toast
                   avoidKeyboard

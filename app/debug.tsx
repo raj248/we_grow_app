@@ -47,16 +47,7 @@ export default function Modal() {
       appStateSub.remove();
     };
   }, []);
-  const triggerFetchActive = async () => {
-    try {
-      const res = await fetchActiveUserCount();
-      console.log('Active user count:', res);
-      const count = res.data ?? -1;
-      setLastActiveCount(count);
-    } catch (err) {
-      console.error('Error fetching active user count', err);
-    }
-  };
+
   const triggerOverlay = async () => {
     const overlayGranted = await displayOverApp.requestOverlayPermission();
     if (!overlayGranted) {
@@ -117,7 +108,9 @@ export default function Modal() {
             usePurchaseStore.getState().clearStore();
           }}
         />
-        <Button title="Fetch Active User" onPress={triggerFetchActive} />
+
+        <Button title="Get Products" onPress={() => router.push('/iap')} />
+
         <Button title="Router.push(Template)" onPress={() => router.push('/template_index')} />
         <Button title="Show Overlay (10s)" onPress={triggerOverlay} />
         <Button title="Open YouTube Video" onPress={openYouTubeVideo} />
@@ -143,32 +136,7 @@ export default function Modal() {
           title="Video 1"
           onPress={() => Linking.openURL('vnd.youtube://watch?v=dQw4w9WgXcQ')}
         />
-        <Button
-          title="Video 2"
-          onPress={() => Linking.openURL('https://youtu.be/8-B6ryuBkCM?si=YVlVQhxLpKtPGmru')}
-        />
-        <Button
-          title="Video 3"
-          onPress={() => Linking.openURL('https://youtu.be/7i_dwP2n90M?si=7GYUB5UQ3nVeEhx4')}
-        />
-        <Button
-          title="Video 4"
-          onPress={() => Linking.openURL('https://youtu.be/La2w7GlXr2o?si=JXzHsm4ornRuBdgK')}
-        />
 
-        <Button
-          title="Google Services File"
-          onPress={() => console.log(process.env.GOOGLE_SERVICES_FILE)}
-        />
-        <Button
-          title="Fetch Video Details"
-          onPress={async () => {
-            const res = await fetchVideoDetailsYoutube(
-              'https://youtu.be/La2w7GlXr2o?si=JXzHsm4ornRuBdgK'
-            );
-            console.log(res);
-          }}
-        />
         <View className="my-8 " />
       </ScrollView>
     </View>
