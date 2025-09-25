@@ -1,6 +1,7 @@
-import { safeFetch, BASE_URL } from "~/lib/api/api";
-import { APIResponse } from "~/types/api";
-import { PurchaseOption, Transaction, Wallet } from "~/types/entities";
+import { PurchaseAndroid } from 'expo-iap';
+import { safeFetch, BASE_URL } from '~/lib/api/api';
+import { APIResponse } from '~/types/api';
+import { PurchaseOption, Transaction, Wallet } from '~/types/entities';
 
 interface PurchasePayload {
   userId: string;
@@ -42,11 +43,13 @@ type MakeOrderResponse = {
   };
 };
 
-export async function getAllPurchaseOptions(timestamp?: number): Promise<APIResponse<PurchaseOption[]>> {
+export async function getAllPurchaseOptions(
+  timestamp?: number
+): Promise<APIResponse<PurchaseOption[]>> {
   const url = new URL(`${BASE_URL}/api/topup-options`);
 
   if (timestamp) {
-    url.searchParams.set("timestamp", timestamp.toString());
+    url.searchParams.set('timestamp', timestamp.toString());
   }
 
   return safeFetch(url.toString());
@@ -56,13 +59,26 @@ export async function makeTopup(
   payload: PurchasePayload
 ): Promise<APIResponse<{ wallet: Wallet; transaction: Transaction }>> {
   return safeFetch(`${BASE_URL}/api/wallet/topup`, {
-    method: "POST",
+    method: 'POST',
     headers: {
-      "Content-Type": "application/json",
+      'Content-Type': 'application/json',
     },
     body: JSON.stringify(payload),
   });
 }
+
+// validateReciept
+export async function validateReceipt(purchase: PurchaseAndroid): Promise<APIResponse<boolean>> {
+  const { productId, purchaseToken, transactionId, packageNameAndroid } = purchase;
+  return safeFetch(`${BASE_URL}/api/topup-options/validate-receipt`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ productId, purchaseToken, transactionId, packageNameAndroid }),
+  });
+}
+// export  = async (receipt: string) => {}
 
 export const createOrder = async (
   userId: string,
@@ -70,11 +86,11 @@ export const createOrder = async (
   link: string
 ): Promise<APIResponse<MakeOrderResponse>> => {
   const url = `${BASE_URL}/api/order/`;
-  console.log(`Creating order for ${userId} with plan ${planId} and video ${link}`)
+  console.log(`Creating order for ${userId} with plan ${planId} and video ${link}`);
   return safeFetch(url, {
-    method: "POST",
+    method: 'POST',
     headers: {
-      "Content-Type": "application/json",
+      'Content-Type': 'application/json',
     },
     body: JSON.stringify({ userId, planId, link }),
   });

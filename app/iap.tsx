@@ -1,11 +1,20 @@
-import { useIAP, ErrorCode, Purchase, ExpoPurchaseError } from 'expo-iap';
+import {
+  useIAP,
+  ErrorCode,
+  Purchase,
+  ExpoPurchaseError,
+  finishTransaction,
+  getAvailablePurchases,
+} from 'expo-iap';
 import { useEffect } from 'react';
 import { Alert, View } from 'react-native';
 import { Button } from '~/components/Button';
 import { Text } from '~/components/nativewindui/Text';
+import { validateReceipt } from '~/lib/api/purchase';
 const androidProductIds = ['coin_10'];
 
 export default function IAPScreen() {
+  // const { connected, products, fetchProducts, requestPurchase } = useIAP();
   const { connected, products, fetchProducts, requestPurchase } = useIAP({
     onPurchaseSuccess: (purchase) => {
       console.log('Purchase successful:', purchase);
@@ -23,6 +32,10 @@ export default function IAPScreen() {
       fetchProducts({
         skus: androidProductIds,
         type: 'all',
+      });
+
+      getAvailablePurchases().then((purchases) => {
+        console.log('Available purchases:', purchases);
       });
     }
   }, [connected]);
@@ -45,10 +58,12 @@ export default function IAPScreen() {
     </View>
   );
 }
-function handleSuccessfulPurchase(purchase: Purchase) {
-  // You might want to send this purchase to your backend for verification
-  // and then unlock the content or update the user's balance.
+async function handleSuccessfulPurchase(purchase: Purchase) {
   console.log('Purchase details:', purchase);
+  const isValid = await validateReceipt(purchase);
+  if ((isValid.data as any).purchaseState === 0) {
+    await finishTransaction({ purchase, isConsumable: true });
+  }
   Alert.prompt('Purchase Successful', `You have successfully purchased ${purchase.productId}!`, [
     {
       text: 'OK',
