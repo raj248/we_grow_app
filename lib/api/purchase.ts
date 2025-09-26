@@ -1,5 +1,6 @@
 import { PurchaseAndroid } from 'expo-iap';
 import { safeFetch, BASE_URL } from '~/lib/api/api';
+import { useUserStore } from '~/stores/useUserStore';
 import { APIResponse } from '~/types/api';
 import { PurchaseOption, Transaction, Wallet } from '~/types/entities';
 
@@ -70,12 +71,16 @@ export async function makeTopup(
 // validateReciept
 export async function validateReceipt(purchase: PurchaseAndroid): Promise<APIResponse<boolean>> {
   const { productId, purchaseToken, transactionId, packageNameAndroid } = purchase;
+  const userId = useUserStore.getState().userId;
+
+  if (!userId) Promise.reject('User not logged in');
+
   return safeFetch(`${BASE_URL}/api/topup-options/validate-receipt`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
     },
-    body: JSON.stringify({ productId, purchaseToken, transactionId, packageNameAndroid }),
+    body: JSON.stringify({ productId, purchaseToken, transactionId, packageNameAndroid, userId }),
   });
 }
 // export  = async (receipt: string) => {}
@@ -95,3 +100,10 @@ export const createOrder = async (
     body: JSON.stringify({ userId, planId, link }),
   });
 };
+
+export async function processPurchase(purchase: PurchaseAndroid) {
+  if (!purchase) return;
+  if (purchase.purchaseState === 'purchased') {
+    await validateReceipt(purchase);
+  }
+}

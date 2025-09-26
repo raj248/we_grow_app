@@ -11,7 +11,7 @@ import { Alert, View } from 'react-native';
 import { Button } from '~/components/Button';
 import { Text } from '~/components/nativewindui/Text';
 import { validateReceipt } from '~/lib/api/purchase';
-const androidProductIds = ['coin_10'];
+const androidProductIds = ['coin_10', 'coin_100'];
 
 export default function IAPScreen() {
   // const { connected, products, fetchProducts, requestPurchase } = useIAP();
@@ -48,7 +48,7 @@ export default function IAPScreen() {
       {products.map((product) => (
         <Button
           key={product.id}
-          title={`Buy ${product.title} for ${product.price}`}
+          title={`Buy ${product.title} for ${product.displayPrice} and get ${product.description}`}
           onPress={() =>
             requestPurchase({ request: { android: { skus: [product.id] } }, type: 'in-app' })
           }

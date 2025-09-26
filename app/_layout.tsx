@@ -27,11 +27,35 @@ import { youtubeListenerService } from '~/services/youtubeListener';
 import { HeaderButton } from '~/components/HeaderButton';
 import { View } from 'react-native';
 import { CoinHeader } from '~/components/CoinHeader';
+import { useEffect } from 'react';
+import { getAvailablePurchases, useIAP } from 'expo-iap';
+import { processPurchase } from '~/lib/api/purchase';
 youtubeListenerService.init(); // runs once
 
 export default function RootLayout() {
   useInitialAndroidBarSync();
   const { colorScheme, isDarkColorScheme } = useColorScheme();
+
+  // Correct - check for purchases on app launch
+  const { connected } = useIAP();
+
+  useEffect(() => {
+    const checkPendingPurchases = async () => {
+      console.log(`Connected: ${connected}`);
+      if (connected) {
+        // Check for any purchases that completed while app was closed
+        console.log('Checking for pending purchases...');
+        const purchases = await getAvailablePurchases();
+        console.log('Pending purchases:', purchases);
+
+        for (const purchase of purchases) {
+          await processPurchase(purchase);
+        }
+      }
+    };
+
+    checkPendingPurchases();
+  }, [connected]);
 
   return (
     <>
@@ -59,7 +83,6 @@ export default function RootLayout() {
 
                   <Stack.Screen name="boostviewplans" options={MODAL_OPTIONS} />
                   <Stack.Screen name="getsubscribersplans" options={MODAL_OPTIONS} />
-                  <Stack.Screen name="promoteshortsplans" options={MODAL_OPTIONS} />
                   <Stack.Screen name="debug" options={DEBUG_PANEL_OPTIONS} />
                   <Stack.Screen name="iap" options={DEBUG_PANEL_OPTIONS} />
                 </Stack>
