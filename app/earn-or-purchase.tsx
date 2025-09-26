@@ -39,6 +39,7 @@ export default function EarnOrPurchase() {
             <Text className="text-base font-semibold ">Earn +10000 credits</Text>
           </View>
           <Pressable
+            android_ripple={{ color: '#ccc' }}
             className="rounded-md border bg-gray-100 px-4 py-1"
             onPress={() => router.push('/watch-and-earn-modal')}>
             <Text className="font-semibold text-gray-700">GO</Text>
@@ -63,6 +64,7 @@ export default function EarnOrPurchase() {
             <Text className="text-base font-semibold ">Purchase Credits</Text>
           </View>
           <Pressable
+            android_ripple={{ color: '#ccc' }}
             className="rounded-md border bg-gray-100 px-4 py-1"
             onPress={() => router.push('/(tabs)/top-up')}>
             <Text className="font-semibold text-gray-700">GO</Text>

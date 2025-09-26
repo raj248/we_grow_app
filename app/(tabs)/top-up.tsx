@@ -96,6 +96,7 @@ export default function Topup() {
           <Text className="text-base font-semibold ">Get Upto +10000 free credits</Text>
         </View>
         <Pressable
+          android_ripple={{ color: '#ccc' }}
           className="rounded-md border bg-gray-100 px-4 py-1"
           onPress={() => router.push('/earn-or-purchase')}>
           <Text className="font-semibold text-gray-700">GO</Text>

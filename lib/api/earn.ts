@@ -1,4 +1,4 @@
-import { Linking } from 'react-native';
+import { Alert, Linking } from 'react-native';
 import { safeFetch, BASE_URL } from '~/lib/api/api';
 import displayOverApp from '~/modules/display-over-app';
 import { useUserStore } from '~/stores/useUserStore';
@@ -27,10 +27,13 @@ async function creditUserForWatch(token: string, duration: number) {
   const reward = await fetchReward(token, duration);
   if (!reward.success || !reward.data) {
     console.error('Failed to fetch reward', reward.error);
+    Toast.show({ text1: 'Failed to fetch reward', text2: reward.error, type: 'error' });
+    Alert.alert('Failed to fetch reward', reward.error);
     return;
   }
 
   const { message, rewardAmount } = reward.data;
+  Alert.alert(`Congratulations!!!, you earned ${rewardAmount} coins!`, message);
   console.log(message, rewardAmount);
 }
 // @DEPRECATED
