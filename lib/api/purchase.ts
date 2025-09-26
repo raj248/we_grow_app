@@ -1,4 +1,10 @@
-import { PurchaseAndroid } from 'expo-iap';
+import {
+  ErrorCode,
+  finishTransaction,
+  PurchaseAndroid,
+  PurchaseError,
+  requestPurchase,
+} from 'expo-iap';
 import { safeFetch, BASE_URL } from '~/lib/api/api';
 import { useUserStore } from '~/stores/useUserStore';
 import { APIResponse } from '~/types/api';
@@ -101,9 +107,97 @@ export const createOrder = async (
   });
 };
 
+export async function handlePurchase(sku: string) {
+  try {
+    if (!sku) return;
+    await requestPurchase({ request: { android: { skus: [sku] } }, type: 'in-app' });
+  } catch (error) {
+    handlePurchaseError(error as PurchaseError);
+  }
+}
+
+export async function handlePurchaseError(error: PurchaseError) {
+  switch (error.code) {
+    case ErrorCode.UserCancelled:
+      console.log('User canceled the purchase.');
+      break;
+    case ErrorCode.ItemUnavailable:
+      console.log('Item is unavailable.');
+      break;
+    case ErrorCode.BillingUnavailable:
+      console.log('Billing service is unavailable.');
+      break;
+    case ErrorCode.DeveloperError:
+      console.log('Developer error:', error.message);
+      break;
+    case ErrorCode.NetworkError:
+      console.log('Network error:', error.message);
+      retryWithBackoff(async () => {
+        await handlePurchase(error.productId ?? '');
+      });
+      break;
+    case ErrorCode.PurchaseError:
+      console.log('Purchases Error:', error.message);
+      break;
+    case ErrorCode.AlreadyOwned:
+      console.log('Purchase is being processed. Try again later.');
+      break;
+    case ErrorCode.ConnectionClosed:
+      console.log('The connection was closed.');
+      break;
+    case ErrorCode.Interrupted:
+      console.log('The purchase was interrupted.');
+      break;
+    case ErrorCode.ServiceError:
+      console.log('The service encountered an error. Try again later.');
+      break;
+    case ErrorCode.IapNotAvailable:
+      console.log('IAP is not available on this devices.');
+      break;
+    case ErrorCode.UserError:
+      console.log('User error: Please try again later.');
+      break;
+    case ErrorCode.Pending:
+      console.log('Purchase is pending. Please wait for it to complete.');
+      break;
+    case ErrorCode.Unknown:
+      console.log('An unknown error occurred. Please try again later');
+      break;
+    case ErrorCode.TransactionValidationFailed:
+      console.log('The transaction could not be validated.');
+      break;
+    default:
+      console.log('Unhandled purchase error:', error.code, error.message);
+      break;
+  }
+}
 export async function processPurchase(purchase: PurchaseAndroid) {
   if (!purchase) return;
   if (purchase.purchaseState === 'purchased') {
-    await validateReceipt(purchase);
+    const isValid = await validateReceipt(purchase);
+    if ((isValid.data as any).purchaseState === 0) {
+      useUserStore.getState().refreshCoins();
+      await finishTransaction({ purchase, isConsumable: true });
+    } else {
+      console.log('Invalid Receipt.');
+    }
   }
 }
+
+const retryWithBackoff = async (fn: () => Promise<any>, maxRetries = 3) => {
+  for (let i = 0; i < maxRetries; i++) {
+    try {
+      return await fn();
+    } catch (error: ErrorCode | any) {
+      if (i === maxRetries - 1) throw error;
+
+      // Only retry on network or temporary errors
+      if ([ErrorCode.ServiceError, ErrorCode.NetworkError].includes(error.code)) {
+        console.log(`Retrying in ${Math.pow(2, i) * 1000}ms...`);
+        await new Promise((resolve) => setTimeout(resolve, Math.pow(2, i) * 1000));
+      } else {
+        throw error;
+      }
+    }
+  }
+};

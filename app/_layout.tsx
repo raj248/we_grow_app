@@ -28,8 +28,14 @@ import { HeaderButton } from '~/components/HeaderButton';
 import { View } from 'react-native';
 import { CoinHeader } from '~/components/CoinHeader';
 import { useEffect } from 'react';
-import { fetchProducts, getAvailablePurchases, useIAP } from 'expo-iap';
-import { processPurchase } from '~/lib/api/purchase';
+import {
+  fetchProducts,
+  finishTransaction,
+  getAvailablePurchases,
+  PurchaseError,
+  useIAP,
+} from 'expo-iap';
+import { handlePurchaseError, processPurchase } from '~/lib/api/purchase';
 youtubeListenerService.init(); // runs once
 
 export default function RootLayout() {
@@ -37,7 +43,16 @@ export default function RootLayout() {
   const { colorScheme, isDarkColorScheme } = useColorScheme();
 
   // Correct - check for purchases on app launch
-  const { connected } = useIAP();
+  const { connected } = useIAP({
+    onPurchaseSuccess: (purchase) => {
+      console.log('Purchase successful:', purchase);
+      processPurchase(purchase);
+    },
+    onPurchaseError: (error) => {
+      console.error('Purchase failed:', error);
+      handlePurchaseError(error as PurchaseError);
+    },
+  });
 
   useEffect(() => {
     const checkPendingPurchases = async () => {
@@ -50,6 +65,7 @@ export default function RootLayout() {
 
         for (const purchase of purchases) {
           await processPurchase(purchase);
+          await finishTransaction({ purchase, isConsumable: true });
         }
       }
     };

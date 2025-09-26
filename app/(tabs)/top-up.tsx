@@ -10,6 +10,7 @@ import { PurchaseOption } from '~/types/entities';
 import { router } from 'expo-router';
 
 import { getAvailablePurchases, useIAP } from 'expo-iap';
+import { handlePurchase } from '~/lib/api/purchase';
 
 export default function Topup() {
   const { connected, products, fetchProducts, requestPurchase } = useIAP();
@@ -107,7 +108,6 @@ export default function Topup() {
   const renderItem = ({ item }: { item: PurchaseOption }) => {
     const hasDiscount =
       item.salePrice && item.originalPrice && Number(item.salePrice.slice(1)) < item.originalPrice;
-    console.log('Has discount: ', hasDiscount);
     const discountPercent = hasDiscount
       ? Math.round(
           ((item.originalPrice - Number(item.salePrice.slice(1))) / item.originalPrice) * 100
@@ -116,7 +116,7 @@ export default function Topup() {
 
     return (
       <Pressable
-        onPress={() => handleDummyPurchase(item)}
+        onPress={() => handlePurchase(item.id)}
         className="mb-3 flex-row items-center justify-between rounded-xl bg-white px-4 py-3 shadow-md active:opacity-70"
         style={{ borderWidth: 1 }}>
         {/* Left side (coins) */}
