@@ -37,7 +37,9 @@ export default function RootLayout() {
     <>
       <StatusBar
         key={`root-status-bar-${isDarkColorScheme ? 'light' : 'dark'}`}
-        style={isDarkColorScheme ? 'light' : 'dark'}
+        style={'light'}
+        translucent={false}
+        backgroundColor="#ff0033"
       />
       {/* WRAP YOUR APP WITH ANY ADDITIONAL PROVIDERS HERE */}
       {/* <ExampleProvider> */}
