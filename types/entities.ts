@@ -1,13 +1,13 @@
 export type PurchaseOption = {
   id: string;
   coins: number;
-  googleProductId: string;
   originalPrice: number;
-  salePrice: number;
-  currency: string;
   isActive: boolean;
   createdAt: string;
   updatedAt: string;
+  // play store provided
+  salePrice: string;
+  title: string;
 };
 
 export type Wallet = {

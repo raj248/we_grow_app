@@ -9,13 +9,32 @@ import { useFocusEffect } from '@react-navigation/native';
 import { PurchaseOption } from '~/types/entities';
 import { router } from 'expo-router';
 
+import { getAvailablePurchases, useIAP } from 'expo-iap';
+
 export default function Topup() {
+  const { connected, products, fetchProducts, requestPurchase } = useIAP();
+
   const { error, loading, purchaseOptions, purchase, fetchPurchaseOptions } = usePurchaseStore();
   const [refreshing, setRefreshing] = useState(false);
 
   const loadPurchaseOptions = useCallback(async () => {
     await fetchPurchaseOptions();
-  }, []);
+    const productIds = purchaseOptions.map((option) => option.id);
+    if (!purchaseOptions || purchaseOptions.length === 0) return;
+    if (connected) {
+      fetchProducts({
+        skus: productIds,
+        type: 'all',
+      });
+      getAvailablePurchases().then((purchases) => {
+        console.log('Available purchases:', purchases);
+      });
+
+      // Update purchaseOptions with product details from expo-iap
+      usePurchaseStore.getState().updatePurchaseOptions(products);
+      console.log(Number(purchaseOptions[0].salePrice.slice(1)));
+    }
+  }, [connected]);
 
   const onRefresh = useCallback(async () => {
     setRefreshing(true);
@@ -46,7 +65,7 @@ export default function Topup() {
     const fakeTransactionId = Math.random().toString(36).substring(2, 10);
 
     if (!id) return;
-    const result = await purchase(id, item.googleProductId, fakeTransactionId);
+    const result = await purchase(id, item.id, fakeTransactionId);
     if (!result.success) {
       Toast.show({
         type: 'error',
@@ -86,9 +105,13 @@ export default function Topup() {
   );
 
   const renderItem = ({ item }: { item: PurchaseOption }) => {
-    const hasDiscount = item.salePrice && item.originalPrice && item.salePrice < item.originalPrice;
+    const hasDiscount =
+      item.salePrice && item.originalPrice && Number(item.salePrice.slice(1)) < item.originalPrice;
+    console.log('Has discount: ', hasDiscount);
     const discountPercent = hasDiscount
-      ? Math.round(((item.originalPrice - item.salePrice) / item.originalPrice) * 100)
+      ? Math.round(
+          ((item.originalPrice - Number(item.salePrice.slice(1))) / item.originalPrice) * 100
+        )
       : null;
 
     return (
@@ -118,7 +141,7 @@ export default function Topup() {
             style={{ borderWidth: 1, borderRadius: 5, borderColor: 'green' }}
             className="px-5 py-1">
             <Text className="text-lg font-bold text-green-600">
-              ₹{item.salePrice || item.originalPrice}
+              {item.salePrice ?? '₹' + item.originalPrice}
             </Text>
           </View>
         </View>

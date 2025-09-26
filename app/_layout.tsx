@@ -28,7 +28,7 @@ import { HeaderButton } from '~/components/HeaderButton';
 import { View } from 'react-native';
 import { CoinHeader } from '~/components/CoinHeader';
 import { useEffect } from 'react';
-import { getAvailablePurchases, useIAP } from 'expo-iap';
+import { fetchProducts, getAvailablePurchases, useIAP } from 'expo-iap';
 import { processPurchase } from '~/lib/api/purchase';
 youtubeListenerService.init(); // runs once
 
