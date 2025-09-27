@@ -18,30 +18,36 @@ export default function Topup() {
   const { error, loading, purchaseOptions, purchase, fetchPurchaseOptions } = usePurchaseStore();
   const [refreshing, setRefreshing] = useState(false);
 
-  const loadPurchaseOptions = useCallback(async () => {
-    await fetchPurchaseOptions();
-    const productIds = purchaseOptions.map((option) => option.id);
-    if (!purchaseOptions || purchaseOptions.length === 0) return;
-    if (connected) {
-      fetchProducts({
-        skus: productIds,
-        type: 'all',
-      });
-      getAvailablePurchases().then((purchases) => {
-        console.log('Available purchases:', purchases);
-      });
+  const loadPurchaseOptions = useCallback(
+    async (soft = true) => {
+      const options = await fetchPurchaseOptions(soft);
+      const productIds = options?.map((option) => option.id);
+      if (!purchaseOptions || purchaseOptions.length === 0) {
+        console.log('No purchase options found');
+        return;
+      }
+      if (connected && productIds) {
+        fetchProducts({
+          skus: productIds,
+          type: 'all',
+        });
+        getAvailablePurchases().then((purchases) => {
+          console.log('Available purchases:', purchases);
+        });
 
-      // Update purchaseOptions with product details from expo-iap
-      usePurchaseStore.getState().updatePurchaseOptions(products);
-      console.log(Number(purchaseOptions[0].salePrice.slice(1)));
-    }
-  }, [connected]);
+        // Update purchaseOptions with product details from expo-iap
+        usePurchaseStore.getState().updatePurchaseOptions(products);
+      }
+    },
+    [connected]
+  );
 
   const onRefresh = useCallback(async () => {
     // console.log(products);
     setRefreshing(true);
     // await fetchPurchaseOptions(false);
-    await loadPurchaseOptions();
+    console.log('Loading purchase options');
+    await loadPurchaseOptions(false);
     setRefreshing(false);
   }, [loadPurchaseOptions]);
 

@@ -14,7 +14,7 @@ type State = {
 };
 
 type Actions = {
-  fetchPurchaseOptions: (soft?: boolean) => Promise<void>;
+  fetchPurchaseOptions: (soft?: boolean) => Promise<PurchaseOption[] | undefined>;
   purchase: (
     userId: string,
     productId: string,
@@ -42,9 +42,10 @@ export const usePurchaseStore = create<State & Actions>()(
           set({ loading: false });
           return;
         }
-
+        // Handle response
         if (res.success && res.data) {
           set({ purchaseOptions: res.data, loading: false, lastFetched: res.lastUpdated });
+          return res.data;
         } else {
           set({
             error: res.error ?? 'Failed to load purchase options',
