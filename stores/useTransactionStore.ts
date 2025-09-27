@@ -12,7 +12,7 @@ type State = {
 };
 
 type Actions = {
-  loadTransactions: (userId: string) => Promise<void>;
+  loadTransactions: (userId: string, soft?: boolean) => Promise<void>;
   clearTransactions: () => void;
 };
 
@@ -24,10 +24,10 @@ export const useTransactionStore = create<State & Actions>()(
       error: null,
       lastFetched: undefined,
 
-      loadTransactions: async (userId) => {
+      loadTransactions: async (userId, soft = true) => {
         set({ loading: true, error: null });
         try {
-          const res = await fetchTransactionHistory(userId, get().lastFetched);
+          const res = await fetchTransactionHistory(userId, soft ? get().lastFetched : undefined);
           // const res = await fetchTransactionHistory(userId);
           if (res.code === 304) {
             console.log('Data is unchanged, skipping fetch');

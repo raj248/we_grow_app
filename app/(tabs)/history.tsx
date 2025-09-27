@@ -12,16 +12,16 @@ export default function History() {
   const [refreshing, setRefreshing] = useState(false);
   const { error, loading, transactions, loadTransactions } = useTransactionStore();
 
-  const loadHistory = useCallback(async () => {
+  const loadHistory = useCallback(async (soft = true) => {
     const userId = await getStoredUserId();
     if (!userId) return;
     setRefreshing(true);
-    loadTransactions(userId);
+    loadTransactions(userId, soft);
     setRefreshing(false);
   }, []);
 
   const onRefresh = useCallback(async () => {
-    await loadHistory();
+    await loadHistory(false);
   }, [loadHistory]);
 
   useFocusEffect(

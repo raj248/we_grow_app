@@ -13,7 +13,7 @@ type State = {
 };
 
 type Actions = {
-  loadOrders: () => Promise<void>;
+  loadOrders: (soft?: boolean) => Promise<void>;
   clearOrders: () => void;
 };
 
@@ -25,10 +25,10 @@ export const useOrderStore = create<State & Actions>()(
       error: null,
       lastFetched: undefined,
 
-      loadOrders: async () => {
+      loadOrders: async (soft = true) => {
         set({ loading: true, error: null });
         try {
-          const res = await getOrders(get().lastFetched);
+          const res = await getOrders(soft ? get().lastFetched : undefined);
           // const res = await getOrders();
           if (res.code === 304) {
             console.log('Data is unchanged, skipping fetch');

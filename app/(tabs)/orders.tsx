@@ -13,14 +13,14 @@ export default function Orders() {
   const [enrichedOrders, setEnrichedOrders] = useState<Order[]>([]);
   const { loading, orders, loadOrders } = useOrderStore();
 
-  const loadHistory = useCallback(async () => {
+  const loadHistory = useCallback(async (soft = true) => {
     setRefreshing(true);
-    await loadOrders(); // load raw orders first
+    await loadOrders(soft); // load raw orders first
     setRefreshing(false);
   }, []);
 
   const onRefresh = useCallback(async () => {
-    await loadHistory();
+    await loadHistory(false);
   }, [loadHistory]);
 
   useFocusEffect(

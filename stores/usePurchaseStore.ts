@@ -14,7 +14,7 @@ type State = {
 };
 
 type Actions = {
-  fetchPurchaseOptions: () => Promise<void>;
+  fetchPurchaseOptions: (soft?: boolean) => Promise<void>;
   purchase: (
     userId: string,
     productId: string,
@@ -32,9 +32,9 @@ export const usePurchaseStore = create<State & Actions>()(
       error: null,
       lastFetched: undefined,
 
-      fetchPurchaseOptions: async () => {
+      fetchPurchaseOptions: async (soft = true) => {
         set({ loading: true, error: null });
-        const res = await getAllPurchaseOptions(get().lastFetched);
+        const res = await getAllPurchaseOptions(soft ? get().lastFetched : undefined);
 
         // Exit early if response indicates data is unchanged
         if (res.code === 304) {

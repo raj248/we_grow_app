@@ -13,7 +13,7 @@ import { getAvailablePurchases, useIAP } from 'expo-iap';
 import { handlePurchase } from '~/lib/api/purchase';
 
 export default function Topup() {
-  const { connected, products, fetchProducts, requestPurchase } = useIAP();
+  const { connected, products, fetchProducts } = useIAP();
 
   const { error, loading, purchaseOptions, purchase, fetchPurchaseOptions } = usePurchaseStore();
   const [refreshing, setRefreshing] = useState(false);
@@ -38,14 +38,17 @@ export default function Topup() {
   }, [connected]);
 
   const onRefresh = useCallback(async () => {
+    // console.log(products);
     setRefreshing(true);
-    await fetchPurchaseOptions();
+    // await fetchPurchaseOptions(false);
+    await loadPurchaseOptions();
     setRefreshing(false);
   }, [loadPurchaseOptions]);
 
   useFocusEffect(
     useCallback(() => {
       (async () => {
+        console.log('Called loadPurchaseOptions');
         await loadPurchaseOptions();
       })();
     }, [loadPurchaseOptions])
@@ -60,27 +63,6 @@ export default function Topup() {
       });
     }
   }, [error]);
-
-  const handleDummyPurchase = async (item: PurchaseOption) => {
-    const id = useUserStore.getState().userId || (await getStoredUserId());
-    const fakeTransactionId = Math.random().toString(36).substring(2, 10);
-
-    if (!id) return;
-    const result = await purchase(id, item.id, fakeTransactionId);
-    if (!result.success) {
-      Toast.show({
-        type: 'error',
-        text1: 'Purchase Failed',
-        text2: result.error || 'Something went wrong.',
-      });
-      return;
-    }
-    Toast.show({
-      type: 'success',
-      text1: 'Purchase Successful',
-      text2: `You have successfully purchased ${item.coins} coins!`,
-    });
-  };
 
   const renderHeader = () => (
     <>
