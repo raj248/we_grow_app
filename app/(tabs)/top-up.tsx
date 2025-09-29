@@ -3,13 +3,11 @@ import { Image, FlatList, Pressable, View, ActivityIndicator, RefreshControl } f
 import { Text } from '~/components/nativewindui/Text';
 import Toast from 'react-native-toast-message';
 import { usePurchaseStore } from '~/stores/usePurchaseStore';
-import { useUserStore } from '~/stores/useUserStore';
-import { getStoredUserId } from '~/utils/device-info';
 import { useFocusEffect } from '@react-navigation/native';
 import { PurchaseOption } from '~/types/entities';
 import { router } from 'expo-router';
 
-import { getAvailablePurchases, useIAP } from 'expo-iap';
+import { useIAP } from 'expo-iap';
 import { handlePurchase } from '~/lib/api/purchase';
 
 export default function Topup() {
