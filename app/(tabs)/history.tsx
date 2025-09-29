@@ -33,7 +33,7 @@ export default function History() {
   );
 
   return (
-    <View className="flex-1 p-4">
+    <View className="flex-1 p-2">
       {loading ? (
         <Text className="mt-4 text-center">Loading...</Text>
       ) : (
