@@ -1,6 +1,7 @@
 import type { APIResponse } from '~/types/api';
 import { PurchaseOption, Wallet } from '~/types/entities';
 import Constants from 'expo-constants';
+import Toast from 'react-native-toast-message';
 
 // export const BASE_URL = process.env.EXPO_PUBLIC_API_SERVER_URL;
 type Extra = {
@@ -37,6 +38,7 @@ export async function safeFetch<T>(
     return result;
   } catch (error) {
     console.error(`Fetch error (${url}):`, error);
+    Toast.show({ text1: 'Network Error', text2: (error as Error).message, type: 'error' });
     return { success: false, error: (error as Error).message ?? 'Unknown error' };
   }
 }

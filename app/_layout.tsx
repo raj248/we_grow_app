@@ -109,7 +109,6 @@ export default function RootLayout() {
                   visibilityTime={3000}
                   bottomOffset={80}
                   topOffset={80}
-                  // config={{}}
                 />
               </NavThemeProvider>
             </ActionSheetProvider>

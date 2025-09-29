@@ -5,6 +5,7 @@ import {
   PurchaseError,
   requestPurchase,
 } from 'expo-iap';
+import Toast from 'react-native-toast-message';
 import { safeFetch, BASE_URL } from '~/lib/api/api';
 import { useUserStore } from '~/stores/useUserStore';
 import { APIResponse } from '~/types/api';
@@ -123,54 +124,74 @@ export async function handlePurchaseError(error: PurchaseError) {
       break;
     case ErrorCode.QueryProduct:
       console.log('The Item is currently not available:', error.message);
+      Toast.show({ text1: 'Item is not available', text2: error.message, type: 'error' });
       break;
     case ErrorCode.ItemUnavailable:
       console.log('Item is unavailable.');
+      Toast.show({ text1: 'Item is unavailable', type: 'error' });
       break;
     case ErrorCode.BillingUnavailable:
       console.log('Billing service is unavailable.');
+      Toast.show({ text1: 'Billing service is unavailable', type: 'error' });
       break;
     case ErrorCode.DeveloperError:
       console.log('Developer error:', error.message);
+      Toast.show({ text1: 'Developer error', text2: error.message, type: 'error' });
       break;
     case ErrorCode.NetworkError:
       console.log('Network error:', error.message);
+      Toast.show({ text1: 'Network error', text2: error.message, type: 'error' });
       retryWithBackoff(async () => {
         await handlePurchase(error.productId ?? '');
       });
       break;
     case ErrorCode.PurchaseError:
       console.log('Purchases Error:', error.message);
+      Toast.show({ text1: 'Purchases Error', text2: error.message, type: 'error' });
       break;
     case ErrorCode.AlreadyOwned:
       console.log('Purchase is being processed. Try again later.');
+      Toast.show({ text1: 'Purchase is being processed', type: 'info' });
       break;
     case ErrorCode.ConnectionClosed:
       console.log('The connection was closed.');
+      Toast.show({ text1: 'Connection closed', type: 'error' });
       break;
     case ErrorCode.Interrupted:
       console.log('The purchase was interrupted.');
+      Toast.show({ text1: 'Purchase was interrupted', type: 'error' });
       break;
     case ErrorCode.ServiceError:
       console.log('The service encountered an error. Try again later.');
+      Toast.show({ text1: 'Service error', text2: 'Try again later', type: 'error' });
       break;
     case ErrorCode.IapNotAvailable:
       console.log('IAP is not available on this devices.');
+      Toast.show({ text1: 'IAP is not available', type: 'error' });
       break;
     case ErrorCode.UserError:
       console.log('User error: Please try again later.');
+      Toast.show({ text1: 'User error', text2: 'Please try again later', type: 'error' });
       break;
     case ErrorCode.Pending:
       console.log('Purchase is pending. Please wait for it to complete.');
+      Toast.show({
+        text1: 'Purchase is pending',
+        text2: 'Please wait for it to complete.',
+        type: 'info',
+      });
       break;
     case ErrorCode.Unknown:
       console.log('An unknown error occurred. Please try again later');
+      Toast.show({ text1: 'Unknown error', text2: 'Please try again later', type: 'error' });
       break;
     case ErrorCode.TransactionValidationFailed:
       console.log('The transaction could not be validated.');
+      Toast.show({ text1: 'Transaction validation failed', type: 'error' });
       break;
     default:
       console.log('Unhandled purchase error:', error.code, error.message);
+      Toast.show({ text1: 'Unhandled purchase error', text2: error.message, type: 'error' });
       break;
   }
 }
