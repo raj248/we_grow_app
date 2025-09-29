@@ -58,7 +58,6 @@ export default function RootLayout() {
     const checkPendingPurchases = async () => {
       console.log(`Connected: ${connected}`);
       if (connected) {
-        // Check for any purchases that completed while app was closed
         console.log('Checking for pending purchases...');
         const purchases = await getAvailablePurchases();
         console.log('Pending purchases:', purchases);

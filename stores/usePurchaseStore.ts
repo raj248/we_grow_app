@@ -4,7 +4,7 @@ import type { PurchaseOption } from '~/types/entities';
 import type { APIResponse } from '~/types/api';
 import { createJSONStorage, persist } from 'zustand/middleware';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { Product, PurchaseAndroid } from 'expo-iap';
+import { fetchProducts, getAvailablePurchases, Product, PurchaseAndroid, useIAP } from 'expo-iap';
 
 type State = {
   purchaseOptions: PurchaseOption[];
@@ -20,7 +20,6 @@ type Actions = {
     productId: string,
     purchaseToken: string
   ) => Promise<APIResponse<{ wallet: any; transaction: any }>>;
-  updatePurchaseOptions: (options: Product[]) => void;
   clearStore: () => void;
 };
 
@@ -36,16 +35,50 @@ export const usePurchaseStore = create<State & Actions>()(
         set({ loading: true, error: null });
         const res = await getAllPurchaseOptions(soft ? get().lastFetched : undefined);
 
-        // Exit early if response indicates data is unchanged
         if (res.code === 304) {
-          console.log('Data is unchanged, skipping fetch');
+          console.log('Data unchanged, skipping fetch');
           set({ loading: false });
           return;
         }
-        // Handle response
+
         if (res.success && res.data) {
-          set({ purchaseOptions: res.data, loading: false, lastFetched: res.lastUpdated });
-          return res.data;
+          const serverOptions = res.data;
+          const productIds = serverOptions.map((option) => option.id);
+
+          let products: Product[] = [];
+          if (productIds?.length) {
+            try {
+              products = (await fetchProducts({ skus: productIds, type: 'all' })) ?? [];
+              getAvailablePurchases().then((purchases) => {
+                console.log('Available purchases:', purchases);
+              });
+            } catch (err) {
+              console.error('Error fetching IAP products:', err);
+            }
+          }
+
+          // Merge server + IAP details in one step
+          const mergedOptions = serverOptions.map((option) => {
+            const product = products.find((p) => p.id === option.id);
+            return product
+              ? {
+                  ...option,
+                  salePrice: product.displayPrice,
+                  title: product.title,
+                }
+              : null;
+          });
+          // remove null values
+          const filteredOptions = mergedOptions.filter(
+            (option): option is PurchaseOption => option !== null
+          );
+          set({
+            purchaseOptions: filteredOptions,
+            loading: false,
+            lastFetched: res.lastUpdated,
+          });
+
+          return filteredOptions;
         } else {
           set({
             error: res.error ?? 'Failed to load purchase options',
@@ -64,22 +97,6 @@ export const usePurchaseStore = create<State & Actions>()(
           set({ error: res.error ?? 'Failed to purchase', loading: false });
         }
         return res;
-      },
-      updatePurchaseOptions: (options) => {
-        const currentOptions = get().purchaseOptions;
-        const updatedOptions = currentOptions.map((option) => {
-          const product = options.find((p) => p.id === option.id);
-          if (product) {
-            console.log(`Product found: ${product.price} for ${option.originalPrice}`);
-            return {
-              ...option,
-              salePrice: product.displayPrice,
-              title: product.title,
-            };
-          }
-          return option;
-        });
-        set({ purchaseOptions: updatedOptions });
       },
 
       clearStore: () => {

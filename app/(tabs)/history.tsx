@@ -63,10 +63,17 @@ export default function History() {
                 onPress={() => console.log('Show Transaction Details Dialog')}>
                 {/* Top row */}
                 <View className="mb-2 flex-row items-center justify-between">
-                  <Text className="text-lg font-semibold">{item.source}</Text>
+                  <Text
+                    className="text-lg font-semibold"
+                    numberOfLines={1}
+                    ellipsizeMode="tail"
+                    style={{ flexShrink: 1 }}>
+                    {item.source}
+                  </Text>
+
                   <View className="flex-row space-x-2">
                     <View
-                      className="mr-2 rounded-full px-3"
+                      className="mr-2 rounded-full px-1"
                       style={{
                         backgroundColor: '#ecfdf5',
                         borderWidth: 1,
@@ -83,7 +90,7 @@ export default function History() {
                       </Text>
                     </View>
                     <View
-                      className="rounded-full px-3 py-1"
+                      className="rounded-full p-1"
                       style={{ backgroundColor: item.type == 'CREDIT' ? '#ecfdf5' : '#f8f4f4' }}>
                       <Text
                         className="px-4 text-xs font-semibold"

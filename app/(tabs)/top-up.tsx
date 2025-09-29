@@ -13,40 +13,22 @@ import { getAvailablePurchases, useIAP } from 'expo-iap';
 import { handlePurchase } from '~/lib/api/purchase';
 
 export default function Topup() {
-  const { connected, products, fetchProducts } = useIAP();
+  const { connected } = useIAP();
 
-  const { error, loading, purchaseOptions, purchase, fetchPurchaseOptions } = usePurchaseStore();
+  const { error, loading, purchaseOptions, fetchPurchaseOptions } = usePurchaseStore();
   const [refreshing, setRefreshing] = useState(false);
 
   const loadPurchaseOptions = useCallback(
     async (soft = true) => {
-      const options = await fetchPurchaseOptions(soft);
-      const productIds = options?.map((option) => option.id);
-      if (!purchaseOptions || purchaseOptions.length === 0) {
-        console.log('No purchase options found');
-        return;
-      }
-      if (connected && productIds) {
-        fetchProducts({
-          skus: productIds,
-          type: 'all',
-        });
-        getAvailablePurchases().then((purchases) => {
-          console.log('Available purchases:', purchases);
-        });
-
-        // Update purchaseOptions with product details from expo-iap
-        usePurchaseStore.getState().updatePurchaseOptions(products);
+      if (connected) {
+        await fetchPurchaseOptions(soft);
       }
     },
     [connected]
   );
 
   const onRefresh = useCallback(async () => {
-    // console.log(products);
     setRefreshing(true);
-    // await fetchPurchaseOptions(false);
-    console.log('Loading purchase options');
     await loadPurchaseOptions(false);
     setRefreshing(false);
   }, [loadPurchaseOptions]);
@@ -54,7 +36,6 @@ export default function Topup() {
   useFocusEffect(
     useCallback(() => {
       (async () => {
-        console.log('Called loadPurchaseOptions');
         await loadPurchaseOptions();
       })();
     }, [loadPurchaseOptions])

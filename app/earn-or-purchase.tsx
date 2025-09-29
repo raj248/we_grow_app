@@ -28,7 +28,7 @@ export default function EarnOrPurchase() {
       />
       <>
         <View
-          className="mb-3 flex-row items-center justify-between rounded-xl bg-white p-3 shadow-md"
+          className="mb-3 mt-3 flex-row items-center justify-between rounded-xl bg-white p-3 shadow-md"
           style={{ borderWidth: 1 }}>
           <View className="flex-row items-center gap-2">
             <Image

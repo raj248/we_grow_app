@@ -121,6 +121,9 @@ export async function handlePurchaseError(error: PurchaseError) {
     case ErrorCode.UserCancelled:
       console.log('User canceled the purchase.');
       break;
+    case ErrorCode.QueryProduct:
+      console.log('The Item is currently not available:', error.message);
+      break;
     case ErrorCode.ItemUnavailable:
       console.log('Item is unavailable.');
       break;
