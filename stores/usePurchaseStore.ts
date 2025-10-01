@@ -14,7 +14,7 @@ type State = {
 };
 
 type Actions = {
-  fetchPurchaseOptions: (soft?: boolean) => Promise<PurchaseOption[] | undefined>;
+  fetchPurchaseOptions: (soft?: boolean) => Promise<PurchaseOption[]>;
   purchase: (
     userId: string,
     productId: string,
@@ -38,7 +38,7 @@ export const usePurchaseStore = create<State & Actions>()(
         if (res.code === 304) {
           console.log('Data unchanged, skipping fetch');
           set({ loading: false });
-          return;
+          return get().purchaseOptions;
         }
 
         if (res.success && res.data) {
@@ -54,6 +54,9 @@ export const usePurchaseStore = create<State & Actions>()(
               });
             } catch (err) {
               console.error('Error fetching IAP products:', err);
+              set({ error: 'Error fetching IAP products', loading: false });
+            } finally {
+              set({ loading: false });
             }
           }
 
@@ -72,6 +75,7 @@ export const usePurchaseStore = create<State & Actions>()(
           const filteredOptions = mergedOptions.filter(
             (option): option is PurchaseOption => option !== null
           );
+          // console.log('Filtered options:', filteredOptions);
           set({
             purchaseOptions: filteredOptions,
             loading: false,
@@ -84,6 +88,7 @@ export const usePurchaseStore = create<State & Actions>()(
             error: res.error ?? 'Failed to load purchase options',
             loading: false,
           });
+          return [];
         }
       },
 

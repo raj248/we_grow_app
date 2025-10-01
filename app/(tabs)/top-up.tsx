@@ -25,10 +25,11 @@ export default function Topup() {
     [connected]
   );
 
-  const onRefresh = useCallback(async () => {
+  const onRefresh = useCallback(() => {
     setRefreshing(true);
-    await loadPurchaseOptions(false);
-    setRefreshing(false);
+    loadPurchaseOptions(false)
+      .catch(console.error)
+      .finally(() => setRefreshing(false));
   }, [loadPurchaseOptions]);
 
   useFocusEffect(
@@ -74,47 +75,62 @@ export default function Topup() {
   );
 
   const renderItem = ({ item }: { item: PurchaseOption }) => {
-    const hasDiscount =
-      item.salePrice && item.originalPrice && Number(item.salePrice.slice(1)) < item.originalPrice;
-    const discountPercent = hasDiscount
-      ? Math.round(
-          ((item.originalPrice - Number(item.salePrice.slice(1))) / item.originalPrice) * 100
-        )
-      : null;
+    try {
+      const originalPrice = item.originalPrice ?? 0;
+      const salePriceNumber = item.salePrice
+        ? Number(item.salePrice.replace(/[^0-9.]/g, ''))
+        : null;
 
-    return (
-      <Pressable
-        onPress={() => handlePurchase(item.id)}
-        className="mb-3 flex-row items-center justify-between rounded-xl bg-white px-4 py-3 shadow-md active:opacity-70"
-        style={{ borderWidth: 1 }}>
-        {/* Left side (coins) */}
-        <View className="flex-row items-center">
-          <Image
-            source={require('~/assets/icons/rupee.png')}
-            className="h-5 w-5"
-            resizeMode="contain"
-          />
-          <Text className="text-lg font-bold"> {item.coins}</Text>
-        </View>
+      const hasDiscount = salePriceNumber !== null && salePriceNumber < originalPrice;
 
-        {/* Right side (price + discount) */}
-        <View className="flex-row items-center space-x-2">
-          {discountPercent ? (
-            <View className="mr-2 rounded-full border border-red-400 bg-red-100 px-2 py-0.5">
-              <Text className="text-xs font-semibold text-red-500">{discountPercent}% off</Text>
-            </View>
-          ) : null}
+      const discountPercent = hasDiscount
+        ? Math.round(((originalPrice - (salePriceNumber ?? 0)) / originalPrice) * 100)
+        : null;
 
-          <View
-            style={{ borderWidth: 1, borderRadius: 5, borderColor: 'green' }}
-            className="px-5 py-1">
-            <Text className="text-lg font-bold text-green-600">
-              {item.salePrice ?? '₹' + item.originalPrice}
-            </Text>
+      return (
+        <Pressable
+          onPress={() => {
+            try {
+              handlePurchase(item.id);
+            } catch (err) {
+              console.error('Purchase error', err);
+              Toast.show({ type: 'error', text1: 'Purchase failed' });
+            }
+          }}
+          className="mb-3 flex-row items-center justify-between rounded-xl bg-white px-4 py-3 shadow-md active:opacity-70"
+          style={{ borderWidth: 1 }}>
+          {/* Left side (coins) */}
+          <View className="flex-row items-center">
+            <Image
+              source={require('~/assets/icons/rupee.png')}
+              className="h-5 w-5"
+              resizeMode="contain"
+            />
+            <Text className="text-lg font-bold"> {item.coins}</Text>
           </View>
-        </View>
-      </Pressable>
-    );
+
+          {/* Right side (price + discount) */}
+          <View className="flex-row items-center space-x-2">
+            {discountPercent ? (
+              <View className="mr-2 rounded-full border border-red-400 bg-red-100 px-2 py-0.5">
+                <Text className="text-xs font-semibold text-red-500">{discountPercent}% off</Text>
+              </View>
+            ) : null}
+
+            <View
+              style={{ borderWidth: 1, borderRadius: 5, borderColor: 'green' }}
+              className="px-5 py-1">
+              <Text className="text-lg font-bold text-green-600">
+                {item.salePrice ?? `₹${item.originalPrice}`}
+              </Text>
+            </View>
+          </View>
+        </Pressable>
+      );
+    } catch (err) {
+      console.error('Error rendering purchase item', err);
+      return null;
+    }
   };
 
   return (
@@ -123,7 +139,7 @@ export default function Topup() {
         <ActivityIndicator size="large" color="#000" className="mt-10" />
       ) : (
         <FlatList
-          data={purchaseOptions}
+          data={purchaseOptions ?? []}
           keyExtractor={(item) => item.id}
           ListHeaderComponent={renderHeader}
           refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
