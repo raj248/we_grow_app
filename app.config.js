@@ -1,11 +1,11 @@
 import 'dotenv/config';
 const IS_DEV = process.env.APP_VARIANT === 'development';
-
+console.log('EXPO_PUBLIC_API_SERVER_URL: ', process.env.EXPO_PUBLIC_API_SERVER_URL);
 export default {
   expo: {
     name: IS_DEV ? 'we_grow(dev)' : 'YouReach Booster',
     slug: 'you-reach-booster',
-    version: '1.0.5',
+    version: '1.0.5b',
     scheme: 'you-reach-booster',
     web: {
       bundler: 'metro',

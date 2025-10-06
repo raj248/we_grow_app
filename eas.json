@@ -12,7 +12,11 @@
       "distribution": "internal"
     },
     "production": {
-      "autoIncrement": true
+      "autoIncrement": true,
+      "env": {
+        "EXPO_PUBLIC_API_SERVER_URL": "https://ytapp.zenextech.in",
+        "GOOGLE_SERVICES_FILE": "./SERVICE_KEY/google-services.json"
+      }
     }
   },
   "submit": {
