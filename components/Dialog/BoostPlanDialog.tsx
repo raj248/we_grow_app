@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { Button, Dialog, Portal, TextInput } from 'react-native-paper';
 import { View, StyleSheet } from 'react-native';
 import { Text } from '../nativewindui/Text';
+import { detectYouTubeLinkType } from '~/utils/youtube-link-identifier';
 
 interface DialogProps {
   visible: boolean;
@@ -20,10 +21,27 @@ export default function BoostPlanDialog({
   pathname,
 }: DialogProps) {
   const [videoUrl, setVideoUrl] = useState('');
+  const [error, setError] = useState('');
 
   const handleClick = () => {
-    router.push({ pathname: (pathname as any) ?? '/boostviewplans', params: { videoUrl } });
+    const type = detectYouTubeLinkType(videoUrl);
+    if (pathname) {
+      if (type === 'channel') {
+        router.push({ pathname: pathname as any, params: { channelUrl: videoUrl } });
+      } else {
+        setError('Invalid YouTube URL');
+        return;
+      }
+    } else if (type === 'video') {
+      router.push({ pathname: pathname as any, params: { videoUrl } });
+    } else if (type === 'shorts') {
+      router.push({ pathname: pathname as any, params: { shortsUrl: videoUrl } });
+    } else {
+      setError('Invalid YouTube URL');
+      return;
+    }
     setVideoUrl('');
+    setError('');
     onDismiss();
   };
 
@@ -45,6 +63,7 @@ export default function BoostPlanDialog({
             onChangeText={setVideoUrl}
             theme={{ colors: { primary: '#ddd', outline: '#ddd' } }} // removes purple focus color
           />
+          {error ? <Text style={{ color: 'red', marginTop: 8 }}>{error}</Text> : null}
         </Dialog.Content>
 
         <Dialog.Actions>
@@ -59,7 +78,11 @@ export default function BoostPlanDialog({
 
             <Button
               mode="contained"
-              onPress={onDismiss}
+              onPress={() => {
+                onDismiss();
+                setVideoUrl('');
+                setError('');
+              }}
               style={[styles.button, styles.cancelButton]}
               labelStyle={styles.buttonLabel}>
               Cancel
