@@ -58,11 +58,11 @@ export default function TabLayout() {
             </Link>
           </View>
         ),
-        headerLeft: () => (
-          <Link href="/debug" asChild>
-            <DebugHeaderButton />
-          </Link>
-        ),
+        // headerLeft: () => (
+        //   <Link href="/debug" asChild>
+        //     <DebugHeaderButton />
+        //   </Link>
+        // ),
       }}>
       <Tabs.Screen
         name="index"

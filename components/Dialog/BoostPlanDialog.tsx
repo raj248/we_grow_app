@@ -8,6 +8,7 @@ interface DialogProps {
   visible: boolean;
   titleLabel?: string;
   inputLabel?: string;
+  pathname?: string;
   onDismiss: () => void;
 }
 
@@ -16,11 +17,12 @@ export default function BoostPlanDialog({
   onDismiss,
   titleLabel,
   inputLabel,
+  pathname,
 }: DialogProps) {
   const [videoUrl, setVideoUrl] = useState('');
 
   const handleClick = () => {
-    router.push({ pathname: '/boostviewplans', params: { videoUrl } });
+    router.push({ pathname: (pathname as any) ?? '/boostviewplans', params: { videoUrl } });
     setVideoUrl('');
     onDismiss();
   };

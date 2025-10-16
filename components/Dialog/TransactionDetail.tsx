@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { Button, Dialog, Portal, TextInput } from 'react-native-paper';
 import { View, StyleSheet } from 'react-native';
 import { Text } from '../nativewindui/Text';
-
+// ----------- NOT YET IMPLEMENTED NOT YET IMPLEMENTED NOT YET IMPLEMENTED NOT YET IMPLEMENTED NOT YET IMPLEMENTED NOT YET IMPLEMENTED NOT YET IMPLEMENTED NOT YET IMPLEMENTED
 interface DialogProps {
   visible: boolean;
   titleLabel?: string;
@@ -50,6 +50,7 @@ export default function TransactionDetatilDialog({
             <Button
               mode="contained"
               onPress={handleClick}
+              // ----------- NOT YET IMPLEMENTED NOT YET IMPLEMENTED NOT YET IMPLEMENTED NOT YET IMPLEMENTED NOT YET IMPLEMENTED NOT YET IMPLEMENTED NOT YET IMPLEMENTED NOT YET IMPLEMENTED
               style={[styles.button, styles.boostButton]}
               labelStyle={styles.buttonLabel}>
               Boost Video
@@ -77,6 +78,7 @@ const styles = StyleSheet.create({
   },
   title: {
     // fontWeight: 'bold',
+    // ----------- NOT YET IMPLEMENTED NOT YET IMPLEMENTED NOT YET IMPLEMENTED NOT YET IMPLEMENTED NOT YET IMPLEMENTED NOT YET IMPLEMENTED NOT YET IMPLEMENTED NOT YET IMPLEMENTED
     fontSize: 25,
     paddingBottom: 8,
   },
@@ -109,3 +111,4 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
 });
+// ----------- NOT YET IMPLEMENTED NOT YET IMPLEMENTED NOT YET IMPLEMENTED NOT YET IMPLEMENTED NOT YET IMPLEMENTED NOT YET IMPLEMENTED NOT YET IMPLEMENTED NOT YET IMPLEMENTED

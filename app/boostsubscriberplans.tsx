@@ -10,11 +10,9 @@ import { useUserStore } from '~/stores/useUserStore';
 import { getStoredUserId } from '~/utils/device-info';
 import Toast from 'react-native-toast-message';
 
-export default function BoostViewPlanModal() {
-  const { videoUrl } = useLocalSearchParams();
-
-  console.log('Boosting video:', videoUrl);
-  const [tab, setTab] = useState<'VIEW' | 'LIKE'>('VIEW');
+export default function BoostSubscriberPlanModal() {
+  const { channelUrl } = useLocalSearchParams();
+  console.log('Boosting channel:', channelUrl);
   const [selectedPlan, setSelectedPlan] = useState<string | null>(null);
   const [plans, setPlans] = useState<BoostPlan[]>([]);
   const [loading, setLoading] = useState(true);
@@ -36,20 +34,14 @@ export default function BoostViewPlanModal() {
   }, []);
 
   const filteredPlans = plans.filter((item) => {
-    if (tab === 'VIEW') {
-      return item.views && item.views > 0;
-    }
-    if (tab === 'LIKE') {
-      return item.likes && item.likes > 0;
-    }
-    return false;
+    return item.subscribers && item.subscribers > 0;
   });
 
   return (
     <View style={{ flex: 1, padding: 16 }}>
       <Stack.Screen
         options={{
-          title: 'Boost View Plans',
+          title: 'Boost Channel Plans',
           headerShown: true,
           headerStyle: {
             backgroundColor: '#f00',
@@ -69,26 +61,12 @@ export default function BoostViewPlanModal() {
           ListEmptyComponent={
             <View className="flex-1 items-center justify-center px-4">
               <Text className="text-center text-lg font-semibold">
-                No view plans available at the moment.
+                No subscriber plans available at the moment.
               </Text>
               <Text className="mt-2 text-center text-gray-600">
-                Please check back later for new plans to boost your video's views and likes.
+                Please check back later for new plans to boost your channel subscribers.
               </Text>
             </View>
-          }
-          ListHeaderComponent={
-            <SegmentedButtons
-              value={tab}
-              onValueChange={(v) => {
-                setTab(v as 'VIEW' | 'LIKE');
-                setSelectedPlan(null);
-              }}
-              buttons={[
-                { value: 'VIEW', label: 'View' },
-                { value: 'LIKE', label: 'Like' },
-              ]}
-              style={{ marginBottom: 16 }}
-            />
           }
           renderItem={({ item }) => (
             <Pressable
@@ -103,12 +81,7 @@ export default function BoostViewPlanModal() {
               }}>
               <Text style={{ fontSize: 16, fontWeight: 'bold' }}>{item.title}</Text>
               <Text style={{ marginTop: 4, color: '#555' }}>{item.price} coins</Text>
-              {item.views && (
-                <Text style={{ marginTop: 4, color: '#555' }}>{item.views} views</Text>
-              )}
-              {item.likes && (
-                <Text style={{ marginTop: 4, color: '#555' }}>{item.likes} likes</Text>
-              )}
+              <Text style={{ marginTop: 4, color: '#555' }}>{item.duration} seconds</Text>
             </Pressable>
           )}
           ListFooterComponent={
@@ -129,7 +102,7 @@ export default function BoostViewPlanModal() {
                   createOrder(
                     useUserStore.getState().userId || userId,
                     selectedPlan,
-                    videoUrl as string
+                    channelUrl as string
                   ).then((res) => {
                     if (res.success) {
                       Toast.show({

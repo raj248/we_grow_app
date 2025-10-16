@@ -50,12 +50,13 @@ const features = [
     description: 'Gain real engagement via smart distribution.',
     icon: require('~/assets/icons/get_subscriber.png'),
     border_color: '#292966',
+    pathname: '/boostsubscriberplans',
     bg_color: '#DEDEFF',
   },
   {
     id: '3',
     title: 'Promote Shorts',
-    inputLabel: 'YouTube Video URL',
+    inputLabel: 'YouTube Shorts URL',
     description: 'Targeted exposure for YouTube Shorts.',
     icon: require('~/assets/icons/promote_shorts.png'),
     border_color: '#F57D02',
@@ -70,6 +71,7 @@ export default function Home() {
   const [open, setOpen] = useState(false);
   const [title, setTitle] = useState('');
   const [label, setLabel] = useState('');
+  const [pathname, setPathname] = useState('');
 
   const { colors } = useColorScheme();
   const { width, height } = useWindowDimensions();
@@ -133,6 +135,7 @@ export default function Home() {
                     setOpen(true);
                     setLabel(item.inputLabel);
                     setTitle(item.title);
+                    item.pathname ? setPathname(item.pathname) : setPathname('');
                   } else router.push('/earn-or-purchase');
                 }}
               />
@@ -144,6 +147,7 @@ export default function Home() {
         visible={open}
         titleLabel={title}
         inputLabel={label}
+        pathname={pathname ? pathname : undefined}
         onDismiss={() => {
           setOpen(false);
         }}
