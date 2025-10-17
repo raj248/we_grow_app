@@ -33,9 +33,9 @@ export default function BoostPlanDialog({
         return;
       }
     } else if (type === 'video') {
-      router.push({ pathname: pathname as any, params: { videoUrl } });
+      router.push({ pathname: '/boostviewplans' as any, params: { videoUrl } });
     } else if (type === 'shorts') {
-      router.push({ pathname: pathname as any, params: { shortsUrl: videoUrl } });
+      router.push({ pathname: '/boostviewplans' as any, params: { videoUrl } });
     } else {
       setError('Invalid YouTube URL');
       return;

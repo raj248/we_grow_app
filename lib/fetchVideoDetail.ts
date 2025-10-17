@@ -1,11 +1,12 @@
 import { Order } from '~/types/entities';
+import { detectYouTubeLinkType } from '~/utils/youtube-link-identifier';
 
 export const fetchVideoDetails = async (url: string) => {
   try {
     if (!url?.includes('youtube.com') && !url?.includes('youtu.be')) {
       return {
         videoTitle: 'Invalid YouTube URL',
-        videoThumbnail: 'https://via.placeholder.com/320x180?text=Invalid+URL',
+        videoThumbnail: 'https://placeholder.co/320x180?text=Invalid+URL',
       };
     }
     try {
@@ -18,51 +19,72 @@ export const fetchVideoDetails = async (url: string) => {
     } catch {
       return {
         videoTitle: 'Failed to fetch title',
-        videoThumbnail: 'https://via.placeholder.com/320x180?text=Error',
+        videoThumbnail: 'https://placeholder.co/320x180?text=Error',
       };
     }
   } catch (e) {
     console.error(e);
     return {
       videoTitle: 'Error',
-      videoThumbnail: 'https://via.placeholder.com/320x180?text=Error',
+      videoThumbnail: 'https://placeholder.co/320x180?text=Error',
     };
   }
 };
 
 export const fetchMultipleVideoDetails = async (orders: Order[]) => {
   if (!orders || orders.length === 0) return [];
-  try {
-    return await Promise.all(
-      orders.map(async (order) => {
-        const url = order.url;
-        if (!url?.includes('youtube.com') && !url?.includes('youtu.be')) {
-          return {
-            ...order,
-            videoTitle: 'Invalid YouTube URL',
-            videoThumbnail: 'https://via.placeholder.com/320x180?text=Invalid+URL',
-          };
-        }
-        try {
+
+  return await Promise.all(
+    orders.map(async (order) => {
+      const url = order.url;
+      const type = detectYouTubeLinkType(url);
+
+      if (!url?.includes('youtube.com') && !url?.includes('youtu.be')) {
+        return {
+          ...order,
+          videoTitle: 'Invalid YouTube URL',
+          videoThumbnail: 'https://placehold.co/320x180/EEE/31343C.png?text=Invalid+URL',
+        };
+      }
+
+      try {
+        if (type === 'video' || type === 'shorts') {
+          // Use oEmbed
           const res = await fetch(
             `https://www.youtube.com/oembed?url=${encodeURIComponent(url)}&format=json`
           );
-          if (!res.ok) throw new Error('Failed to fetch');
+          if (!res.ok) throw new Error('Failed to fetch oEmbed');
           const data = await res.json();
           return { ...order, videoTitle: data.title, videoThumbnail: data.thumbnail_url };
-        } catch {
+        }
+
+        if (type === 'channel') {
+          // Channels oEmbed is unreliable, use placeholder
+          const channelName = url.split('/').pop() || 'YouTube Channel';
           return {
             ...order,
-            videoTitle: 'Failed to fetch title',
-            videoThumbnail: 'https://via.placeholder.com/320x180?text=Error',
+            videoTitle: channelName.split('?')[0],
+            // videoThumbnail: 'https://placehold.co/320x180/EEE/31343C.png?text=channel',
+            videoThumbnail: undefined,
           };
         }
-      })
-    );
-  } catch (e) {
-    console.error(e);
-    return orders;
-  }
+
+        // Unknown type fallback
+        return {
+          ...order,
+          videoTitle: 'Unknown YouTube link',
+          videoThumbnail: 'https://placehold.co/320x180/EEE/31343C.png?text=Unknown',
+        };
+      } catch (err) {
+        console.error('Failed to fetch details for', url, err);
+        return {
+          ...order,
+          videoTitle: 'Failed to fetch',
+          videoThumbnail: 'https://placehold.co/320x180/EEE/31343C.png?text=Error',
+        };
+      }
+    })
+  );
 };
 
 // Requires setting YOUTUBE_API_KEY in environment
@@ -72,7 +94,7 @@ export const fetchVideoDetailsYoutube = async (url: string) => {
   if (!url?.includes('youtube.com') && !url?.includes('youtu.be')) {
     return {
       videoTitle: 'Invalid YouTube URL',
-      videoThumbnail: 'https://via.placeholder.com/320x180?text=Invalid+URL',
+      videoThumbnail: 'https://placeholder.co/320x180?text=Invalid+URL',
       viewCount: null,
       likeCount: null,
     };
@@ -109,7 +131,7 @@ export const fetchVideoDetailsYoutube = async (url: string) => {
     console.error(error);
     return {
       videoTitle: 'Error fetching video',
-      videoThumbnail: 'https://via.placeholder.com/320x180?text=Error',
+      videoThumbnail: 'https://placeholder.co/320x180?text=Error',
       viewCount: null,
       likeCount: null,
     };

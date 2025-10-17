@@ -118,9 +118,13 @@ export default function Orders() {
                     {type === 'channel'
                       ? `${item.boostPlan?.subscribers ?? 'N/A'} Subscribers`
                       : type === 'video'
-                        ? `${item.boostPlan?.views ?? 'N/A'} Views`
+                        ? item.boostPlan?.views > 0
+                          ? `${item.boostPlan?.views} Views`
+                          : `${item.boostPlan?.likes} Likes`
                         : type === 'shorts'
-                          ? `${item.boostPlan?.views ?? 'N/A'} Shorts Views`
+                          ? item.boostPlan?.views > 0
+                            ? `${item.boostPlan?.views} Shorts Views`
+                            : `${item.boostPlan?.likes} Shorts Likes`
                           : 'N/A'}
 
                     {/* {`${item.boostPlan?.duration ?? 'N/A'} Second • ₹${item.boostPlan?.price ?? 0}`} */}
@@ -143,13 +147,15 @@ export default function Orders() {
                 </View>
 
                 {/* Video Thumbnail + Title */}
-                {item.videoThumbnail && (
+                {item.videoTitle && (
                   <View className="mb-2 flex-row items-center">
-                    <Image
-                      source={{ uri: item.videoThumbnail }}
-                      style={{ width: 80, height: 45, borderRadius: 6, marginRight: 8 }}
-                    />
-                    <Text className="flex-1 text-sm" numberOfLines={2}>
+                    {item.videoThumbnail && (
+                      <Image
+                        source={{ uri: item.videoThumbnail }}
+                        style={{ width: 80, height: 45, borderRadius: 6, marginRight: 8 }}
+                      />
+                    )}
+                    <Text className="text-md flex-1 font-semibold" numberOfLines={2}>
                       {item.videoTitle || item.url}
                     </Text>
                   </View>
