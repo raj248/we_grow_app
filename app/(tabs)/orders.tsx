@@ -7,6 +7,7 @@ import { useOrderStore } from '~/stores/useOrderStore';
 import { Order } from '~/types/entities';
 import { router } from 'expo-router';
 import { fetchMultipleVideoDetails } from '~/lib/fetchVideoDetail';
+import { detectYouTubeLinkType } from '~/utils/youtube-link-identifier';
 
 export default function Orders() {
   const [refreshing, setRefreshing] = useState(false);
@@ -82,9 +83,11 @@ export default function Orders() {
               Completed: '#10b981',
               Failed: '#ef4444',
             };
-            const totalRequired = item.boostPlan.views;
+            const totalRequired =
+              item.boostPlan.views || item.boostPlan.likes || item.boostPlan.subscribers;
             const remaining = Math.max(totalRequired - item.completedCount, 0);
             const progress = totalRequired > 0 ? item.completedCount / totalRequired : 0;
+            const type = detectYouTubeLinkType(item.url);
 
             return (
               <Pressable className="mb-2 rounded-xl border border-border bg-background p-4 shadow-md active:opacity-70">
@@ -106,12 +109,21 @@ export default function Orders() {
                   <Badge
                     style={{
                       backgroundColor: '#F0F0F0',
+                      // backgroundColor: '#fff',
                       color: '#333',
                       fontSize: 12,
                       paddingHorizontal: 6,
                       borderRadius: 8,
                     }}>
-                    {`${item.boostPlan?.duration ?? 'N/A'} Second • ₹${item.boostPlan?.price ?? 0}`}
+                    {type === 'channel'
+                      ? `${item.boostPlan?.subscribers ?? 'N/A'} Subscribers`
+                      : type === 'video'
+                        ? `${item.boostPlan?.views ?? 'N/A'} Views`
+                        : type === 'shorts'
+                          ? `${item.boostPlan?.views ?? 'N/A'} Shorts Views`
+                          : 'N/A'}
+
+                    {/* {`${item.boostPlan?.duration ?? 'N/A'} Second • ₹${item.boostPlan?.price ?? 0}`} */}
                   </Badge>
                 </View>
 
