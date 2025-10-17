@@ -1,4 +1,4 @@
-import { FlatList, Pressable, RefreshControl, View } from 'react-native';
+import { Image, FlatList, Pressable, RefreshControl, View } from 'react-native';
 import { Text } from '~/components/nativewindui/Text';
 import { useEffect, useState, useCallback } from 'react';
 import { Badge } from 'react-native-paper';
@@ -33,7 +33,7 @@ export default function History() {
   );
 
   return (
-    <View className="flex-1 p-2">
+    <View className="flex-1 px-2 pt-2">
       {loading ? (
         <Text className="mt-4 text-center">Loading...</Text>
       ) : (
@@ -105,9 +105,26 @@ export default function History() {
                 </View>
 
                 {/* Amount */}
-                <View className="mb-1 flex-row justify-end">
-                  <Text className="text-base font-bold" style={{ color: amountColor }}>
-                    ₹{item.amount.toFixed(2)}
+                <View
+                  style={{
+                    borderWidth: 1,
+                    borderRadius: 15,
+                    borderColor: '#ccc',
+                    backgroundColor: '#f3f4f6', // light gray
+                    paddingHorizontal: 10,
+                    paddingVertical: 4,
+                    alignSelf: 'flex-end', // push it to right
+                  }}
+                  className="mb-1 flex-row items-center">
+                  <Image
+                    source={require('~/assets/icons/rupee.png')}
+                    className="h-5 w-5"
+                    resizeMode="contain"
+                  />
+                  <Text
+                    className="ml-1 text-sm font-semibold"
+                    style={{ color: item.type === 'CREDIT' ? '#10b981' : '#ef4444' }}>
+                    {item.amount.toFixed(2)}
                   </Text>
                 </View>
 

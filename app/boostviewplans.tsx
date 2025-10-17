@@ -126,12 +126,24 @@ export default function BoostViewPlanModal() {
                   if (!selectedPlan) return;
                   const userId = await getStoredUserId();
                   if (!userId) return;
+                  const coins = useUserStore.getState().coins;
+                  const plan = plans.find((p) => p.id === selectedPlan);
+                  if (!plan) return;
+                  if (coins < plan.price) {
+                    Toast.show({
+                      text1: 'Insufficient Coins',
+                      text2: `You need ${plan.price - coins} more coins for this plan.`,
+                      type: 'error',
+                    });
+                    return;
+                  }
                   createOrder(
                     useUserStore.getState().userId || userId,
                     selectedPlan,
                     videoUrl as string
                   ).then((res) => {
                     if (res.success) {
+                      useUserStore.getState().refreshCoins();
                       Toast.show({
                         text1: 'Order Created',
                         text2: res.data?.message,

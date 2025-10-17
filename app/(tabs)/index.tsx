@@ -111,7 +111,7 @@ export default function Home() {
   }, [loadData]);
 
   return (
-    <View className="flex-1 p-4">
+    <View className="flex-1 px-4 pt-4">
       <FlatList
         data={features}
         numColumns={numColumns}

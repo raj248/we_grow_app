@@ -45,7 +45,7 @@ export default function Orders() {
   }, [orders]);
 
   return (
-    <View className="flex-1 p-4">
+    <View className="flex-1 px-4 pt-4">
       {loading ? (
         <Text className="mt-4 text-center">Loading...</Text>
       ) : (
