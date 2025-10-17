@@ -7,10 +7,10 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { Stack } from 'expo-router';
 
 const items = [
-  {
-    label: 'Current Subscription',
-    url: 'https://play.google.com/store/account/subscriptions?sku=premium_monthly&package=com.yourcompany.yourapp',
-  },
+  // {
+  //   label: 'Current Subscription',
+  //   url: 'https://play.google.com/store/account/subscriptions?sku=premium_monthly&package=com.yourcompany.yourapp',
+  // },
   { label: 'Contact Us', url: 'mailto:support@example.com' },
   { label: 'Rate Us', url: 'https://play.google.com/store/apps/details?id=com.example.app' },
   { label: 'FAQ', url: 'https://example.com/faq' },
@@ -29,11 +29,20 @@ export default function Settings() {
   }, []);
 
   return (
-    <SafeAreaView className="flex-1 p-6">
-      {/* <Stack.Screen options={{ title: 'Settings' }} /> */}
-      <Text variant="title1" className="mb-4 text-center">
-        Settings
-      </Text>
+    <View style={{ flex: 1, padding: 16 }}>
+      <Stack.Screen
+        options={{
+          title: 'Settings',
+          headerShown: true,
+          headerStyle: {
+            backgroundColor: '#f00',
+          },
+          headerTintColor: '#fff',
+          headerTitleStyle: {
+            fontWeight: 'bold',
+          },
+        }}
+      />
 
       <FlatList
         data={items}
@@ -65,6 +74,6 @@ export default function Settings() {
           );
         }}
       />
-    </SafeAreaView>
+    </View>
   );
 }

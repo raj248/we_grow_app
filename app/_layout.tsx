@@ -91,7 +91,6 @@ export default function RootLayout() {
               <NavThemeProvider value={NAV_THEME[colorScheme]}>
                 <Stack screenOptions={SCREEN_OPTIONS}>
                   <Stack.Screen name="(tabs)" options={TABS_OPTIONS} />
-                  <Stack.Screen name="modal" options={MODAL_OPTIONS} />
                   <Stack.Screen name="settings" options={MODAL_OPTIONS} />
                   <Stack.Screen name="watch-and-earn-modal" options={WATCH_EARN_OPTIONS} />
                   <Stack.Screen name="earn-or-purchase" options={WATCH_EARN_OPTIONS} />
@@ -136,11 +135,8 @@ const MODAL_OPTIONS = {
   gestureEnabled: true, // allow swipe down to dismiss
   showHeader: false, // hides default header (prevents status bar overlap)
   contentStyle: {
-    // optional styling for the modal container
     paddingTop: 0, // remove default padding if needed
-    // backgroundColor: '#fff',        // make sure background is white
   },
-  headerRight: () => <ThemeToggle />,
 } as const;
 
 const DEBUG_PANEL_OPTIONS = {
