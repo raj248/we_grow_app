@@ -7,10 +7,14 @@ import { Transaction } from '~/types/entities';
 import { useFocusEffect } from '@react-navigation/native';
 import { fetchTransactionHistory } from '~/lib/api/transactions';
 import { useTransactionStore } from '~/stores/useTransactionStore';
+import TransactionDetatilDialog from '~/components/Dialog/TransactionDetail';
 
 export default function History() {
   const [refreshing, setRefreshing] = useState(false);
   const { error, loading, transactions, loadTransactions } = useTransactionStore();
+
+  const [open, setOpen] = useState(false);
+  const [selectedTransaction, setSelectedTransaction] = useState<Transaction | null>(null);
 
   const loadHistory = useCallback(async (soft = true) => {
     const userId = await getStoredUserId();
@@ -60,7 +64,10 @@ export default function History() {
             return (
               <Pressable
                 className="mb-3 rounded-lg border border-gray-300 bg-white p-3 shadow-md active:opacity-70"
-                onPress={() => console.log('Show Transaction Details Dialog')}>
+                onPress={() => {
+                  setSelectedTransaction(item);
+                  setOpen(true);
+                }}>
                 {/* Top row */}
                 <View className="mb-2 flex-row items-center justify-between">
                   <Text
@@ -140,6 +147,11 @@ export default function History() {
           }}
         />
       )}
+      <TransactionDetatilDialog
+        visible={open}
+        transaction={selectedTransaction}
+        onDismiss={() => setOpen(false)}
+      />
     </View>
   );
 }

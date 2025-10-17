@@ -1,29 +1,15 @@
-import {
-  View,
-  FlatList,
-  ActivityIndicator,
-  RefreshControl,
-  Pressable,
-  useWindowDimensions,
-  Alert,
-} from 'react-native';
-import { Text } from '~/components/nativewindui/Text';
-import React, { useEffect, useState, useCallback, useMemo } from 'react';
+import { View, FlatList, RefreshControl, useWindowDimensions } from 'react-native';
+import { useState, useCallback, useMemo } from 'react';
 import { getOrCreateUserId } from '~/utils/device-info';
-import { ProgressBar } from 'react-native-paper';
 import { useTrackActiveUser } from '~/lib/useTrackActiveUser';
 import { fetchWalletBalance } from '~/lib/api/api';
 import { useFocusEffect } from '@react-navigation/native';
 import { useUserStore } from '~/stores/useUserStore';
-import BoostViewBottomSheet from '~/components/BottomSheets/BoostViewBottomSheet';
-import PromoteShortsBottomSheet from '~/components/BottomSheets/PromoteShortsBottomSheet';
-import GetSubscribersBottomSheet from '~/components/BottomSheets/GetSubscribersBottomSheet';
 import { router } from 'expo-router';
 import BoostPlanDialog from '~/components/Dialog/BoostPlanDialog';
 import { CardButton } from '~/components/CardButton';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useColorScheme } from '~/lib/useColorScheme';
-import displayOverApp from '~/modules/display-over-app';
 const features = [
   {
     id: '4',
