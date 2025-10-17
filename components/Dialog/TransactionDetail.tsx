@@ -1,7 +1,7 @@
 import { router } from 'expo-router';
 import { useState } from 'react';
 import { Button, Dialog, Portal, Divider } from 'react-native-paper';
-import { View, StyleSheet, ScrollView } from 'react-native';
+import { View, StyleSheet, ScrollView, Image } from 'react-native';
 import { Text } from '../nativewindui/Text';
 import { Transaction } from '~/types/entities';
 
@@ -41,14 +41,30 @@ export default function TransactionDetailDialog({
             </View>
             <View style={styles.row}>
               <Text style={styles.label}>Amount:</Text>
-              <Text
-                style={[
-                  styles.value,
-                  { color: transaction.type === 'CREDIT' ? '#10b981' : '#ef4444' },
-                ]}>
-                ₹{transaction.amount.toFixed(2)}
-              </Text>
+              <View
+                style={{
+                  borderWidth: 1,
+                  borderRadius: 15,
+                  borderColor: '#ccc',
+                  backgroundColor: '#f3f4f6', // light gray
+                  paddingHorizontal: 10,
+                  paddingVertical: 4,
+                  alignSelf: 'flex-end', // push it to right
+                }}
+                className="flex-row items-center">
+                <Image
+                  source={require('~/assets/icons/rupee.png')}
+                  className="h-5 w-5"
+                  resizeMode="contain"
+                />
+                <Text
+                  className="ml-1 text-sm font-semibold"
+                  style={{ color: transaction.type === 'CREDIT' ? '#10b981' : '#ef4444' }}>
+                  {transaction.amount.toFixed(2)}
+                </Text>
+              </View>
             </View>
+
             <View style={styles.row}>
               <Text style={styles.label}>Status:</Text>
               <Text style={styles.value}>{transaction.status}</Text>
