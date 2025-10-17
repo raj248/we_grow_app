@@ -35,7 +35,7 @@ export default function Settings() {
           title: 'Settings',
           headerShown: true,
           headerStyle: {
-            backgroundColor: '#f00',
+            backgroundColor: '#ff0033',
           },
           headerTintColor: '#fff',
           headerTitleStyle: {

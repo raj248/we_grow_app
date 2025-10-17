@@ -52,7 +52,7 @@ export default function BoostViewPlanModal() {
           title: 'Boost View Plans',
           headerShown: true,
           headerStyle: {
-            backgroundColor: '#f00',
+            backgroundColor: '#ff0033',
           },
           headerTintColor: '#fff',
           headerTitleStyle: {

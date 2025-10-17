@@ -44,7 +44,7 @@ export default function BoostSubscriberPlanModal() {
           title: 'Boost Channel Plans',
           headerShown: true,
           headerStyle: {
-            backgroundColor: '#f00',
+            backgroundColor: '#ff0033',
           },
           headerTintColor: '#fff',
           headerTitleStyle: {
