@@ -16,6 +16,7 @@ export default function BoostSubscriberPlanModal() {
   const [selectedPlan, setSelectedPlan] = useState<string | null>(null);
   const [plans, setPlans] = useState<BoostPlan[]>([]);
   const [loading, setLoading] = useState(true);
+  const [processing, setProcessing] = useState(false);
 
   useEffect(() => {
     const loadPlans = async () => {
@@ -110,29 +111,37 @@ export default function BoostSubscriberPlanModal() {
                     });
                     return;
                   }
+                  setProcessing(true);
                   createOrder(
                     useUserStore.getState().userId || userId,
                     selectedPlan,
                     channelUrl as string
-                  ).then((res) => {
-                    if (res.success) {
-                      useUserStore.getState().refreshCoins();
-                      Toast.show({
-                        text1: 'Order Created',
-                        text2: res.data?.message,
-                        type: 'success',
-                      });
-                    } else {
-                      Toast.show({
-                        text1: 'Failed to create order',
-                        text2: res.error,
-                        type: 'error',
-                      });
-                    }
-                  });
-                  router.back();
+                  )
+                    .then((res) => {
+                      if (res.success) {
+                        useUserStore.getState().refreshCoins();
+                        Toast.show({
+                          text1: 'Order Created',
+                          text2: res.data?.message,
+                          type: 'success',
+                        });
+                      } else {
+                        Toast.show({
+                          text1: 'Failed to create order',
+                          text2: res.error,
+                          type: 'error',
+                        });
+                      }
+                    })
+                    .catch((e) => {
+                      console.log(e);
+                    })
+                    .finally(() => {
+                      router.back();
+                      setProcessing(false);
+                    });
                 }}>
-                Next
+                {processing ? <ActivityIndicator size="small" color="#fff" /> : 'Next'}
               </Button>
             </View>
           }

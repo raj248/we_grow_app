@@ -2,7 +2,7 @@ import { router, Stack, useLocalSearchParams } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { FlatList, Platform, Pressable, Text, View, ActivityIndicator } from 'react-native';
 import { SegmentedButtons, Button } from 'react-native-paper';
-import { use, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { getAllBoostPlans } from '~/lib/api/boost-plan';
 import { BoostPlan } from '~/types/entities';
 import { createOrder } from '~/lib/api/purchase';
@@ -18,6 +18,7 @@ export default function BoostViewPlanModal() {
   const [selectedPlan, setSelectedPlan] = useState<string | null>(null);
   const [plans, setPlans] = useState<BoostPlan[]>([]);
   const [loading, setLoading] = useState(true);
+  const [processing, setProcessing] = useState(false);
 
   useEffect(() => {
     const loadPlans = async () => {
@@ -137,29 +138,37 @@ export default function BoostViewPlanModal() {
                     });
                     return;
                   }
+                  setProcessing(true);
                   createOrder(
                     useUserStore.getState().userId || userId,
                     selectedPlan,
                     videoUrl as string
-                  ).then((res) => {
-                    if (res.success) {
-                      useUserStore.getState().refreshCoins();
-                      Toast.show({
-                        text1: 'Order Created',
-                        text2: res.data?.message,
-                        type: 'success',
-                      });
-                    } else {
-                      Toast.show({
-                        text1: 'Failed to create order',
-                        text2: res.error,
-                        type: 'error',
-                      });
-                    }
-                  });
-                  router.back();
+                  )
+                    .then((res) => {
+                      if (res.success) {
+                        useUserStore.getState().refreshCoins();
+                        Toast.show({
+                          text1: 'Order Created',
+                          text2: res.data?.message,
+                          type: 'success',
+                        });
+                      } else {
+                        Toast.show({
+                          text1: 'Failed to create order',
+                          text2: res.error,
+                          type: 'error',
+                        });
+                      }
+                    })
+                    .catch((e) => {
+                      console.log(e);
+                    })
+                    .finally(() => {
+                      router.back();
+                      setProcessing(false);
+                    });
                 }}>
-                Next
+                {processing ? <ActivityIndicator size="small" color="#fff" /> : 'Next'}
               </Button>
             </View>
           }
