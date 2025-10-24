@@ -5,7 +5,7 @@ export default {
   expo: {
     name: IS_DEV ? 'we_grow(dev)' : 'YouReach Booster',
     slug: 'you-reach-booster',
-    version: '1.0.6b',
+    version: '1.0.7b',
     scheme: 'you-reach-booster',
     web: {
       bundler: 'metro',

@@ -83,15 +83,42 @@ export default function Orders() {
               Completed: '#10b981',
               Failed: '#ef4444',
             };
-            const totalRequired =
-              item.boostPlan.views || item.boostPlan.likes || item.boostPlan.subscribers;
-            const remaining = Math.max(totalRequired - item.completedCount, 0);
-            const progress = totalRequired > 0 ? item.completedCount / totalRequired : 0;
+
             const type = detectYouTubeLinkType(item.url);
+
+            // Build metrics dynamically based on non-zero boostPlan values
+            const metrics: { label: string; progress: number; total: number; color: string }[] = [];
+
+            if (item.boostPlan?.views && item.boostPlan?.views > 0) {
+              metrics.push({
+                label: type === 'shorts' ? 'Shorts Views' : 'Views',
+                progress: item.progressViewCount ?? 0,
+                total: item.boostPlan?.views,
+                color: '#3B82F6',
+              });
+            }
+
+            if (item.boostPlan?.likes && item.boostPlan?.likes > 0) {
+              metrics.push({
+                label: 'Likes',
+                progress: item.progressLikeCount ?? 0,
+                total: item.boostPlan?.likes,
+                color: '#EF4444',
+              });
+            }
+
+            if (item.boostPlan?.subscribers && item.boostPlan?.subscribers > 0) {
+              metrics.push({
+                label: 'Subscribers',
+                progress: item.progressSubscriberCount ?? 0,
+                total: item.boostPlan?.subscribers,
+                color: '#10B981',
+              });
+            }
 
             return (
               <Pressable className="mb-2 rounded-xl border border-border bg-background p-4 shadow-md active:opacity-70">
-                {/* Status Badges */}
+                {/* Status Badge */}
                 <View className="mb-1 flex-row items-center justify-between">
                   <Badge
                     style={{
@@ -106,45 +133,27 @@ export default function Orders() {
                     }}>
                     {statusLabel}
                   </Badge>
-                  <Badge
-                    style={{
-                      backgroundColor: '#F0F0F0',
-                      // backgroundColor: '#fff',
-                      color: '#333',
-                      fontSize: 12,
-                      paddingHorizontal: 6,
-                      borderRadius: 8,
-                    }}>
-                    {type === 'channel'
-                      ? `${item.boostPlan?.subscribers ?? 'N/A'} Subscribers`
-                      : type === 'video'
-                        ? item.boostPlan?.views > 0
-                          ? `${item.boostPlan?.views} Views`
-                          : `${item.boostPlan?.likes} Likes`
-                        : type === 'shorts'
-                          ? item.boostPlan?.views > 0
-                            ? `${item.boostPlan?.views} Shorts Views`
-                            : `${item.boostPlan?.likes} Shorts Likes`
-                          : 'N/A'}
-
-                    {/* {`${item.boostPlan?.duration ?? 'N/A'} Second • ₹${item.boostPlan?.price ?? 0}`} */}
-                  </Badge>
                 </View>
 
-                {/* Plan title */}
-                <Text variant="title3" className="mb-1">
+                {/* Plan Title */}
+                <Text variant="title3" className="mb-2">
                   {item.boostPlan?.title ?? 'Unknown Plan'}
                 </Text>
 
-                {/* Progress */}
-                <View className="mb-2">
-                  <ProgressBar progress={progress} color="#3b82f6" />
-                  <Text className="mt-1 text-sm">
-                    {item.completedCount}{' '}
-                    <Text className="text-xs text-muted-foreground">/ {totalRequired}</Text> done (
-                    {remaining} left)
-                  </Text>
-                </View>
+                {/* Metrics Progress */}
+                {metrics.map((metric) => {
+                  const percentage = Math.min(1, metric.progress / Math.max(metric.total, 1));
+                  const remaining = metric.total - metric.progress;
+                  return (
+                    <View key={metric.label} className="mb-2">
+                      <Text className="mb-1 text-sm font-medium">{metric.label}</Text>
+                      <ProgressBar progress={percentage} color={metric.color} />
+                      <Text className="mt-1 text-xs text-muted-foreground">
+                        {metric.progress} / {metric.total} ({remaining} left)
+                      </Text>
+                    </View>
+                  );
+                })}
 
                 {/* Video Thumbnail + Title */}
                 {item.videoTitle && (
@@ -161,7 +170,7 @@ export default function Orders() {
                   </View>
                 )}
 
-                {/* Date */}
+                {/* Date + Price */}
                 <View className="flex-row justify-between">
                   <Text className="text-sm text-muted-foreground">
                     {new Date(item.createdAt).toLocaleString()}
@@ -174,7 +183,7 @@ export default function Orders() {
                       className="h-5 w-5"
                       resizeMode="contain"
                     />
-                    <Text className="text-sm text-muted-foreground">{item.boostPlan.price}</Text>
+                    <Text className="text-sm text-muted-foreground">{item.boostPlan?.price}</Text>
                   </View>
                 </View>
               </Pressable>

@@ -50,23 +50,36 @@ export type BoostPlan = {
   updatedAt: string; // ISO date string
 };
 
-export type Order = {
+export interface Order {
   id: string;
   userId: string;
   planId: string;
   url: string;
-  viewCount: number;
-  completedViewCount: number;
+
+  initialViewCount: number;
+  initialLikeCount: number;
+  initialSubscriberCount: number;
+
+  finalViewCount: number;
+  finalLikeCount: number;
+  finalSubscriberCount: number;
+
+  progressViewCount: number;
+  progressLikeCount: number;
+  progressSubscriberCount: number;
+
   completedCount: number;
-  status: OrderStatus;
-  createdAt: string; // ISO date string
-  updatedAt: string; // ISO date string
-  boostPlan: BoostPlan;
+  status: 'PENDING' | 'ACTIVE' | 'COMPLETED' | 'CANCELLED';
+  createdAt: string;
+  updatedAt: string;
+
   videoTitle?: string;
   videoThumbnail?: string;
   duration?: number;
   token?: string;
-};
+
+  boostPlan?: BoostPlan;
+}
 
 export type OrderStatus = 'PENDING' | 'ACTIVE' | 'COMPLETED' | 'CANCELLED';
 
