@@ -25,7 +25,7 @@ export {
 
 import { youtubeListenerService } from '~/services/youtubeListener';
 import { HeaderButton } from '~/components/HeaderButton';
-import { View } from 'react-native';
+import { Alert, View } from 'react-native';
 import { CoinHeader } from '~/components/CoinHeader';
 import { useEffect } from 'react';
 import {
@@ -36,6 +36,7 @@ import {
   useIAP,
 } from 'expo-iap';
 import { handlePurchaseError, processPurchase } from '~/lib/api/purchase';
+import { useInAppUpdate } from '~/utils/update';
 youtubeListenerService.init(); // runs once
 
 export default function RootLayout() {
@@ -72,6 +73,13 @@ export default function RootLayout() {
     checkPendingPurchases();
   }, [connected]);
 
+  const { updateAvailable } = useInAppUpdate();
+
+  useEffect(() => {
+    if (updateAvailable) {
+      Alert.alert('Update Available', 'A new version is available. Please update from Play Store.');
+    }
+  }, [updateAvailable]);
   return (
     <>
       <StatusBar
@@ -96,7 +104,6 @@ export default function RootLayout() {
                   <Stack.Screen name="earn-or-purchase" options={WATCH_EARN_OPTIONS} />
 
                   <Stack.Screen name="boostviewplans" options={MODAL_OPTIONS} />
-                  <Stack.Screen name="getsubscribersplans" options={MODAL_OPTIONS} />
                   <Stack.Screen name="debug" options={DEBUG_PANEL_OPTIONS} />
                   <Stack.Screen name="iap" options={DEBUG_PANEL_OPTIONS} />
                 </Stack>
