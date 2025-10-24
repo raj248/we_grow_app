@@ -51,12 +51,15 @@ export default function History() {
                 ? 'Pending'
                 : item.status === 'SUCCESS'
                   ? 'Completed'
-                  : 'Failed';
+                  : item.status === 'REFUNDED'
+                    ? 'Refunded'
+                    : 'Failed';
 
             const colorMap = {
               Pending: '#fbbf24',
               Completed: '#10b981',
               Failed: '#ef4444',
+              Refunded: '#4472efff',
             };
 
             const amountColor = item.type === 'CREDIT' ? '#10b981' : '#ef4444';

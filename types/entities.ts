@@ -22,6 +22,7 @@ export type Transaction = {
   id: string;
   userId: string;
   type: TransactionType;
+  topUpId: string | null;
   amount: number;
   source: string;
   transactionId: string | null;
@@ -31,7 +32,7 @@ export type Transaction = {
 };
 
 export type TransactionType = 'CREDIT' | 'DEBIT';
-export type TransactionStatus = 'SUCCESS' | 'PENDING' | 'FAILED';
+export type TransactionStatus = 'SUCCESS' | 'PENDING' | 'FAILED' | 'REFUNDED';
 
 export type BoostPlan = {
   id: string;
