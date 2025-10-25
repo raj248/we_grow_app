@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { getAllPurchaseOptions, makeTopup } from '~/lib/api/purchase';
+import { getAllPurchaseOptions } from '~/lib/api/purchase';
 import type { PurchaseOption } from '~/types/entities';
 import type { APIResponse } from '~/types/api';
 import { createJSONStorage, persist } from 'zustand/middleware';
@@ -15,11 +15,11 @@ type State = {
 
 type Actions = {
   fetchPurchaseOptions: (soft?: boolean) => Promise<PurchaseOption[]>;
-  purchase: (
-    userId: string,
-    productId: string,
-    purchaseToken: string
-  ) => Promise<APIResponse<{ wallet: any; transaction: any }>>;
+  // purchase: (
+  //   userId: string,
+  //   productId: string,
+  //   purchaseToken: string
+  // ) => Promise<APIResponse<{ wallet: any; transaction: any }>>;
   clearStore: () => void;
 };
 
@@ -92,17 +92,17 @@ export const usePurchaseStore = create<State & Actions>()(
         }
       },
 
-      purchase: async (userId, productId, purchaseToken) => {
-        set({ loading: true, error: null });
-        const res = await makeTopup({ userId, productId, purchaseToken });
-        if (res.success && res.data) {
-          // optional: update wallet or state if needed
-          return res;
-        } else {
-          set({ error: res.error ?? 'Failed to purchase', loading: false });
-        }
-        return res;
-      },
+      // purchase: async (userId, productId, purchaseToken) => {
+      //   set({ loading: true, error: null });
+      //   const res = await makeTopup({ userId, productId, purchaseToken });
+      //   if (res.success && res.data) {
+      //     // optional: update wallet or state if needed
+      //     return res;
+      //   } else {
+      //     set({ error: res.error ?? 'Failed to purchase', loading: false });
+      //   }
+      //   return res;
+      // },
 
       clearStore: () => {
         set({ purchaseOptions: [], loading: false, error: null, lastFetched: undefined });

@@ -63,18 +63,6 @@ export async function getAllPurchaseOptions(
   return safeFetch(url.toString());
 }
 
-export async function makeTopup(
-  payload: PurchasePayload
-): Promise<APIResponse<{ wallet: Wallet; transaction: Transaction }>> {
-  return safeFetch(`${BASE_URL}/api/wallet/topup`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(payload),
-  });
-}
-
 // validateReciept
 export async function validateReceipt(purchase: PurchaseAndroid): Promise<APIResponse<boolean>> {
   const { productId, purchaseToken, transactionId, packageNameAndroid } = purchase;
